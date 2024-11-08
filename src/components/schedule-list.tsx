@@ -9,7 +9,7 @@ interface ScheduleListProps {
 
 export function ScheduleList({ calendar }: ScheduleListProps) {
   return (
-    <div className="h-[calc(100vh-12rem)] md:overflow-y-auto overflow-y-hidden space-y-4 md:space-y-8 pr-2 md:pr-4">
+    <div className="h-[calc(100vh-12rem)] overflow-y-auto space-y-4 md:space-y-8 pr-2 md:pr-4">
       {calendar.map((month) => (
         <div 
           key={`${month.month}-${month.year}`}
