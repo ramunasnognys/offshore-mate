@@ -19,7 +19,6 @@ export function generateRotationCalendar(
 ): MonthData[] {
   const monthData: MonthData[] = [];
   const config = rotationConfigs[pattern];
-  const cycleLength = config.workDays + config.offDays;
   
   let currentDate = new Date(startDate);
   const endDate = addDays(currentDate, months * 31);

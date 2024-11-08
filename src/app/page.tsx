@@ -1,12 +1,11 @@
 'use client'
 
 import React, { useState } from 'react'
-import { Calendar, ChevronDown, Download, Compass, ArrowRight } from 'lucide-react'
-import { Calendar as CalendarIcon } from "@/components/ui/calendar"
-import { DatePickerDialog } from "@/components/date-picker-dialog"
+import { ChevronDown, Download, ArrowRight } from 'lucide-react'
+import { DatePicker } from "@/components/date-picker"
 import { generateRotationCalendar } from '@/lib/utils/rotation'
 import { ScheduleList } from '@/components/schedule-list'
-import { MonthData } from '@/types/rotation'
+import { MonthData, RotationPattern } from '@/types/rotation'
 
 type RotationOption = {
   label: string
@@ -17,9 +16,7 @@ type RotationOption = {
 
 export default function Home() {
   const [selectedDate, setSelectedDate] = useState('')
-  const [isCalendarOpen, setIsCalendarOpen] = useState(false)
   const [isRotationOpen, setIsRotationOpen] = useState(false)
-  const [currentMonth, setCurrentMonth] = useState(new Date())
   const [selectedRotation, setSelectedRotation] = useState('')
   const [isCalendarGenerated, setIsCalendarGenerated] = useState(false)
   const [yearCalendar, setYearCalendar] = useState<MonthData[]>([])
@@ -32,25 +29,10 @@ export default function Home() {
     { label: '28/28 Rotation', value: '28/28', workDays: 28, offDays: 28 }
   ]
 
-  const formatDisplayDate = (date: string) => {
-    if (!date) return 'Pick a start date'
-    return new Date(date).toLocaleDateString('en-US', {
-      month: 'long',
-      day: 'numeric',
-      year: 'numeric'
-    })
-  }
-
   const handleDateSelect = (date: Date | undefined) => {
     if (date) {
-      const year = date.getFullYear()
-      const month = date.getMonth()
-      const day = date.getDate()
-      
-      const selectedDate = new Date(year, month, day)
-      const formattedDate = selectedDate.toLocaleDateString('en-CA')
+      const formattedDate = date.toLocaleDateString('en-CA')
       setSelectedDate(formattedDate)
-      setIsCalendarOpen(false)
     }
   }
 
@@ -62,7 +44,7 @@ export default function Home() {
     
     const calendar = generateRotationCalendar(
       new Date(selectedDate),
-      selectedRotation as any,
+      selectedRotation as RotationPattern,
       12
     )
     
@@ -86,40 +68,22 @@ export default function Home() {
           <div className="space-y-4 md:space-y-6">
             {/* Date Picker Button */}
             <div className="backdrop-blur-xl bg-white/30 rounded-2xl md:rounded-3xl shadow-lg border border-white/30 transition-all duration-300 hover:shadow-xl hover:bg-white/40">
-              <button
-                onClick={() => {
-                  setIsCalendarOpen(!isCalendarOpen)
-                  setIsRotationOpen(false)
-                }}
-                className="flex items-center w-full px-4 md:px-6 py-3 md:py-4 hover:bg-white/10 transition-all duration-200 rounded-2xl md:rounded-3xl group"
-              >
-                <div className="flex-grow text-left">
-                  <span className="text-gray-500 text-xs md:text-sm font-medium mb-0.5 md:mb-1 block">Start Date</span>
-                  <span className="text-gray-800 text-base md:text-lg font-medium group-hover:text-orange-500 transition-colors">
-                    {formatDisplayDate(selectedDate)}
-                  </span>
-                </div>
-                <div className="flex items-center justify-center ml-3 md:ml-4">
-                  <Calendar className="w-4 h-4 md:w-5 md:h-5 text-gray-400 group-hover:text-orange-500 transition-colors" />
-                </div>
-              </button>
-
-              <DatePickerDialog
-                open={isCalendarOpen}
-                onOpenChange={setIsCalendarOpen}
-                selected={selectedDate ? new Date(selectedDate) : undefined}
-                onSelect={handleDateSelect}
-              />
+              <div className="px-4 md:px-6 py-3 md:py-4">
+                <span className="text-gray-500 text-xs md:text-sm font-medium mb-0.5 md:mb-1 block">
+                  Start Date
+                </span>
+                <DatePicker 
+                  date={selectedDate ? new Date(selectedDate) : undefined}
+                  onSelect={handleDateSelect}
+                />
+              </div>
             </div>
 
             {/* Rotation Selector */}
             <div className="relative">
               <div className="backdrop-blur-xl bg-white/30 rounded-2xl md:rounded-3xl shadow-lg border border-white/30 transition-all duration-300 hover:shadow-xl hover:bg-white/40">
                 <button
-                  onClick={() => {
-                    setIsRotationOpen(!isRotationOpen)
-                    setIsCalendarOpen(false)
-                  }}
+                  onClick={() => setIsRotationOpen(!isRotationOpen)}
                   className={`flex items-center w-full px-4 md:px-6 py-3 md:py-4 hover:bg-white/10 transition-all duration-200 group
                     ${isRotationOpen ? 'rounded-t-2xl md:rounded-t-3xl' : 'rounded-2xl md:rounded-3xl'}`}
                 >
