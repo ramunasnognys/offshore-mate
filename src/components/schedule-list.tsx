@@ -1,3 +1,4 @@
+// src/components/schedule-list.tsx
 import React from 'react';
 import { MonthData } from '@/types/rotation';
 import { format } from 'date-fns';
@@ -5,15 +6,19 @@ import { Plane } from 'lucide-react';
 
 interface ScheduleListProps {
   calendar: MonthData[];
+  className?: string;
 }
 
-export function ScheduleList({ calendar }: ScheduleListProps) {
+export function ScheduleList({ calendar, className }: ScheduleListProps) {
   return (
-    <div className="h-[calc(100vh-12rem)] overflow-y-auto space-y-4 md:space-y-8 pr-2 md:pr-4">
+    <div 
+      id="calendar-container"
+      className={`space-y-4 md:space-y-8 pr-2 md:pr-4 ${className}`}
+    >
       {calendar.map((month) => (
         <div 
           key={`${month.month}-${month.year}`}
-          className="backdrop-blur-xl bg-white/95 rounded-3xl border border-white/20 shadow-lg p-4 md:p-6 pb-2 md:pb-3"
+          className="backdrop-blur-xl bg-white rounded-3xl border border-white/20 shadow-lg p-4 md:p-6 pb-2 md:pb-3"
         >
           <div className="h-full flex flex-col">
             <h3 className="text-base md:text-xl font-semibold text-gray-800 mb-6 md:mb-12">
@@ -21,19 +26,16 @@ export function ScheduleList({ calendar }: ScheduleListProps) {
             </h3>
             
             <div className="flex-grow grid grid-cols-7 gap-0.5 md:gap-1 content-start">
-              {/* Week day headers */}
               {['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map((day) => (
                 <div key={day} className="text-center text-xs md:text-sm font-medium text-gray-500 py-1 md:py-2">
                   {day}
                 </div>
               ))}
               
-              {/* Empty cells for first week alignment */}
               {Array.from({ length: month.firstDayOfWeek === 0 ? 6 : month.firstDayOfWeek - 1 }).map((_, index) => (
                 <div key={`empty-${index}`} className="aspect-square" />
               ))}
               
-              {/* Calendar days */}
               {month.days.map((day, index) => (
                 <div
                   key={index}
@@ -57,7 +59,6 @@ export function ScheduleList({ calendar }: ScheduleListProps) {
               ))}
             </div>
             
-            {/* Legend */}
             <div className="flex flex-wrap gap-2 md:gap-4 mt-auto pt-4 md:pt-6 pb-2 text-xs md:text-sm">
               <div className="flex items-center gap-1.5 md:gap-2">
                 <div className="w-3 h-3 md:w-4 md:h-4 rounded bg-orange-500/20" />
