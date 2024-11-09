@@ -3,20 +3,27 @@ import html2canvas from 'html2canvas';
 
 export async function downloadCalendarAsImage(elementId: string, filename: string): Promise<void> {
   try {
-    const element = document.getElementById(elementId);
+    const element = document.getElementById('download-calendar');
     if (!element) {
-      throw new Error('Element not found');
+      throw new Error('Download calendar element not found');
     }
 
-    // Configure html2canvas options for better quality
+    // Make the element visible temporarily
+    const originalDisplay = element.style.display;
+    element.style.display = 'block';
+
+    // Configure html2canvas options
     const canvas = await html2canvas(element, {
       scale: 2, // Increase quality
       useCORS: true,
-      backgroundColor: null,
+      backgroundColor: '#ffffff',
       logging: false,
-      windowWidth: element.scrollWidth,
-      windowHeight: element.scrollHeight,
+      width: 1080,
+      height: 1920,
     });
+
+    // Hide the element again
+    element.style.display = originalDisplay;
 
     // Convert to blob
     const blob = await new Promise<Blob>((resolve) => {

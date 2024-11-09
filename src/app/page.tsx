@@ -5,6 +5,7 @@ import { ChevronDown, Download, ArrowRight } from 'lucide-react'
 import { DatePicker } from "@/components/date-picker"
 import { generateRotationCalendar } from '@/lib/utils/rotation'
 import { ScheduleList } from '@/components/schedule-list'
+import { DownloadCalendar } from '@/components/download-calendar'
 import { MonthData, RotationPattern } from '@/types/rotation'
 import { downloadCalendarAsImage } from '@/lib/utils/download'
 
@@ -58,7 +59,7 @@ export default function Home() {
     try {
       setIsDownloading(true)
       const filename = `offshore-calendar-${selectedRotation}-${selectedDate}.png`
-      await downloadCalendarAsImage('calendar-container', filename)
+      await downloadCalendarAsImage('download-calendar', filename)
     } catch (error) {
       console.error('Failed to download calendar:', error)
       alert('Failed to download calendar. Please try again.')
@@ -196,10 +197,13 @@ export default function Home() {
               </button>
             </div>
             
-            <ScheduleList 
-              calendar={yearCalendar} 
-              className="h-[calc(100vh-12rem)] overflow-y-auto"
-            />
+            <div>
+              <ScheduleList 
+                calendar={yearCalendar} 
+                className="h-[calc(100vh-12rem)] overflow-y-auto"
+              />
+              <DownloadCalendar calendar={yearCalendar} />
+            </div>
           </div>
         )}
 
