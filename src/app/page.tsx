@@ -56,7 +56,7 @@ export default function Home() {
     <main className="min-h-screen bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-blue-100 via-white to-pink-100 flex items-center justify-center p-4 md:p-8 bg-fixed">
       <div className="relative w-full max-w-[500px]">
         <div className="flex items-center justify-center gap-2 md:gap-3 mb-2">
-          <h1 className="text-3xl md:text-4xl lg:text-5xl font-display text-center text-gray-800">
+          <h1 className="text-4xl md:text-5xl lg:text-5xl font-display text-center text-gray-800">
             Offshore Mate
           </h1>
         </div>
