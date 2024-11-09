@@ -41,7 +41,7 @@ export function DownloadCalendar({ calendar }: DownloadCalendarProps) {
 
       {/* Calendar Grid */}
       <div className="grid grid-cols-3 gap-6 auto-rows-fr">
-        {twelveMonths.map((month, index) => (
+        {twelveMonths.map((month) => (
           <div 
             key={`${month.month}-${month.year}`}
             className="backdrop-blur-xl bg-white rounded-2xl border border-gray-200 shadow-lg p-6"
