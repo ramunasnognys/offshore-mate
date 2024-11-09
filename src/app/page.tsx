@@ -179,6 +179,22 @@ export default function Home() {
             <ScheduleList calendar={yearCalendar} />
           </div>
         )}
+
+        {/* Add footer at the bottom */}
+        <div className="mt-8 text-center text-sm text-gray-300 tracking-wide">
+          <p>
+            Created by{' '}
+            <a 
+              href="https://my-portfolio-r80lxqbzb-ramunasnognys1s-projects.vercel.app/" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="text-gray-300 hover:text-gray-500 underline transition-colors tracking-wide"
+            >
+              Ramūnas Nognys
+            </a>
+          </p>
+          <p className="mt-1 tracking-wide">Version 1.0.1</p>
+        </div>
       </div>
     </main>
   )

@@ -25,7 +25,7 @@ export function DatePicker({ date, onSelect }: DatePickerProps) {
   }
 
   const formatDisplayDate = (date: Date | undefined) => {
-    if (!date) return 'Select start date'
+    if (!date) return 'Pick your start date'
     return date.toLocaleDateString('en-US', {
       month: 'long',
       day: 'numeric',
