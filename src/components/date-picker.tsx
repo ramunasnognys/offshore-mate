@@ -36,9 +36,7 @@ export function DatePicker({ date, onSelect }: DatePickerProps) {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <button
-          className="flex items-center w-full hover:bg-white/10 transition-all duration-200 group rounded-2xl md:rounded-3xl"
-        >
+        <button className="flex items-center w-full hover:bg-white/10 transition-all duration-200 group rounded-2xl md:rounded-3xl">
           <div className="flex-grow text-left">
             <span className="text-gray-800 text-base md:text-lg font-medium group-hover:text-orange-500 transition-colors">
               {formatDisplayDate(date)}
@@ -49,29 +47,49 @@ export function DatePicker({ date, onSelect }: DatePickerProps) {
           </div>
         </button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px] bg-white/95 backdrop-blur-xl border border-white/30">
+      <DialogContent className="sm:max-w-[425px] bg-white/80 backdrop-blur-md border-0 shadow-lg rounded-3xl">
         <DialogHeader>
-          <DialogTitle className="text-lg font-medium text-gray-800">Choose start date</DialogTitle>
+          <DialogTitle className="text-center">
+            <p className="text-lg font-medium text-gray-600">Today</p>
+            <p className="text-3xl font-semibold text-gray-800">
+              {new Date().toLocaleDateString('en-US', { 
+                month: 'long', 
+                day: 'numeric', 
+                year: 'numeric' 
+              })}
+            </p>
+          </DialogTitle>
         </DialogHeader>
-        <div className="py-4">
+        <div className="py-4 w-full flex items-center justify-center ">
           <Calendar
             mode="single"
             selected={date}
             onSelect={handleSelect}
             initialFocus
             weekStartsOn={1}
-
-            className="mx-auto rounded-lg border-white/30 bg-white/50"
+            className="rounded-lg border-0 bg-transparent w-full px-4
+              [&_.rdp-caption]:text-xl [&_.rdp-caption]:font-semibold [&_.rdp-caption]:text-gray-800 
+              [&_.rdp-months]:w-full
+              [&_.rdp-month]:w-full
+              [&_tr]:grid [&_tr]:grid-cols-7 [&_tr]:gap-2
+              [&_.rdp-head_cell]:flex [&_.rdp-head_cell]:justify-center
+              [&_.rdp-head_th]:text-gray-400 [&_.rdp-head_th]:font-medium [&_.rdp-head_th]:h-10 [&_.rdp-head_th]:w-10
+              [&_.rdp-tbody]:w-full
+              [&_.rdp-cell]:flex [&_.rdp-cell]:justify-center
+              [&_.rdp-button]:h-10 [&_.rdp-button]:w-10 [&_.rdp-button]:rounded-full 
+              [&_.rdp-button]:text-sm [&_.rdp-button]:transition-colors [&_.rdp-button]:text-gray-700
+              [&_.rdp-button:hover]:bg-gray-100
+              [&_.rdp-day_selected]:bg-blue-500 [&_.rdp-day_selected]:text-white
+              [&_.rdp-day_today]:bg-blue-100 [&_.rdp-day_today]:text-blue-600 [&_.rdp-day_today]:font-semibold
+              [&_.rdp-nav_button]:text-gray-600 [&_.rdp-nav_button:hover]:text-gray-800 [&_.rdp-nav_button]:transition-colors
+              [&_.rdp-nav_button]:w-6 [&_.rdp-nav_button]:h-6"
           />
-{/* 
-<Calendar
-  mode="single"
-  selected={selected}
-  onSelect={onSelect}
-  weekStartsOn={0}
-  className="w-full"
-/> */}
         </div>
+        {date && (
+          <div className="text-center text-gray-600 pb-2">
+            Selected: {date.toLocaleDateString()}
+          </div>
+        )}
       </DialogContent>
     </Dialog>
   )
