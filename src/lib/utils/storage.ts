@@ -3,6 +3,8 @@
  * Implements functionality to save, load, and manage rotation schedules in browser localStorage
  */
 
+import { MonthData } from '@/types/rotation';
+
 // Constants for storage
 export const STORAGE_KEYS = {
   SCHEDULES_INDEX: 'offshore_mate_schedules',
@@ -37,7 +39,7 @@ export interface ScheduleMetadata {
 // Full schedule data interface
 export interface SavedSchedule {
   metadata: ScheduleMetadata;
-  calendar: any[]; // Using any for now, will be replaced with MonthData[] from rotation types
+  calendar: MonthData[]; // Using MonthData from rotation types
 }
 
 // Get all saved schedule IDs
