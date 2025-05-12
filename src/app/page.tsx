@@ -388,7 +388,7 @@ export default function Home() {
               Ramūnas Nognys
             </a>
           </p>
-          <p className="mt-1 tracking-wide">Version 1.0.1</p>
+          <p className="mt-1 tracking-wide">Version 1.0.2</p>
         </div>
       </div>
     </main>
