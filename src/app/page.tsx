@@ -1,13 +1,18 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
-import { ChevronDown, Download, ArrowRight, Save, XCircle } from 'lucide-react'
+import { ChevronDown, Download, ArrowRight, Save, XCircle, ChevronLeft, ChevronRight } from 'lucide-react'
 import { DatePicker } from "@/components/date-picker"
 import { generateRotationCalendar } from '@/lib/utils/rotation'
 import { ScheduleList } from '@/components/schedule-list'
 import { DownloadCalendar } from '@/components/download-calendar'
 import { MonthData, RotationPattern } from '@/types/rotation'
 import { downloadCalendarAsImage } from '@/lib/utils/download'
+// Removed static imports for PDF components - will lazy load them
+import { ExportFormatSelector, ExportFormat } from '@/components/export-format-selector'
+import { ExportProgressModal } from '@/components/export-progress-modal'
+import { PDFExportErrorDialog } from '@/components/pdf-export-error-dialog'
+import { ErrorToast } from '@/components/error-toast'
 import { SavedSchedules } from '@/components/saved-schedules'
 import { SavedSchedule, ScheduleMetadata, saveSchedule, getSchedule, isStorageAvailable, generateScheduleId } from '@/lib/utils/storage'
 
@@ -32,6 +37,22 @@ export default function Home() {
   const [scheduleName, setScheduleName] = useState('')
   const [showSavedSchedules, setShowSavedSchedules] = useState(false)
   const [saveNotification, setSaveNotification] = useState('')
+  const [currentMonthIndex, setCurrentMonthIndex] = useState(0)
+  const [isMobileView, setIsMobileView] = useState<boolean | null>(null)
+  const [touchStart, setTouchStart] = useState(0)
+  const [touchEnd, setTouchEnd] = useState(0)
+  const [isClient, setIsClient] = useState(false)
+  const [exportFormat, setExportFormat] = useState<ExportFormat>(() => {
+    // Load saved format preference from localStorage
+    if (typeof window !== 'undefined') {
+      const savedFormat = localStorage.getItem('offshore_mate_export_format');
+      return (savedFormat === 'pdf' || savedFormat === 'png') ? savedFormat : 'png';
+    }
+    return 'png';
+  })
+  const [errorMessage, setErrorMessage] = useState('')
+  const [showPDFError, setShowPDFError] = useState(false)
+  const [pdfErrorMessage, setPdfErrorMessage] = useState<string>('')
 
   const rotationOptions: RotationOption[] = [
     { label: '14/14 Rotation', value: '14/14', workDays: 14, offDays: 14 },
@@ -90,7 +111,7 @@ export default function Home() {
 
   // Handle saving the current schedule
   const handleSaveSchedule = () => {
-    if (!isStorageAvailable()) {
+    if (!isClient || !isStorageAvailable()) {
       alert('Local storage is not available in your browser. Unable to save the schedule.')
       return
     }
@@ -142,18 +163,169 @@ export default function Home() {
   const handleDownload = async () => {
     try {
       setIsDownloading(true)
-      const filename = `offshore-calendar-${selectedRotation}-${selectedDate}.png`
-      await downloadCalendarAsImage('download-calendar', filename)
+      
+      // Show progress modal for PDF generation on mobile
+      const showProgress = exportFormat === 'pdf' && isMobileView === true;
+      
+      // Add slight delay for progress modal to appear
+      if (showProgress) {
+        await new Promise(resolve => setTimeout(resolve, 100));
+      }
+      
+      if (exportFormat === 'pdf') {
+        // Use jsPDF for better React 19 RC compatibility
+        const { exportCalendarAsJsPDF } = await import('@/lib/utils/jspdf-export');
+        
+        await exportCalendarAsJsPDF({
+          calendar: yearCalendar,
+          scheduleName: scheduleName || `${selectedRotation} Rotation`,
+          rotationPattern: selectedRotation,
+          startDate: selectedDate
+        })
+      } else {
+        const filename = `offshore-calendar-${selectedRotation}-${selectedDate}.png`
+        await downloadCalendarAsImage('download-calendar', filename)
+      }
     } catch (error) {
       console.error('Failed to download calendar:', error)
-      alert('Failed to download calendar. Please try again.')
+      console.error('Error details:', {
+        type: error?.constructor?.name,
+        message: error instanceof Error ? error.message : 'Unknown error',
+        stack: error instanceof Error ? error.stack : undefined
+      })
+      // Handle PDF errors specially
+      if (exportFormat === 'pdf') {
+        const message = error instanceof Error ? error.message : 
+          'Failed to generate PDF. Your browser may not support PDF generation. Please try using PNG format instead.';
+        setPdfErrorMessage(message);
+        setShowPDFError(true);
+      } else {
+        // PNG export errors
+        const message = error instanceof Error ? error.message : 
+          'Failed to download calendar image. Please try again.';
+        setErrorMessage(message);
+      }
     } finally {
       setIsDownloading(false)
     }
   }
 
+  // Client-side initialization
+  useEffect(() => {
+    setIsClient(true)
+  }, [])
+
+  // Mobile detection
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobileView(window.innerWidth < 768) // MD breakpoint
+    }
+    
+    checkMobile()
+    window.addEventListener('resize', checkMobile)
+    return () => window.removeEventListener('resize', checkMobile)
+  }, [])
+
+  // Month navigation functions
+  const goToPreviousMonth = () => {
+    setCurrentMonthIndex(prev => Math.max(0, prev - 1))
+  }
+
+  const goToNextMonth = () => {
+    setCurrentMonthIndex(prev => Math.min(yearCalendar.length - 1, prev + 1))
+  }
+
+
+  // Get current period status for smart header
+  const getCurrentPeriodStatus = () => {
+    if (!yearCalendar.length) return null
+    
+    const today = new Date()
+    const currentMonth = yearCalendar.find(month => {
+      return month.days.some(day => {
+        const dayDate = new Date(day.date)
+        return dayDate.toDateString() === today.toDateString()
+      })
+    })
+
+    if (!currentMonth) return null
+
+    const todayData = currentMonth.days.find(day => {
+      const dayDate = new Date(day.date)
+      return dayDate.toDateString() === today.toDateString()
+    })
+
+    if (!todayData) return null
+
+    return {
+      isWork: todayData.isWorkDay,
+      isOff: !todayData.isWorkDay && !todayData.isTransitionDay,
+      isTransition: todayData.isTransitionDay,
+      month: currentMonth.month,
+      year: currentMonth.year
+    }
+  }
+
+  // Touch gesture handlers
+  const handleTouchStart = (e: React.TouchEvent) => {
+    setTouchEnd(0) // Reset touchEnd
+    setTouchStart(e.targetTouches[0].clientX)
+  }
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    setTouchEnd(e.targetTouches[0].clientX)
+  }
+
+  const handleTouchEnd = () => {
+    if (!touchStart || !touchEnd) return
+    
+    const distance = touchStart - touchEnd
+    const minSwipeDistance = 50
+    
+    if (distance > minSwipeDistance && isMobileView === true) {
+      // Swipe left - next month
+      goToNextMonth()
+    }
+    
+    if (distance < -minSwipeDistance && isMobileView === true) {
+      // Swipe right - previous month
+      goToPreviousMonth()
+    }
+  }
+
+  const handleUsePNGInstead = async () => {
+    setShowPDFError(false)
+    setExportFormat('png')
+    // Automatically trigger PNG download
+    setTimeout(() => {
+      handleDownload()
+    }, 100)
+  }
+
   return (
     <main className="min-h-screen bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-blue-100 via-white to-pink-100 flex items-center justify-center p-4 md:p-8 bg-fixed">
+      {/* Export Progress Modal */}
+      <ExportProgressModal 
+        isOpen={isDownloading && exportFormat === 'pdf' && !showPDFError} 
+        format={exportFormat}
+      />
+      
+      {/* PDF Export Error Dialog */}
+      <PDFExportErrorDialog
+        isOpen={showPDFError}
+        onClose={() => setShowPDFError(false)}
+        onSwitchToPNG={handleUsePNGInstead}
+        error={pdfErrorMessage}
+      />
+      
+      {/* Error Toast */}
+      {errorMessage && (
+        <ErrorToast 
+          message={errorMessage}
+          onClose={() => setErrorMessage('')}
+        />
+      )}
+      
       <div className="relative w-full max-w-[500px]">
         {/* Save notification */}
         {saveNotification && (
@@ -232,7 +404,7 @@ export default function Home() {
             </div>
 
             {/* Saved Schedules Button */}
-            {isStorageAvailable() && (
+            {isClient && isStorageAvailable() && (
               <div className="backdrop-blur-xl bg-white/30 rounded-2xl md:rounded-3xl shadow-lg border border-white/30 transition-all duration-300 hover:shadow-xl hover:bg-white/40">
                 <button
                   onClick={() => setShowSavedSchedules(!showSavedSchedules)}
@@ -322,54 +494,159 @@ export default function Home() {
               </div>
             </div>
             
-            <div className="flex justify-between items-center">
-              <button
-                onClick={() => setIsCalendarGenerated(false)}
-                className="bg-white/30 backdrop-blur-xl text-gray-800 rounded-full px-4 md:px-6 py-2 md:py-3 text-sm md:text-base font-medium
-                  shadow-sm hover:bg-white/40 transition-all duration-200 border border-white/30 group"
-              >
-                <span className="flex items-center gap-1.5 md:gap-2">
-                  <ArrowRight className="w-3.5 h-3.5 md:w-4 md:h-4 rotate-180 group-hover:-translate-x-1 transition-transform" />
-                  Back
-                </span>
-              </button>
-              
-              <div className="flex gap-2">
-                {isStorageAvailable() && (
-                  <button
-                    onClick={handleSaveSchedule}
-                    disabled={isSaving}
-                    className={`bg-green-600 text-white rounded-full px-4 md:px-6 py-2 md:py-3 text-sm md:text-base font-medium
-                      shadow-sm hover:bg-green-700 transition-all duration-200 flex items-center gap-1.5 md:gap-2 group
-                      ${isSaving ? 'opacity-75 cursor-wait' : ''}`}
-                  >
-                    <Save className={`w-3.5 h-3.5 md:w-4 md:h-4 transition-transform
-                      ${isSaving ? 'animate-pulse' : 'group-hover:scale-110'}`} 
-                    />
-                    {isSaving ? 'Saving...' : (isSaved ? 'Update' : 'Save')}
-                  </button>
-                )}
-                
+            {/* Export Format Selector */}
+            <ExportFormatSelector 
+              selectedFormat={exportFormat}
+              onFormatChange={(format) => {
+                setExportFormat(format);
+                // Save format preference to localStorage
+                localStorage.setItem('offshore_mate_export_format', format);
+              }}
+            />
+            
+            {/* Navigation Header */}
+            {isMobileView === true ? (
+              <div className="flex justify-between items-center mb-4">
                 <button
-                  onClick={handleDownload}
-                  disabled={isDownloading}
-                  className={`bg-black text-white rounded-full px-4 md:px-6 py-2 md:py-3 text-sm md:text-base font-medium
-                    shadow-sm hover:bg-black/90 transition-all duration-200 flex items-center gap-1.5 md:gap-2 group
-                    ${isDownloading ? 'opacity-75 cursor-wait' : ''}`}
+                  onClick={() => setIsCalendarGenerated(false)}
+                  className="bg-white/30 backdrop-blur-xl text-gray-800 rounded-full px-4 py-2 text-sm font-medium
+                    shadow-sm hover:bg-white/40 transition-all duration-200 border border-white/30 group"
                 >
-                  <Download className={`w-3.5 h-3.5 md:w-4 md:h-4 transition-transform
-                    ${isDownloading ? 'animate-bounce' : 'group-hover:translate-y-0.5'}`} 
-                  />
-                  {isDownloading ? 'Downloading...' : 'Download'}
+                  <span className="flex items-center gap-1.5">
+                    <ArrowRight className="w-3.5 h-3.5 rotate-180 group-hover:-translate-x-1 transition-transform" />
+                    Back
+                  </span>
                 </button>
+                
+                <div className="flex gap-2">
+                  {isClient && isStorageAvailable() && (
+                    <button
+                      onClick={handleSaveSchedule}
+                      disabled={isSaving}
+                      className={`bg-green-600 text-white rounded-full px-4 py-2 text-sm font-medium
+                        shadow-sm hover:bg-green-700 transition-all duration-200 flex items-center gap-1.5 group
+                        ${isSaving ? 'opacity-75 cursor-wait' : ''}`}
+                    >
+                      <Save className={`w-3.5 h-3.5 transition-transform
+                        ${isSaving ? 'animate-pulse' : 'group-hover:scale-110'}`} 
+                      />
+                      {isSaving ? 'Saving...' : (isSaved ? 'Update' : 'Save')}
+                    </button>
+                  )}
+                  
+                  <button
+                    onClick={handleDownload}
+                    disabled={isDownloading}
+                    className={`bg-black text-white rounded-full px-4 py-2 text-sm font-medium
+                      shadow-sm hover:bg-black/90 transition-all duration-200 flex items-center gap-1.5 group
+                      ${isDownloading ? 'opacity-75 cursor-wait' : ''}`}
+                  >
+                    <Download className={`w-3.5 h-3.5 transition-transform
+                      ${isDownloading ? 'animate-bounce' : 'group-hover:translate-y-0.5'}`} 
+                    />
+                    {isDownloading ? (exportFormat === 'pdf' ? 'Generating PDF...' : 'Downloading...') : 'Download'}
+                  </button>
+                </div>
               </div>
-            </div>
+            ) : (
+              // Desktop navigation
+              <div className="flex justify-between items-center">
+                <button
+                  onClick={() => setIsCalendarGenerated(false)}
+                  className="bg-white/30 backdrop-blur-xl text-gray-800 rounded-full px-4 md:px-6 py-2 md:py-3 text-sm md:text-base font-medium
+                    shadow-sm hover:bg-white/40 transition-all duration-200 border border-white/30 group"
+                >
+                  <span className="flex items-center gap-1.5 md:gap-2">
+                    <ArrowRight className="w-3.5 h-3.5 md:w-4 md:h-4 rotate-180 group-hover:-translate-x-1 transition-transform" />
+                    Back
+                  </span>
+                </button>
+                
+                <div className="flex gap-2">
+                  {isClient && isStorageAvailable() && (
+                    <button
+                      onClick={handleSaveSchedule}
+                      disabled={isSaving}
+                      className={`bg-green-600 text-white rounded-full px-4 md:px-6 py-2 md:py-3 text-sm md:text-base font-medium
+                        shadow-sm hover:bg-green-700 transition-all duration-200 flex items-center gap-1.5 md:gap-2 group
+                        ${isSaving ? 'opacity-75 cursor-wait' : ''}`}
+                    >
+                      <Save className={`w-3.5 h-3.5 md:w-4 md:h-4 transition-transform
+                        ${isSaving ? 'animate-pulse' : 'group-hover:scale-110'}`} 
+                      />
+                      {isSaving ? 'Saving...' : (isSaved ? 'Update' : 'Save')}
+                    </button>
+                  )}
+                  
+                  <button
+                    onClick={handleDownload}
+                    disabled={isDownloading}
+                    className={`bg-black text-white rounded-full px-4 md:px-6 py-2 md:py-3 text-sm md:text-base font-medium
+                      shadow-sm hover:bg-black/90 transition-all duration-200 flex items-center gap-1.5 md:gap-2 group
+                      ${isDownloading ? 'opacity-75 cursor-wait' : ''}`}
+                  >
+                    <Download className={`w-3.5 h-3.5 md:w-4 md:h-4 transition-transform
+                      ${isDownloading ? 'animate-bounce' : 'group-hover:translate-y-0.5'}`} 
+                    />
+                    {isDownloading ? (exportFormat === 'pdf' ? 'Generating PDF...' : 'Downloading...') : 'Download'}
+                  </button>
+                </div>
+              </div>
+            )}
             
             <div>
-              <ScheduleList 
-                calendar={yearCalendar} 
-                className="h-[calc(100vh-12rem)] overflow-y-auto"
-              />
+              {/* Month Navigation - Mobile Only */}
+              {isMobileView === true && yearCalendar.length > 0 && (
+                <div className="flex items-center justify-between bg-white/20 backdrop-blur-sm rounded-2xl p-3 mb-4">
+                  <button
+                    onClick={goToPreviousMonth}
+                    disabled={currentMonthIndex === 0}
+                    className={`p-2 rounded-full transition-all duration-200 ${
+                      currentMonthIndex === 0 
+                        ? 'opacity-30 cursor-not-allowed' 
+                        : 'hover:bg-white/20 active:scale-95'
+                    }`}
+                    aria-label="Previous month"
+                  >
+                    <ChevronLeft className="w-6 h-6 text-gray-700" />
+                  </button>
+                  
+                  <div className="flex-1 text-center">
+                    <div className="text-lg font-semibold text-gray-800">
+                      {yearCalendar[currentMonthIndex]?.month} {yearCalendar[currentMonthIndex]?.year}
+                    </div>
+                    <div className="text-sm text-gray-600">
+                      {currentMonthIndex + 1} of {yearCalendar.length}
+                    </div>
+                  </div>
+                  
+                  <button
+                    onClick={goToNextMonth}
+                    disabled={currentMonthIndex === yearCalendar.length - 1}
+                    className={`p-2 rounded-full transition-all duration-200 ${
+                      currentMonthIndex === yearCalendar.length - 1
+                        ? 'opacity-30 cursor-not-allowed' 
+                        : 'hover:bg-white/20 active:scale-95'
+                    }`}
+                    aria-label="Next month"
+                  >
+                    <ChevronRight className="w-6 h-6 text-gray-700" />
+                  </button>
+                </div>
+              )}
+
+              {/* Calendar Display */}
+              <div
+                onTouchStart={handleTouchStart}
+                onTouchMove={handleTouchMove}
+                onTouchEnd={handleTouchEnd}
+                className={isMobileView === true ? "touch-pan-y" : ""}
+              >
+                <ScheduleList 
+                  calendar={isMobileView === true && yearCalendar.length > 0 ? [yearCalendar[currentMonthIndex]] : yearCalendar} 
+                  className={isMobileView === true ? "h-auto" : "h-[calc(100vh-12rem)] overflow-y-auto"}
+                />
+              </div>
               <DownloadCalendar calendar={yearCalendar} />
             </div>
           </div>

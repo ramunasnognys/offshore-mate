@@ -144,7 +144,7 @@ function generateCalendarHTML(calendar: MonthData[]): string {
               align-items: center;
               justify-content: center;
               background: ${cell.isEmpty ? '#ffffff' : getDayColor(cell.day)};
-              color: ${getDayTextColor(cell.day)};
+              color: ${getDayTextColor()};
               border-radius: 6px;
               font-weight: bold;
               font-size: 24px;
@@ -193,7 +193,7 @@ function getDayColor(day: CalendarDay | null): string {
   return '#b3e5b3'; // Light green for off days (like in the image)
 }
 
-function getDayTextColor(_day: CalendarDay | null): string {
+function getDayTextColor(): string {
   // Use dark text for better readability on light backgrounds
   return '#1f2937';
 }
