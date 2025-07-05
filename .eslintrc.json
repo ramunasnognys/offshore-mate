@@ -1,5 +1,7 @@
 {
-  "extends": "next/core-web-vitals",
+  "parser": "@typescript-eslint/parser",
+  "plugins": ["@typescript-eslint"],
+  "extends": ["next/core-web-vitals"],
   "rules": {
     // Disable some rules that are too strict for production builds
     "@typescript-eslint/no-unused-vars": ["warn", { 

@@ -2,7 +2,7 @@
 
 import html2canvas from 'html2canvas';
 import { jsPDF } from 'jspdf';
-import { MonthData } from '@/types/rotation';
+import { MonthData, CalendarDay } from '@/types/rotation';
 
 interface PDFExportOptions {
   calendar: MonthData[];
