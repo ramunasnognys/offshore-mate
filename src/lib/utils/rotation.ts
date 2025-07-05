@@ -6,6 +6,7 @@ export const rotationConfigs: Record<RotationPattern, RotationConfig> = {
   '14/21': { workDays: 15, offDays: 20, label: '14/21 Rotation', value: '14/21' },
   '21/21': { workDays: 22, offDays: 20, label: '21/21 Rotation', value: '21/21' },
   '28/28': { workDays: 29, offDays: 27, label: '28/28 Rotation', value: '28/28' },
+  'Other': { workDays: 0, offDays: 0, label: 'Custom Rotation', value: 'Other' },
 };
 
 function convertToMondayBasedDay(day: number): number {
@@ -15,10 +16,13 @@ function convertToMondayBasedDay(day: number): number {
 export function generateRotationCalendar(
   startDate: Date,
   pattern: RotationPattern,
-  months: number = 12
+  months: number = 12,
+  customRotation?: { workDays: number; offDays: number }
 ): MonthData[] {
   const monthData: MonthData[] = [];
-  const config = rotationConfigs[pattern];
+  const config = pattern === 'Other' && customRotation 
+    ? { ...rotationConfigs[pattern], workDays: customRotation.workDays + 1, offDays: customRotation.offDays - 1 }
+    : rotationConfigs[pattern];
   
   let currentDate = new Date(startDate);
   // Use addMonths for accurate month calculation

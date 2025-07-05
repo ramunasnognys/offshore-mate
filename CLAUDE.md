@@ -32,8 +32,9 @@ Note: The project recommends using `bun` as the package manager, though `npm` al
 4. **UI Components**: `src/components/` contains reusable UI components built with Radix UI primitives
 
 ### Key Components Structure
-- `src/app/page.tsx` - Main application page with schedule generation logic
-- `src/components/schedule-list.tsx` - Displays generated calendars
+- `src/app/page.tsx` - Main application page with schedule generation logic and mobile navigation
+- `src/components/schedule-list.tsx` - Displays generated calendars with mobile-optimized layout
+- `src/components/settings-dialog.tsx` - Settings modal for schedule management and configuration
 - `src/components/date-picker.tsx` - Date selection component
 - `src/components/saved-schedules.tsx` - Manages saved schedule functionality
 - `src/lib/utils/download.ts` - Handles calendar export as PNG using html2canvas
@@ -102,3 +103,30 @@ The project uses several patterns to handle server-side rendering compatibility:
 - Storage-dependent features wrapped with `isClient && isStorageAvailable()` checks
 - Mobile-specific UI components use strict equality checks (`isMobileView === true`)
 - Date-based calculations handled carefully to avoid server/client differences
+
+### Mobile-First Design Architecture
+The application implements a comprehensive mobile-first approach:
+
+**Responsive Layout System**:
+- Mobile breakpoint at 768px (`md:` prefix for desktop styles)
+- Mobile detection with `window.innerWidth < 768` and resize listeners
+- Conditional component rendering based on `isMobileView` state
+
+**Mobile Navigation**:
+- Touch gesture support with swipe detection for calendar navigation
+- Month-by-month view on mobile vs. full year view on desktop
+- Progress dots indicator for mobile month navigation
+- Optimized header layouts with back button and settings positioning
+
+**Mobile-Optimized Calendar**:
+- Compact typography scale: `text-xs` for day numbers, `text-[10px]` for headers
+- Reduced icon sizes: `w-2 h-2` for calendar icons on mobile
+- Perfect center alignment with absolute positioning for icons
+- Tighter spacing: `gap-0.5`, `p-0.5`, reduced `min-h-[40px]` for mobile density
+- Touch-friendly targets while maintaining visual compactness
+
+**Settings Modal Architecture**:
+- Radix Dialog-based settings modal with glass-morphism design
+- Centralized schedule management moved from main interface to settings
+- Mobile-responsive dialog with proper touch interactions
+- Transparent button styling with black border for visual balance

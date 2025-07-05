@@ -1,8 +1,9 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
-import { ChevronDown, ArrowRight, XCircle } from 'lucide-react'
+import { ArrowRight, XCircle } from 'lucide-react'
 import { DatePicker } from "@/components/date-picker"
+import { RotationButton } from "@/components/rotation-button"
 import { generateRotationCalendar } from '@/lib/utils/rotation'
 import { ScheduleList } from '@/components/schedule-list'
 import { DownloadCalendar } from '@/components/download-calendar'
@@ -26,11 +27,12 @@ type RotationOption = {
 
 export default function Home() {
   const [selectedDate, setSelectedDate] = useState('')
-  const [isRotationOpen, setIsRotationOpen] = useState(false)
-  const [selectedRotation, setSelectedRotation] = useState('')
+  const [selectedRotation, setSelectedRotation] = useState<RotationPattern | ''>('14/21')
+  const [showCustomInput, setShowCustomInput] = useState(false)
+  const [customWorkDays, setCustomWorkDays] = useState('')
+  const [customOffDays, setCustomOffDays] = useState('')
   const [isCalendarGenerated, setIsCalendarGenerated] = useState(false)
   const [yearCalendar, setYearCalendar] = useState<MonthData[]>([])
-  const [isHovered, setIsHovered] = useState(false)
   const [isDownloading, setIsDownloading] = useState(false)
   const [isSaving, setIsSaving] = useState(false)
   const [isSaved, setIsSaved] = useState(false)
@@ -57,10 +59,9 @@ export default function Home() {
   const [pdfErrorMessage, setPdfErrorMessage] = useState<string>('')
 
   const rotationOptions: RotationOption[] = [
-    { label: '14/14 Rotation', value: '14/14', workDays: 14, offDays: 14 },
-    { label: '14/21 Rotation', value: '14/21', workDays: 14, offDays: 21 },
-    { label: '21/21 Rotation', value: '21/21', workDays: 21, offDays: 21 },
-    { label: '28/28 Rotation', value: '28/28', workDays: 28, offDays: 28 }
+    { label: '14/14', value: '14/14', workDays: 14, offDays: 14 },
+    { label: '14/21', value: '14/21', workDays: 14, offDays: 21 },
+    { label: 'Other', value: 'Other', workDays: 0, offDays: 0 }
   ]
 
   const handleDateSelect = (date: Date | undefined) => {
@@ -93,10 +94,25 @@ export default function Home() {
       return
     }
     
+    // Validate custom rotation inputs
+    if (selectedRotation === 'Other') {
+      const workDays = parseInt(customWorkDays)
+      const offDays = parseInt(customOffDays)
+      
+      if (!workDays || !offDays || workDays < 1 || offDays < 1) {
+        alert('Please enter valid work and off days for custom rotation')
+        return
+      }
+    }
+    
     const calendar = generateRotationCalendar(
       new Date(selectedDate),
       selectedRotation as RotationPattern,
-      12
+      12,
+      selectedRotation === 'Other' ? {
+        workDays: parseInt(customWorkDays),
+        offDays: parseInt(customOffDays)
+      } : undefined
     )
     
     setYearCalendar(calendar)
@@ -109,7 +125,10 @@ export default function Home() {
     setCurrentMonthIndex(currentMonthIndex)
     
     // Generate a default schedule name with date and rotation
-    const defaultName = `${selectedRotation} Rotation (${new Date(selectedDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })})`
+    const rotationLabel = selectedRotation === 'Other' 
+      ? `${customWorkDays}/${customOffDays} Rotation` 
+      : `${selectedRotation} Rotation`
+    const defaultName = `${rotationLabel} (${new Date(selectedDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })})`
     setScheduleName(defaultName)
   }
 
@@ -379,9 +398,9 @@ export default function Home() {
         </div>
 
         {!isCalendarGenerated ? (
-          <div className="space-y-4 md:space-y-6">
+          <div className={`${isMobileView ? 'space-y-3' : 'space-y-4 md:space-y-6'}`}>
             {/* Date Picker Button */}
-            <div className="backdrop-blur-xl bg-white/30 rounded-2xl md:rounded-3xl shadow-lg border border-white/30 transition-all duration-300 hover:shadow-xl hover:bg-white/40">
+            <div className={`${isMobileView ? 'bg-gray-50 rounded-xl' : 'backdrop-blur-xl bg-white/30 rounded-2xl md:rounded-3xl shadow-lg border border-white/30 transition-all duration-300 hover:shadow-xl hover:bg-white/40'}`}>
               <div className="px-4 md:px-6 py-3 md:py-4">
                 <span className="text-gray-500 text-xs md:text-sm font-medium mb-0.5 md:mb-1 block">
                   Start Date
@@ -393,55 +412,80 @@ export default function Home() {
               </div>
             </div>
 
-            {/* Rotation Selector */}
-            <div className="relative">
-              <div className="backdrop-blur-xl bg-white/30 rounded-2xl md:rounded-3xl shadow-lg border border-white/30 transition-all duration-300 hover:shadow-xl hover:bg-white/40">
-                <button
-                  onClick={() => setIsRotationOpen(!isRotationOpen)}
-                  className={`flex items-center w-full px-4 md:px-6 py-3 md:py-4 hover:bg-white/10 transition-all duration-200 group
-                    ${isRotationOpen ? 'rounded-t-2xl md:rounded-t-3xl' : 'rounded-2xl md:rounded-3xl'}`}
-                >
-                  <div className="flex-grow text-left">
-                    <span className="text-gray-500 text-xs md:text-sm font-medium mb-0.5 md:mb-1 block">Work Rotation</span>
-                    <span className="text-gray-800 text-base md:text-lg font-medium group-hover:text-orange-500 transition-colors">
-                      {selectedRotation ? `${selectedRotation} Rotation` : 'Select rotation'}
-                    </span>
-                  </div>
-                  <div className="flex items-center justify-center ml-3 md:ml-4">
-                    <ChevronDown className={`w-4 h-4 md:w-5 md:h-5 text-gray-400 group-hover:text-orange-500 transition-transform duration-200 
-                      ${isRotationOpen ? 'transform rotate-180' : ''}`} />
-                  </div>
-                </button>
-
-                {/* Rotation Options */}
-                {isRotationOpen && (
-                  <div className="border-t border-white/30">
-                    <div className="backdrop-blur-xl bg-white/80 rounded-b-2xl md:rounded-b-3xl">
-                      {rotationOptions.map((option) => (
-                        <button
-                          key={option.value}
-                          onClick={() => {
-                            setSelectedRotation(option.value)
-                            setIsRotationOpen(false)
-                          }}
-                          className={`w-full px-4 md:px-6 py-2.5 md:py-3 text-left hover:bg-white/50 transition-all duration-200
-                            ${selectedRotation === option.value ? 'bg-white/50' : ''}`}
-                        >
-                          <div className="text-gray-800 text-sm md:text-base font-medium">{option.label}</div>
-                          <div className="text-gray-500 text-xs md:text-sm">
-                            {`${option.workDays} days on, ${option.offDays} days off`}
-                          </div>
-                        </button>
-                      ))}
+            {/* Work Rotation */}
+            <div className={`${isMobileView ? 'bg-gray-50 rounded-xl p-4' : 'backdrop-blur-xl bg-white/30 rounded-2xl md:rounded-3xl shadow-lg border border-white/30 p-4 md:p-6'}`}>
+              <span className="text-gray-600 text-sm md:text-base font-medium mb-3 block">
+                Work Rotation
+              </span>
+              <div className="grid grid-cols-3 gap-2 md:gap-3">
+                {rotationOptions.map((option) => (
+                  <RotationButton
+                    key={option.value}
+                    label={option.label}
+                    isSelected={selectedRotation === option.value}
+                    onClick={() => {
+                      setSelectedRotation(option.value as RotationPattern)
+                      if (option.value === 'Other') {
+                        setShowCustomInput(true)
+                      } else {
+                        setShowCustomInput(false)
+                        setCustomWorkDays('')
+                        setCustomOffDays('')
+                      }
+                    }}
+                    className="text-sm md:text-base"
+                  />
+                ))}
+              </div>
+              
+              {/* Custom rotation input */}
+              {showCustomInput && (
+                <div className={`mt-3 ${isMobileView ? 'bg-white' : 'backdrop-blur-xl bg-white/30 border border-white/30'} rounded-lg p-4`}>
+                  <div className="grid grid-cols-2 gap-3">
+                    <div>
+                      <label className="text-xs text-gray-600 mb-1 block">Work days</label>
+                      <input
+                        type="number"
+                        value={customWorkDays}
+                        onChange={(e) => setCustomWorkDays(e.target.value)}
+                        className={`w-full px-3 py-2 ${isMobileView ? 'bg-gray-50 border-gray-200' : 'bg-white/50 backdrop-blur-sm border-white/30'} rounded-md border text-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-800`}
+                        placeholder="e.g. 14"
+                        min="1"
+                        max="365"
+                      />
+                    </div>
+                    <div>
+                      <label className="text-xs text-gray-600 mb-1 block">Off days</label>
+                      <input
+                        type="number"
+                        value={customOffDays}
+                        onChange={(e) => setCustomOffDays(e.target.value)}
+                        className={`w-full px-3 py-2 ${isMobileView ? 'bg-gray-50 border-gray-200' : 'bg-white/50 backdrop-blur-sm border-white/30'} rounded-md border text-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-800`}
+                        placeholder="e.g. 14"
+                        min="1"
+                        max="365"
+                      />
                     </div>
                   </div>
-                )}
-              </div>
+                </div>
+              )}
             </div>
+            
+            {/* My Rotations - Next Hitch */}
+            {selectedDate && selectedRotation && (
+              <div className={`${isMobileView ? 'bg-gray-50 rounded-xl p-4' : 'backdrop-blur-xl bg-white/30 rounded-2xl md:rounded-3xl shadow-lg border border-white/30 p-4 md:p-6'}`}>
+                <span className="text-gray-600 text-sm md:text-base font-medium mb-2 block">
+                  My Rotations
+                </span>
+                <div className="text-gray-800 text-lg md:text-xl font-semibold">
+                  Next hitch: Aug 12 → Aug 26
+                </div>
+              </div>
+            )}
 
             {/* Saved Schedules Button */}
             {isClient && isStorageAvailable() && (
-              <div className="backdrop-blur-xl bg-white/30 rounded-2xl md:rounded-3xl shadow-lg border border-white/30 transition-all duration-300 hover:shadow-xl hover:bg-white/40">
+              <div className={`${isMobileView ? 'bg-gray-50 rounded-xl' : 'backdrop-blur-xl bg-white/30 rounded-2xl md:rounded-3xl shadow-lg border border-white/30 transition-all duration-300 hover:shadow-xl hover:bg-white/40'}`}>
                 <button
                   onClick={() => setShowSavedSchedules(!showSavedSchedules)}
                   className="w-full px-4 md:px-6 py-3 md:py-4 flex items-center justify-between hover:bg-white/10 transition-all duration-200 group rounded-2xl md:rounded-3xl"
@@ -488,29 +532,26 @@ export default function Home() {
             <button
               onClick={handleGenerateCalendar}
               disabled={!selectedDate || !selectedRotation}
-              onMouseEnter={() => setIsHovered(true)}
-              onMouseLeave={() => setIsHovered(false)}
-              className={`w-full text-white rounded-2xl md:rounded-3xl px-4 md:px-6 py-4 md:py-5 font-medium text-base md:text-lg 
-                shadow-lg transition-all duration-300 border relative overflow-hidden
+              className={`w-full text-white rounded-full px-6 py-4 font-semibold text-lg 
+                transition-all duration-300 relative
                 ${(!selectedDate || !selectedRotation) 
-                  ? 'opacity-100 cursor-not-allowed bg-gray-400 border-white/5' 
-                  : 'bg-black hover:bg-black/90 hover:scale-[1.02] hover:shadow-xl active:scale-[0.98] active:shadow-md border-white/10'
+                  ? 'opacity-50 cursor-not-allowed bg-gray-400' 
+                  : 'bg-black hover:bg-gray-900 active:scale-[0.98]'
                 }`}
             >
-              <span className="relative z-10 flex items-center justify-center gap-2">
-                Generate Calendar
-                <ArrowRight className={`w-4 h-4 md:w-5 md:h-5 transition-transform duration-300 ${isHovered ? 'translate-x-1' : ''}`} />
-              </span>
-              {selectedDate && selectedRotation && (
-                <div 
-                  className="absolute inset-0 bg-gradient-to-r from-black to-black/90 transform transition-transform duration-300"
-                  style={{
-                    transform: isHovered ? 'translateX(0)' : 'translateX(-100%)',
-                    zIndex: 0
-                  }}
-                />
-              )}
+              Generate
             </button>
+            
+            {/* Footer - Version Info */}
+            <div className={`${isMobileView ? 'mt-6' : 'mt-8'} text-center text-sm`}>
+              <p className="text-gray-400">
+                Created by{' '}
+                <span className="text-gray-500">
+                  Ramūnas Nognys
+                </span>
+              </p>
+              {!isMobileView && <p className="mt-1 text-gray-400">Version 1.0.1</p>}
+            </div>
           </div>
         ) : (
           <div className="space-y-6 md:space-y-8">
