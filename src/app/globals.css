@@ -29,6 +29,20 @@
   animation: slide-up 0.3s ease-out;
 }
 
+/* Pressed state for buttons */
+@layer utilities {
+  .active\:scale-\[0\.98\]:active {
+    transform: scale(0.98);
+  }
+  
+  /* Smooth transitions for calendar cells */
+  .transition-transform {
+    transition-property: transform;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-duration: 150ms;
+  }
+}
+
 @layer base {
   :root {
     --background: 0 0% 100%;

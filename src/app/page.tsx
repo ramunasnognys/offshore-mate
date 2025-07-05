@@ -333,14 +333,22 @@ export default function Home() {
             {saveNotification}
           </div>
         )}
-        <div className="flex items-center justify-center gap-2 md:gap-3 mb-2">
-          <h1 className="text-4xl md:text-5xl lg:text-5xl font-display text-center text-gray-800">
+        <div className={`${isCalendarGenerated && isMobileView === true ? 'mb-4' : 'mb-8 md:mb-12'}`}>
+          <h1 className={`font-display text-center text-gray-800 ${
+            isCalendarGenerated && isMobileView === true 
+              ? 'text-3xl mb-1' 
+              : 'text-4xl md:text-5xl lg:text-5xl mb-2'
+          }`}>
             Offshore Mate
           </h1>
+          <p className={`text-center text-orange-500 tracking-wide uppercase font-light ${
+            isCalendarGenerated && isMobileView === true 
+              ? 'text-[9px] opacity-80' 
+              : 'text-[10px] md:text-sm'
+          }`}>
+            Navigate your offshore schedule with precision
+          </p>
         </div>
-        <p className="text-center text-orange-500 mb-8 md:mb-12 tracking-wide uppercase text-[10px] md:text-sm font-light">
-          Navigate your offshore schedule with precision
-        </p>
 
         {!isCalendarGenerated ? (
           <div className="space-y-4 md:space-y-6">
@@ -479,10 +487,18 @@ export default function Home() {
         ) : (
           <div className="space-y-6 md:space-y-8">
             {/* Schedule Name Input */}
-            <div className="backdrop-blur-xl bg-white/30 rounded-2xl md:rounded-3xl shadow-lg border border-white/30 transition-all duration-300 mb-4">
+            <div className="backdrop-blur-xl bg-white/30 rounded-2xl md:rounded-3xl shadow-lg border border-white/30 transition-all duration-300 mb-4 relative">
+              {isSaved && (
+                <div className="absolute -top-2 -right-2 bg-green-500 text-white text-xs px-2 py-1 rounded-full font-bold shadow-lg flex items-center gap-1">
+                  <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                  </svg>
+                  SAVED
+                </div>
+              )}
               <div className="px-4 md:px-6 py-3 md:py-4">
                 <span className="text-gray-500 text-xs md:text-sm font-medium mb-0.5 md:mb-1 block">
-                  Schedule Name {isSaved && <span className="text-green-500">(Saved)</span>}
+                  Schedule Name
                 </span>
                 <input
                   type="text"
@@ -597,41 +613,58 @@ export default function Home() {
             <div>
               {/* Month Navigation - Mobile Only */}
               {isMobileView === true && yearCalendar.length > 0 && (
-                <div className="flex items-center justify-between bg-white/20 backdrop-blur-sm rounded-2xl p-3 mb-4">
-                  <button
-                    onClick={goToPreviousMonth}
-                    disabled={currentMonthIndex === 0}
-                    className={`p-2 rounded-full transition-all duration-200 ${
-                      currentMonthIndex === 0 
-                        ? 'opacity-30 cursor-not-allowed' 
-                        : 'hover:bg-white/20 active:scale-95'
-                    }`}
-                    aria-label="Previous month"
-                  >
-                    <ChevronLeft className="w-6 h-6 text-gray-700" />
-                  </button>
-                  
-                  <div className="flex-1 text-center">
-                    <div className="text-lg font-semibold text-gray-800">
-                      {yearCalendar[currentMonthIndex]?.month} {yearCalendar[currentMonthIndex]?.year}
+                <div className="bg-white/30 backdrop-blur-xl rounded-2xl shadow-lg border border-white/30 p-4 mb-4">
+                  <div className="flex items-center justify-between mb-3">
+                    <button
+                      onClick={goToPreviousMonth}
+                      disabled={currentMonthIndex === 0}
+                      className={`p-2.5 rounded-full transition-all duration-200 bg-white/20 ${
+                        currentMonthIndex === 0 
+                          ? 'opacity-30 cursor-not-allowed' 
+                          : 'hover:bg-white/30 active:scale-95 active:bg-white/40'
+                      }`}
+                      aria-label="Previous month"
+                    >
+                      <ChevronLeft className="w-5 h-5 text-gray-800" />
+                    </button>
+                    
+                    <div className="flex-1 text-center px-4">
+                      <div className="text-xl font-bold text-gray-800">
+                        {yearCalendar[currentMonthIndex]?.month} {yearCalendar[currentMonthIndex]?.year}
+                      </div>
                     </div>
-                    <div className="text-sm text-gray-600">
-                      {currentMonthIndex + 1} of {yearCalendar.length}
-                    </div>
+                    
+                    <button
+                      onClick={goToNextMonth}
+                      disabled={currentMonthIndex === yearCalendar.length - 1}
+                      className={`p-2.5 rounded-full transition-all duration-200 bg-white/20 ${
+                        currentMonthIndex === yearCalendar.length - 1
+                          ? 'opacity-30 cursor-not-allowed' 
+                          : 'hover:bg-white/30 active:scale-95 active:bg-white/40'
+                      }`}
+                      aria-label="Next month"
+                    >
+                      <ChevronRight className="w-5 h-5 text-gray-800" />
+                    </button>
                   </div>
                   
-                  <button
-                    onClick={goToNextMonth}
-                    disabled={currentMonthIndex === yearCalendar.length - 1}
-                    className={`p-2 rounded-full transition-all duration-200 ${
-                      currentMonthIndex === yearCalendar.length - 1
-                        ? 'opacity-30 cursor-not-allowed' 
-                        : 'hover:bg-white/20 active:scale-95'
-                    }`}
-                    aria-label="Next month"
-                  >
-                    <ChevronRight className="w-6 h-6 text-gray-700" />
-                  </button>
+                  {/* Progress Dots */}
+                  <div className="flex justify-center gap-1.5 mt-2">
+                    {yearCalendar.map((_, index) => (
+                      <button
+                        key={index}
+                        onClick={() => setCurrentMonthIndex(index)}
+                        className={`
+                          transition-all duration-200 rounded-full
+                          ${index === currentMonthIndex 
+                            ? 'w-8 h-2 bg-orange-500' 
+                            : 'w-2 h-2 bg-gray-400/50 hover:bg-gray-400'
+                          }
+                        `}
+                        aria-label={`Go to ${yearCalendar[index]?.month} ${yearCalendar[index]?.year}`}
+                      />
+                    ))}
+                  </div>
                 </div>
               )}
 
@@ -640,8 +673,14 @@ export default function Home() {
                 onTouchStart={handleTouchStart}
                 onTouchMove={handleTouchMove}
                 onTouchEnd={handleTouchEnd}
-                className={isMobileView === true ? "touch-pan-y" : ""}
+                className={isMobileView === true ? "touch-pan-y relative" : ""}
               >
+                {/* Swipe indicator for mobile */}
+                {isMobileView === true && yearCalendar.length > 1 && (
+                  <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 flex gap-1 z-10">
+                    <div className="w-8 h-1 bg-gray-300 rounded-full opacity-50"></div>
+                  </div>
+                )}
                 <ScheduleList 
                   calendar={isMobileView === true && yearCalendar.length > 0 ? [yearCalendar[currentMonthIndex]] : yearCalendar} 
                   className={isMobileView === true ? "h-auto" : "h-[calc(100vh-12rem)] overflow-y-auto"}
@@ -652,21 +691,23 @@ export default function Home() {
           </div>
         )}
 
-        {/* Add footer at the bottom */}
-        <div className="mt-8 text-center text-sm text-gray-300 tracking-wide">
-          <p>
-            Created by{' '}
-            <a 
-              href="https://my-portfolio-r80lxqbzb-ramunasnognys1s-projects.vercel.app/" 
-              target="_blank" 
-              rel="noopener noreferrer"
-              className="text-gray-300 hover:text-gray-500 underline transition-colors tracking-wide"
-            >
-              Ramūnas Nognys
-            </a>
-          </p>
-          <p className="mt-1 tracking-wide">Version 1.0.1</p>
-        </div>
+        {/* Add footer at the bottom - hide on mobile when calendar is generated */}
+        {(!isCalendarGenerated || isMobileView !== true) && (
+          <div className="mt-8 text-center text-sm text-gray-300 tracking-wide">
+            <p>
+              Created by{' '}
+              <a 
+                href="https://my-portfolio-r80lxqbzb-ramunasnognys1s-projects.vercel.app/" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="text-gray-300 hover:text-gray-500 underline transition-colors tracking-wide"
+              >
+                Ramūnas Nognys
+              </a>
+            </p>
+            <p className="mt-1 tracking-wide">Version 1.0.1</p>
+          </div>
+        )}
       </div>
     </main>
   )

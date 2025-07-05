@@ -41,19 +41,19 @@ const LEGEND_CONFIG = [
     type: 'work' as const,
     label: 'Work Days',
     className: 'bg-orange-500/20 border border-orange-500/30',
-    icon: <Wrench className="w-2 h-2 md:w-2.5 md:h-2.5" />
+    icon: <Wrench className="w-4 h-4 md:w-5 md:h-5" />
   },
   {
     type: 'off' as const,
     label: 'Off Days',
     className: 'bg-green-500/20 border border-green-500/30',
-    icon: <Waves className="w-2 h-2 md:w-2.5 md:h-2.5" />
+    icon: <Waves className="w-4 h-4 md:w-5 md:h-5" />
   },
   {
     type: 'transition' as const,
     label: 'Transition Days',
     className: 'bg-pink-500/20 ring-1 md:ring-2 ring-pink-500/50 border border-pink-500/30',
-    icon: <Plane className="w-2 h-2 md:w-2.5 md:h-2.5" />
+    icon: <Plane className="w-4 h-4 md:w-5 md:h-5" />
   }
 ] as const;
 
@@ -67,6 +67,13 @@ function getDayType(day: CalendarDay): DayType {
 
 function getEmptyDaysCount(firstDayOfWeek: number): number {
   return firstDayOfWeek === 0 ? 6 : firstDayOfWeek - 1;
+}
+
+// Utility function to check if a date is today
+function isToday(date: Date | string): boolean {
+  const today = new Date();
+  const compareDate = typeof date === 'string' ? new Date(date) : date;
+  return compareDate.toDateString() === today.toDateString();
 }
 
 // Sub-components
@@ -89,22 +96,33 @@ function WeekdayHeaders() {
 function DayCell({ day }: DayCellProps) {
   const dayType = getDayType(day);
   const dayNumber = format(day.date, 'd');
+  const isCurrentDate = isToday(day.date);
   
   // Get appropriate icon for day type
   const getPatternIcon = () => {
-    if (dayType === 'transition') return <Plane className="w-2.5 h-2.5 md:w-3 md:h-3 mb-0.5" aria-hidden="true" />;
-    if (dayType === 'work') return <Wrench className="w-2.5 h-2.5 md:w-3 md:h-3 mb-0.5" aria-hidden="true" />;
-    if (dayType === 'off') return <Waves className="w-2.5 h-2.5 md:w-3 md:h-3 mb-0.5" aria-hidden="true" />;
+    if (dayType === 'transition') return <Plane className="w-3 h-3 md:w-3.5 md:h-3.5 mb-0.5" aria-hidden="true" />;
+    if (dayType === 'work') return <Wrench className="w-3 h-3 md:w-3.5 md:h-3.5 mb-0.5" aria-hidden="true" />;
+    if (dayType === 'off') return <Waves className="w-3 h-3 md:w-3.5 md:h-3.5 mb-0.5" aria-hidden="true" />;
     return null;
   };
   
   return (
     <div
-      className={`aspect-square p-1 md:p-1.5 rounded-lg transition-all duration-200 hover:shadow-md ${DAY_STYLES[dayType]}`}
+      className={`
+        aspect-square p-1 md:p-1.5 rounded-lg transition-all duration-200 hover:shadow-md 
+        ${DAY_STYLES[dayType]} 
+        ${isCurrentDate ? 'ring-2 ring-blue-500 ring-offset-1' : ''}
+        relative
+      `}
       role="gridcell"
-      aria-label={`${dayNumber} ${dayType === 'work' ? 'work day' : dayType === 'off' ? 'off day' : dayType === 'transition' ? 'transition day' : 'inactive'}`}
+      aria-label={`${dayNumber} ${dayType === 'work' ? 'work day' : dayType === 'off' ? 'off day' : dayType === 'transition' ? 'transition day' : 'inactive'}${isCurrentDate ? ' - Today' : ''}`}
     >
-      <div className="w-full h-full flex flex-col items-center justify-center rounded-md text-xs md:text-sm font-medium min-h-[44px] md:min-h-[48px]">
+      {isCurrentDate && (
+        <div className="absolute -top-1 -right-1 bg-blue-500 text-white text-[8px] px-1 rounded font-bold">
+          TODAY
+        </div>
+      )}
+      <div className="w-full h-full flex flex-col items-center justify-center rounded-md text-sm md:text-base font-medium min-h-[48px] md:min-h-[52px]">
         {day.isInRotation && getPatternIcon()}
         <span className="font-semibold">{dayNumber}</span>
       </div>
@@ -124,7 +142,7 @@ function CalendarGrid({ month }: CalendarMonthProps) {
       <WeekdayHeaders />
       
       {Array.from({ length: emptyDaysCount }).map((_, index) => (
-        <div key={`empty-${index}`} className="aspect-square min-h-[44px] md:min-h-[48px]" role="gridcell" aria-hidden="true" />
+        <div key={`empty-${index}`} className="aspect-square min-h-[48px] md:min-h-[52px]" role="gridcell" aria-hidden="true" />
       ))}
       
       {month.days.map((day, index) => (
@@ -147,14 +165,16 @@ function LegendItem({ label, className, icon }: LegendItemProps) {
 
 function CalendarLegend() {
   return (
-    <div className="flex flex-wrap gap-2 md:gap-4 mt-auto pt-4 md:pt-6 pb-2 text-xs md:text-sm">
+    <div className="grid grid-cols-3 gap-2 mt-4 pt-3 border-t border-gray-200/30">
       {LEGEND_CONFIG.map((item) => (
-        <LegendItem
-          key={item.type}
-          label={item.label}
-          className={item.className}
-          icon={item.icon}
-        />
+        <div key={item.type} className="flex flex-col items-center gap-1 text-center">
+          <div className={`w-8 h-8 md:w-10 md:h-10 rounded-lg ${item.className} flex items-center justify-center`}>
+            {item.icon}
+          </div>
+          <span className="text-[10px] md:text-xs text-gray-600 font-medium leading-tight">
+            {item.label}
+          </span>
+        </div>
       ))}
     </div>
   );
