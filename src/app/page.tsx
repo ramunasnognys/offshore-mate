@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
-import { ChevronDown, ArrowRight, Save, XCircle, ChevronLeft, ChevronRight } from 'lucide-react'
+import { ChevronDown, ArrowRight, XCircle } from 'lucide-react'
 import { DatePicker } from "@/components/date-picker"
 import { generateRotationCalendar } from '@/lib/utils/rotation'
 import { ScheduleList } from '@/components/schedule-list'
@@ -14,6 +14,7 @@ import { ExportProgressModal } from '@/components/export-progress-modal'
 import { PDFExportErrorDialog } from '@/components/pdf-export-error-dialog'
 import { ErrorToast } from '@/components/error-toast'
 import { SavedSchedules } from '@/components/saved-schedules'
+import { SettingsDialog } from '@/components/settings-dialog'
 import { SavedSchedule, ScheduleMetadata, saveSchedule, getSchedule, isStorageAvailable, generateScheduleId } from '@/lib/utils/storage'
 
 type RotationOption = {
@@ -42,6 +43,7 @@ export default function Home() {
   const [touchStart, setTouchStart] = useState(0)
   const [touchEnd, setTouchEnd] = useState(0)
   const [isClient, setIsClient] = useState(false)
+  const [isEditingName, setIsEditingName] = useState(false)
   const [exportFormat, setExportFormat] = useState<ExportFormat>(() => {
     // Load saved format preference from localStorage
     if (typeof window !== 'undefined') {
@@ -512,8 +514,8 @@ export default function Home() {
           </div>
         ) : (
           <div className="space-y-6 md:space-y-8">
-            {/* Back Button */}
-            <div className="mb-4">
+            {/* Header with Back Button and Settings */}
+            <div className="flex justify-between items-center mb-4">
               <button
                 onClick={() => setIsCalendarGenerated(false)}
                 className="bg-black text-white rounded-full px-4 md:px-6 py-2 md:py-3 text-sm md:text-base font-medium
@@ -524,53 +526,21 @@ export default function Home() {
                   Back
                 </span>
               </button>
+              
+              <SettingsDialog
+                scheduleName={scheduleName}
+                setScheduleName={setScheduleName}
+                isEditingName={isEditingName}
+                setIsEditingName={setIsEditingName}
+                isSaving={isSaving}
+                isSaved={isSaved}
+                onSave={handleSaveSchedule}
+                selectedRotation={selectedRotation}
+                selectedDate={selectedDate}
+                isStorageAvailable={isClient && isStorageAvailable()}
+              />
             </div>
 
-            {/* Schedule Name Input with Save Button */}
-            <div className="backdrop-blur-xl bg-white/30 rounded-2xl md:rounded-3xl shadow-lg border border-white/30 transition-all duration-300 mb-4 relative">
-              {isSaved && (
-                <div className="absolute -top-2 -right-2 bg-green-500 text-white text-xs px-2 py-1 rounded-full font-bold shadow-lg flex items-center gap-1 z-10">
-                  <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
-                  </svg>
-                  SAVED
-                </div>
-              )}
-              <div className="px-4 md:px-6 py-4 md:py-5">
-                <span className="text-gray-500 text-xs md:text-sm font-medium mb-1.5 md:mb-2 block">
-                  Schedule Name
-                </span>
-                <input
-                  type="text"
-                  value={scheduleName}
-                  onChange={(e) => setScheduleName(e.target.value)}
-                  className="w-full bg-transparent border-none focus:outline-none text-gray-800 text-base md:text-lg font-medium"
-                  placeholder="Enter a name for this schedule"
-                />
-                {isClient && isStorageAvailable() && (
-                  <>
-                    {/* Separator */}
-                    <hr className="my-4 border-gray-300/30" />
-                    {/* Save Button aligned right */}
-                    <div className="flex justify-end">
-                      <button
-                        onClick={handleSaveSchedule}
-                        disabled={isSaving}
-                        className={`w-1/3 bg-green-600 text-white rounded-xl px-3 py-2.5 text-sm font-medium
-                          shadow-sm hover:bg-green-700 transition-all duration-200 flex items-center justify-center gap-1.5 group
-                          ${isSaving ? 'opacity-75 cursor-wait' : ''}`}
-                      >
-                        <Save className={`w-3.5 h-3.5 transition-transform
-                          ${isSaving ? 'animate-pulse' : 'group-hover:scale-110'}`} 
-                        />
-                        {isSaving ? 'Saving...' : (isSaved ? 'Update' : 'Save')}
-                      </button>
-                    </div>
-                  </>
-                )}
-              </div>
-            </div>
-            
             {/* Export Format Selector with Download Button */}
             <ExportFormatSelector 
               selectedFormat={exportFormat}

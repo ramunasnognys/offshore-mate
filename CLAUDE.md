@@ -47,6 +47,7 @@ The rotation calculation uses date-fns for date manipulation and generates work 
 ### Technology Stack
 - **Framework**: Next.js 15.0.3 with TypeScript
 - **React Version**: 19.0.0-rc (Release Candidate)
+- **Package Manager**: Bun (recommended) or npm
 - **Styling**: Tailwind CSS with custom design system
 - **UI Components**: Radix UI primitives with shadcn/ui patterns
 - **Date Handling**: date-fns library
