@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Trash, Clock, Calendar, Info, ArrowRight } from 'lucide-react';
 import { ScheduleMetadata, getAllScheduleMetadata, deleteSchedule } from '@/lib/utils/storage';
+// import { RotationPattern } from '@/types/rotation';
 import { formatDistanceToNow } from 'date-fns';
 
 interface SavedSchedulesProps {
@@ -42,7 +43,7 @@ export function SavedSchedules({ onLoadSchedule, className = '' }: SavedSchedule
         month: 'short', 
         day: 'numeric' 
       });
-    } catch (_) {
+    } catch {
       return 'Invalid date';
     }
   };
@@ -51,7 +52,7 @@ export function SavedSchedules({ onLoadSchedule, className = '' }: SavedSchedule
     try {
       const date = new Date(dateString);
       return formatDistanceToNow(date, { addSuffix: true });
-    } catch (_) {
+    } catch {
       return 'Unknown time';
     }
   };

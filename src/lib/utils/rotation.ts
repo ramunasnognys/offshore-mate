@@ -1,5 +1,5 @@
 import { RotationConfig, RotationPattern, MonthData, CalendarDay } from '@/types/rotation';
-import { addDays, startOfMonth, endOfMonth, format, getDay, differenceInDays, isSameDay, addWeeks } from 'date-fns';
+import { addDays, startOfMonth, endOfMonth, format, getDay, differenceInDays, isSameDay, addWeeks, addMonths } from 'date-fns';
 
 export const rotationConfigs: Record<RotationPattern, RotationConfig> = {
   '14/14': { workDays: 15, offDays: 13, label: '14/14 Rotation', value: '14/14' },
@@ -21,7 +21,8 @@ export function generateRotationCalendar(
   const config = rotationConfigs[pattern];
   
   let currentDate = new Date(startDate);
-  const endDate = addDays(currentDate, months * 31);
+  // Use addMonths for accurate month calculation
+  const endDate = addMonths(startDate, months);
   
   // Calculate all work periods and transition dates
   const workPeriods: { start: Date; end: Date }[] = [];
@@ -46,7 +47,10 @@ export function generateRotationCalendar(
     periodStart = addDays(periodEnd, config.offDays + 1);
   }
   
-  while (currentDate < endDate) {
+  // Track generated months to ensure we don't exceed the limit
+  let monthsGenerated = 0;
+  
+  while (currentDate < endDate && monthsGenerated < months) {
     const monthStart = startOfMonth(currentDate);
     const monthEnd = endOfMonth(monthStart);
     const days: CalendarDay[] = [];
@@ -94,6 +98,7 @@ export function generateRotationCalendar(
       firstDayOfWeek: mondayBasedFirstDay
     });
     
+    monthsGenerated++;
     currentDate = addDays(monthEnd, 1);
   }
   

@@ -14,13 +14,17 @@ export const STORAGE_KEYS = {
 
 // Check if localStorage is available in the browser
 export const isStorageAvailable = (): boolean => {
+  // Check if we're in a browser environment
+  if (typeof window === 'undefined') {
+    return false;
+  }
+  
   try {
     const testKey = '__storage_test__';
     localStorage.setItem(testKey, testKey);
     localStorage.removeItem(testKey);
     return true;
-  } catch (e) {
-    console.error('localStorage is not available:', e);
+  } catch {
     return false;
   }
 };
