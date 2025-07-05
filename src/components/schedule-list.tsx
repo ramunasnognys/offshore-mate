@@ -118,21 +118,31 @@ function DayCell({ day }: DayCellProps) {
     <div
       className={`
         aspect-square p-1 md:p-1.5 rounded-lg transition-all duration-200 hover:shadow-md 
-        ${DAY_STYLES[dayType]} 
-        ${isCurrentDate ? 'ring-2 ring-blue-500 ring-offset-1' : ''}
-        relative
+        ${isCurrentDate ? 'today-cell border-2 border-white shadow-xl' : DAY_STYLES[dayType]} 
+        relative overflow-hidden
       `}
       role="gridcell"
       aria-label={`${dayNumber} ${dayType === 'work' ? 'work day' : dayType === 'off' ? 'off day' : dayType === 'transition' ? 'transition day' : 'inactive'}${isCurrentDate ? ' - Today' : ''}`}
     >
       {isCurrentDate && (
-        <div className="absolute -top-1 -right-1 bg-blue-500 text-white text-[8px] px-1 rounded font-bold">
-          TODAY
-        </div>
+        <>
+          {/* Modern TODAY badge */}
+          <div className="absolute -top-1 -right-1 today-badge text-white text-[9px] px-2 py-0.5 rounded-full font-extrabold tracking-wide z-10">
+            TODAY
+          </div>
+          {/* Subtle inner glow */}
+          <div className="absolute inset-0 bg-white/10 rounded-md"></div>
+        </>
       )}
-      <div className="w-full h-full flex flex-col items-center justify-center rounded-md text-sm md:text-base font-medium min-h-[48px] md:min-h-[52px]">
-        {day.isInRotation && getPatternIcon()}
-        <span className="font-semibold">{dayNumber}</span>
+      <div className={`w-full h-full flex flex-col items-center justify-center rounded-md text-sm md:text-base font-medium min-h-[48px] md:min-h-[52px] relative z-10 ${
+        isCurrentDate ? 'text-white drop-shadow-sm' : ''
+      }`}>
+        {day.isInRotation && (
+          <div className={isCurrentDate ? 'filter brightness-0 invert' : ''}>
+            {getPatternIcon()}
+          </div>
+        )}
+        <span className={`font-semibold ${isCurrentDate ? 'text-white' : ''}`}>{dayNumber}</span>
       </div>
     </div>
   );

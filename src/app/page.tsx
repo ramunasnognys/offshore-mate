@@ -68,6 +68,23 @@ export default function Home() {
     }
   }
 
+  // Utility function to find current month index in calendar
+  const findCurrentMonthIndex = (calendar: MonthData[]): number => {
+    const today = new Date()
+    const currentMonth = today.getMonth() // 0-based
+    const currentYear = today.getFullYear()
+    
+    const index = calendar.findIndex(month => {
+      const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 
+                         'July', 'August', 'September', 'October', 'November', 'December']
+      const monthIndex = monthNames.indexOf(month.month)
+      return monthIndex === currentMonth && month.year === currentYear
+    })
+    
+    // If current month not found, return 0 (first month)
+    return index >= 0 ? index : 0
+  }
+
   const handleGenerateCalendar = () => {
     if (!selectedDate || !selectedRotation) {
       alert('Please select both a start date and rotation pattern')
@@ -84,6 +101,11 @@ export default function Home() {
     setIsCalendarGenerated(true)
     setIsSaved(false)
     setCurrentScheduleId(null)
+    
+    // Auto-navigate to current month
+    const currentMonthIndex = findCurrentMonthIndex(calendar)
+    setCurrentMonthIndex(currentMonthIndex)
+    
     // Generate a default schedule name with date and rotation
     const defaultName = `${selectedRotation} Rotation (${new Date(selectedDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })})`
     setScheduleName(defaultName)
@@ -103,6 +125,10 @@ export default function Home() {
       setIsCalendarGenerated(true)
       setIsSaved(true)
       setShowSavedSchedules(false)
+      
+      // Auto-navigate to current month for saved schedules too
+      const currentMonthIndex = findCurrentMonthIndex(savedSchedule.calendar)
+      setCurrentMonthIndex(currentMonthIndex)
     } catch (error) {
       console.error('Error loading schedule:', error)
       alert('Could not load the saved schedule. It may be in an invalid format.')
