@@ -18,8 +18,10 @@ export async function downloadCalendarAsImage(elementId: string, filename: strin
       useCORS: true,
       backgroundColor: '#ffffff',
       logging: false,
-      width: 1080,
-      height: 1920,
+      width: 2100,
+      height: 2970,
+      windowWidth: 2100,
+      windowHeight: 2970,
     });
 
     // Hide the element again
@@ -43,6 +45,19 @@ export async function downloadCalendarAsImage(elementId: string, filename: strin
     URL.revokeObjectURL(url);
   } catch (error) {
     console.error('Error downloading calendar:', error);
-    throw error;
+    
+    if (error instanceof Error) {
+      // Canvas-related errors
+      if (error.message.includes('canvas') || error.message.includes('Canvas')) {
+        throw new Error('Failed to generate calendar image. Your browser may not support image generation.');
+      }
+      
+      // Memory errors
+      if (error.message.includes('memory')) {
+        throw new Error('Image generation failed due to memory constraints. Please try a smaller calendar or use a desktop browser.');
+      }
+    }
+    
+    throw new Error('Failed to download calendar image. Please refresh the page and try again.');
   }
 }

@@ -12,13 +12,17 @@ export const STORAGE_KEYS = {
 
 // Check if localStorage is available in the browser
 export const isStorageAvailable = (): boolean => {
+  // Check if we're in a browser environment
+  if (typeof window === 'undefined') {
+    return false;
+  }
+  
   try {
     const testKey = '__storage_test__';
     localStorage.setItem(testKey, testKey);
     localStorage.removeItem(testKey);
     return true;
-  } catch (e) {
-    console.error('localStorage is not available:', e);
+  } catch {
     return false;
   }
 };
@@ -37,7 +41,7 @@ export interface ScheduleMetadata {
 // Full schedule data interface
 export interface SavedSchedule {
   metadata: ScheduleMetadata;
-  calendar: any[]; // Using any for now, will be replaced with MonthData[] from rotation types
+  calendar: unknown[]; // Using unknown for better type safety, will be replaced with MonthData[] from rotation types
 }
 
 // Get all saved schedule IDs
