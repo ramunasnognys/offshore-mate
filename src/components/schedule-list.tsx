@@ -49,19 +49,19 @@ const LEGEND_CONFIG = [
     type: 'work' as const,
     label: 'Work Days',
     className: 'bg-orange-500/20 border border-orange-500/30',
-    icon: <Wrench className="w-4 h-4 md:w-5 md:h-5" />
+    icon: <Wrench className="w-3 h-3 md:w-5 md:h-5" />
   },
   {
     type: 'off' as const,
     label: 'Off Days',
     className: 'bg-green-500/20 border border-green-500/30',
-    icon: <Waves className="w-4 h-4 md:w-5 md:h-5" />
+    icon: <Waves className="w-3 h-3 md:w-5 md:h-5" />
   },
   {
     type: 'transition' as const,
     label: 'Transition Days',
     className: 'bg-pink-500/20 ring-1 md:ring-2 ring-pink-500/50 border border-pink-500/30',
-    icon: <Plane className="w-4 h-4 md:w-5 md:h-5" />
+    icon: <Plane className="w-3 h-3 md:w-5 md:h-5" />
   }
 ] as const;
 
@@ -91,7 +91,7 @@ function WeekdayHeaders() {
       {WEEKDAYS.map((day) => (
         <div 
           key={day} 
-          className="text-center text-xs md:text-sm font-medium text-gray-500 py-1 md:py-2"
+          className="text-center text-[10px] md:text-sm font-medium text-gray-500 py-0.5 md:py-2"
           role="columnheader"
         >
           {day}
@@ -108,16 +108,16 @@ function DayCell({ day }: DayCellProps) {
   
   // Get appropriate icon for day type
   const getPatternIcon = () => {
-    if (dayType === 'transition') return <Plane className="w-3 h-3 md:w-3.5 md:h-3.5 mb-0.5" aria-hidden="true" />;
-    if (dayType === 'work') return <Wrench className="w-3 h-3 md:w-3.5 md:h-3.5 mb-0.5" aria-hidden="true" />;
-    if (dayType === 'off') return <Waves className="w-3 h-3 md:w-3.5 md:h-3.5 mb-0.5" aria-hidden="true" />;
+    if (dayType === 'transition') return <Plane className="w-2 h-2 md:w-3.5 md:h-3.5" aria-hidden="true" />;
+    if (dayType === 'work') return <Wrench className="w-2 h-2 md:w-3.5 md:h-3.5" aria-hidden="true" />;
+    if (dayType === 'off') return <Waves className="w-2 h-2 md:w-3.5 md:h-3.5" aria-hidden="true" />;
     return null;
   };
   
   return (
     <div
       className={`
-        aspect-square p-1 md:p-1.5 rounded-lg transition-all duration-200 hover:shadow-md 
+        aspect-square p-0.5 md:p-1.5 rounded-lg transition-all duration-200 hover:shadow-md 
         ${isCurrentDate ? 'today-cell border-2 border-white shadow-xl' : DAY_STYLES[dayType]} 
         relative overflow-hidden
       `}
@@ -127,22 +127,25 @@ function DayCell({ day }: DayCellProps) {
       {isCurrentDate && (
         <>
           {/* Modern TODAY badge */}
-          <div className="absolute -top-1 -right-1 today-badge text-white text-[9px] px-2 py-0.5 rounded-full font-extrabold tracking-wide z-10">
+          <div className="absolute -top-1 -right-1 today-badge text-white text-[7px] md:text-[9px] px-1.5 md:px-2 py-0.5 rounded-full font-extrabold tracking-wide z-10">
             TODAY
           </div>
           {/* Subtle inner glow */}
           <div className="absolute inset-0 bg-white/10 rounded-md"></div>
         </>
       )}
-      <div className={`w-full h-full flex flex-col items-center justify-center rounded-md text-sm md:text-base font-medium min-h-[48px] md:min-h-[52px] relative z-10 ${
+      <div className={`w-full h-full flex items-center justify-center rounded-md text-xs md:text-base font-medium min-h-[40px] md:min-h-[52px] relative z-10 ${
         isCurrentDate ? 'text-white drop-shadow-sm' : ''
       }`}>
+        {/* Perfectly centered day number */}
+        <span className={`font-semibold ${isCurrentDate ? 'text-white' : ''} relative z-20`}>{dayNumber}</span>
+        
+        {/* Absolutely positioned icon in top-left corner */}
         {day.isInRotation && (
-          <div className={isCurrentDate ? 'filter brightness-0 invert' : ''}>
+          <div className={`absolute top-0.5 left-0.5 ${isCurrentDate ? 'filter brightness-0 invert' : ''}`}>
             {getPatternIcon()}
           </div>
         )}
-        <span className={`font-semibold ${isCurrentDate ? 'text-white' : ''}`}>{dayNumber}</span>
       </div>
     </div>
   );
@@ -153,14 +156,14 @@ function CalendarGrid({ month }: CalendarMonthProps) {
   
   return (
     <div 
-      className="flex-grow grid grid-cols-7 gap-1 md:gap-2 content-start"
+      className="flex-grow grid grid-cols-7 gap-0.5 md:gap-2 content-start"
       role="grid"
       aria-label={`Calendar for ${month.month} ${month.year}`}
     >
       <WeekdayHeaders />
       
       {Array.from({ length: emptyDaysCount }).map((_, index) => (
-        <div key={`empty-${index}`} className="aspect-square min-h-[48px] md:min-h-[52px]" role="gridcell" aria-hidden="true" />
+        <div key={`empty-${index}`} className="aspect-square min-h-[40px] md:min-h-[52px]" role="gridcell" aria-hidden="true" />
       ))}
       
       {month.days.map((day, index) => (
@@ -183,13 +186,13 @@ function LegendItem({ label, className, icon }: LegendItemProps) {
 
 function CalendarLegend() {
   return (
-    <div className="grid grid-cols-3 gap-2 mt-4 pt-3 border-t border-gray-200/30">
+    <div className="grid grid-cols-3 gap-1 md:gap-2 mt-3 md:mt-4 pt-2 md:pt-3 border-t border-gray-200/30">
       {LEGEND_CONFIG.map((item) => (
         <div key={item.type} className="flex flex-col items-center gap-1 text-center">
-          <div className={`w-8 h-8 md:w-10 md:h-10 rounded-lg ${item.className} flex items-center justify-center`}>
+          <div className={`w-6 h-6 md:w-10 md:h-10 rounded-lg ${item.className} flex items-center justify-center`}>
             {item.icon}
           </div>
-          <span className="text-[10px] md:text-xs text-gray-600 font-medium leading-tight">
+          <span className="text-[8px] md:text-xs text-gray-600 font-medium leading-tight">
             {item.label}
           </span>
         </div>
@@ -201,14 +204,14 @@ function CalendarLegend() {
 function CalendarMonth({ month, isMobile, isFirst, isLast, onNavigate }: CalendarMonthProps) {
   return (
     <div 
-      className="backdrop-blur-xl bg-white rounded-3xl border border-white/20 shadow-lg p-4 md:p-6 pb-4 md:pb-6"
+      className="backdrop-blur-xl bg-white rounded-3xl border border-white/20 shadow-lg p-3 md:p-6 pb-3 md:pb-6"
       role="region"
       aria-labelledby={`month-${month.month}-${month.year}`}
     >
       <div className="h-full flex flex-col">
         {isMobile && onNavigate ? (
           // Mobile header with integrated navigation
-          <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center justify-between mb-3">
             <button
               onClick={() => onNavigate('prev')}
               disabled={isFirst}
@@ -224,7 +227,7 @@ function CalendarMonth({ month, isMobile, isFirst, isLast, onNavigate }: Calenda
             
             <h3 
               id={`month-${month.month}-${month.year}`}
-              className="text-xl font-bold text-gray-800 px-4"
+              className="text-lg md:text-xl font-bold text-gray-800 px-4"
             >
               {month.month} {month.year}
             </h3>
