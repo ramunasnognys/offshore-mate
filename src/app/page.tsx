@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
-import { ChevronDown, Download, ArrowRight, Save, XCircle, ChevronLeft, ChevronRight } from 'lucide-react'
+import { ChevronDown, ArrowRight, Save, XCircle, ChevronLeft, ChevronRight } from 'lucide-react'
 import { DatePicker } from "@/components/date-picker"
 import { generateRotationCalendar } from '@/lib/utils/rotation'
 import { ScheduleList } from '@/components/schedule-list'
@@ -512,18 +512,32 @@ export default function Home() {
           </div>
         ) : (
           <div className="space-y-6 md:space-y-8">
-            {/* Schedule Name Input */}
+            {/* Back Button */}
+            <div className="mb-4">
+              <button
+                onClick={() => setIsCalendarGenerated(false)}
+                className="bg-black text-white rounded-full px-4 md:px-6 py-2 md:py-3 text-sm md:text-base font-medium
+                  shadow-sm hover:bg-black/90 transition-all duration-200 group inline-flex"
+              >
+                <span className="flex items-center gap-1.5 md:gap-2">
+                  <ArrowRight className="w-3.5 h-3.5 md:w-4 md:h-4 rotate-180 group-hover:-translate-x-1 transition-transform" />
+                  Back
+                </span>
+              </button>
+            </div>
+
+            {/* Schedule Name Input with Save Button */}
             <div className="backdrop-blur-xl bg-white/30 rounded-2xl md:rounded-3xl shadow-lg border border-white/30 transition-all duration-300 mb-4 relative">
               {isSaved && (
-                <div className="absolute -top-2 -right-2 bg-green-500 text-white text-xs px-2 py-1 rounded-full font-bold shadow-lg flex items-center gap-1">
+                <div className="absolute -top-2 -right-2 bg-green-500 text-white text-xs px-2 py-1 rounded-full font-bold shadow-lg flex items-center gap-1 z-10">
                   <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
                   </svg>
                   SAVED
                 </div>
               )}
-              <div className="px-4 md:px-6 py-3 md:py-4">
-                <span className="text-gray-500 text-xs md:text-sm font-medium mb-0.5 md:mb-1 block">
+              <div className="px-4 md:px-6 py-4 md:py-5">
+                <span className="text-gray-500 text-xs md:text-sm font-medium mb-1.5 md:mb-2 block">
                   Schedule Name
                 </span>
                 <input
@@ -533,10 +547,31 @@ export default function Home() {
                   className="w-full bg-transparent border-none focus:outline-none text-gray-800 text-base md:text-lg font-medium"
                   placeholder="Enter a name for this schedule"
                 />
+                {isClient && isStorageAvailable() && (
+                  <>
+                    {/* Separator */}
+                    <hr className="my-4 border-gray-300/30" />
+                    {/* Save Button aligned right */}
+                    <div className="flex justify-end">
+                      <button
+                        onClick={handleSaveSchedule}
+                        disabled={isSaving}
+                        className={`w-1/3 bg-green-600 text-white rounded-xl px-3 py-2.5 text-sm font-medium
+                          shadow-sm hover:bg-green-700 transition-all duration-200 flex items-center justify-center gap-1.5 group
+                          ${isSaving ? 'opacity-75 cursor-wait' : ''}`}
+                      >
+                        <Save className={`w-3.5 h-3.5 transition-transform
+                          ${isSaving ? 'animate-pulse' : 'group-hover:scale-110'}`} 
+                        />
+                        {isSaving ? 'Saving...' : (isSaved ? 'Update' : 'Save')}
+                      </button>
+                    </div>
+                  </>
+                )}
               </div>
             </div>
             
-            {/* Export Format Selector */}
+            {/* Export Format Selector with Download Button */}
             <ExportFormatSelector 
               selectedFormat={exportFormat}
               onFormatChange={(format) => {
@@ -544,97 +579,10 @@ export default function Home() {
                 // Save format preference to localStorage
                 localStorage.setItem('offshore_mate_export_format', format);
               }}
+              onDownload={handleDownload}
+              isDownloading={isDownloading}
             />
             
-            {/* Navigation Header */}
-            {isMobileView === true ? (
-              <div className="flex justify-between items-center mb-4">
-                <button
-                  onClick={() => setIsCalendarGenerated(false)}
-                  className="bg-white/30 backdrop-blur-xl text-gray-800 rounded-full px-4 py-2 text-sm font-medium
-                    shadow-sm hover:bg-white/40 transition-all duration-200 border border-white/30 group"
-                >
-                  <span className="flex items-center gap-1.5">
-                    <ArrowRight className="w-3.5 h-3.5 rotate-180 group-hover:-translate-x-1 transition-transform" />
-                    Back
-                  </span>
-                </button>
-                
-                <div className="flex gap-2">
-                  {isClient && isStorageAvailable() && (
-                    <button
-                      onClick={handleSaveSchedule}
-                      disabled={isSaving}
-                      className={`bg-green-600 text-white rounded-full px-4 py-2 text-sm font-medium
-                        shadow-sm hover:bg-green-700 transition-all duration-200 flex items-center gap-1.5 group
-                        ${isSaving ? 'opacity-75 cursor-wait' : ''}`}
-                    >
-                      <Save className={`w-3.5 h-3.5 transition-transform
-                        ${isSaving ? 'animate-pulse' : 'group-hover:scale-110'}`} 
-                      />
-                      {isSaving ? 'Saving...' : (isSaved ? 'Update' : 'Save')}
-                    </button>
-                  )}
-                  
-                  <button
-                    onClick={handleDownload}
-                    disabled={isDownloading}
-                    className={`bg-black text-white rounded-full px-4 py-2 text-sm font-medium
-                      shadow-sm hover:bg-black/90 transition-all duration-200 flex items-center gap-1.5 group
-                      ${isDownloading ? 'opacity-75 cursor-wait' : ''}`}
-                  >
-                    <Download className={`w-3.5 h-3.5 transition-transform
-                      ${isDownloading ? 'animate-bounce' : 'group-hover:translate-y-0.5'}`} 
-                    />
-                    {isDownloading ? (exportFormat === 'pdf' ? 'Generating PDF...' : 'Downloading...') : 'Download'}
-                  </button>
-                </div>
-              </div>
-            ) : (
-              // Desktop navigation
-              <div className="flex justify-between items-center">
-                <button
-                  onClick={() => setIsCalendarGenerated(false)}
-                  className="bg-white/30 backdrop-blur-xl text-gray-800 rounded-full px-4 md:px-6 py-2 md:py-3 text-sm md:text-base font-medium
-                    shadow-sm hover:bg-white/40 transition-all duration-200 border border-white/30 group"
-                >
-                  <span className="flex items-center gap-1.5 md:gap-2">
-                    <ArrowRight className="w-3.5 h-3.5 md:w-4 md:h-4 rotate-180 group-hover:-translate-x-1 transition-transform" />
-                    Back
-                  </span>
-                </button>
-                
-                <div className="flex gap-2">
-                  {isClient && isStorageAvailable() && (
-                    <button
-                      onClick={handleSaveSchedule}
-                      disabled={isSaving}
-                      className={`bg-green-600 text-white rounded-full px-4 md:px-6 py-2 md:py-3 text-sm md:text-base font-medium
-                        shadow-sm hover:bg-green-700 transition-all duration-200 flex items-center gap-1.5 md:gap-2 group
-                        ${isSaving ? 'opacity-75 cursor-wait' : ''}`}
-                    >
-                      <Save className={`w-3.5 h-3.5 md:w-4 md:h-4 transition-transform
-                        ${isSaving ? 'animate-pulse' : 'group-hover:scale-110'}`} 
-                      />
-                      {isSaving ? 'Saving...' : (isSaved ? 'Update' : 'Save')}
-                    </button>
-                  )}
-                  
-                  <button
-                    onClick={handleDownload}
-                    disabled={isDownloading}
-                    className={`bg-black text-white rounded-full px-4 md:px-6 py-2 md:py-3 text-sm md:text-base font-medium
-                      shadow-sm hover:bg-black/90 transition-all duration-200 flex items-center gap-1.5 md:gap-2 group
-                      ${isDownloading ? 'opacity-75 cursor-wait' : ''}`}
-                  >
-                    <Download className={`w-3.5 h-3.5 md:w-4 md:h-4 transition-transform
-                      ${isDownloading ? 'animate-bounce' : 'group-hover:translate-y-0.5'}`} 
-                    />
-                    {isDownloading ? (exportFormat === 'pdf' ? 'Generating PDF...' : 'Downloading...') : 'Download'}
-                  </button>
-                </div>
-              </div>
-            )}
             
             <div>
               {/* Calendar Display */}
