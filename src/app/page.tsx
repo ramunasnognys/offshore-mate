@@ -611,63 +611,6 @@ export default function Home() {
             )}
             
             <div>
-              {/* Month Navigation - Mobile Only */}
-              {isMobileView === true && yearCalendar.length > 0 && (
-                <div className="bg-white/30 backdrop-blur-xl rounded-2xl shadow-lg border border-white/30 p-4 mb-4">
-                  <div className="flex items-center justify-between mb-3">
-                    <button
-                      onClick={goToPreviousMonth}
-                      disabled={currentMonthIndex === 0}
-                      className={`p-2.5 rounded-full transition-all duration-200 bg-white/20 ${
-                        currentMonthIndex === 0 
-                          ? 'opacity-30 cursor-not-allowed' 
-                          : 'hover:bg-white/30 active:scale-95 active:bg-white/40'
-                      }`}
-                      aria-label="Previous month"
-                    >
-                      <ChevronLeft className="w-5 h-5 text-gray-800" />
-                    </button>
-                    
-                    <div className="flex-1 text-center px-4">
-                      <div className="text-xl font-bold text-gray-800">
-                        {yearCalendar[currentMonthIndex]?.month} {yearCalendar[currentMonthIndex]?.year}
-                      </div>
-                    </div>
-                    
-                    <button
-                      onClick={goToNextMonth}
-                      disabled={currentMonthIndex === yearCalendar.length - 1}
-                      className={`p-2.5 rounded-full transition-all duration-200 bg-white/20 ${
-                        currentMonthIndex === yearCalendar.length - 1
-                          ? 'opacity-30 cursor-not-allowed' 
-                          : 'hover:bg-white/30 active:scale-95 active:bg-white/40'
-                      }`}
-                      aria-label="Next month"
-                    >
-                      <ChevronRight className="w-5 h-5 text-gray-800" />
-                    </button>
-                  </div>
-                  
-                  {/* Progress Dots */}
-                  <div className="flex justify-center gap-1.5 mt-2">
-                    {yearCalendar.map((_, index) => (
-                      <button
-                        key={index}
-                        onClick={() => setCurrentMonthIndex(index)}
-                        className={`
-                          transition-all duration-200 rounded-full
-                          ${index === currentMonthIndex 
-                            ? 'w-8 h-2 bg-orange-500' 
-                            : 'w-2 h-2 bg-gray-400/50 hover:bg-gray-400'
-                          }
-                        `}
-                        aria-label={`Go to ${yearCalendar[index]?.month} ${yearCalendar[index]?.year}`}
-                      />
-                    ))}
-                  </div>
-                </div>
-              )}
-
               {/* Calendar Display */}
               <div
                 onTouchStart={handleTouchStart}
@@ -684,8 +627,35 @@ export default function Home() {
                 <ScheduleList 
                   calendar={isMobileView === true && yearCalendar.length > 0 ? [yearCalendar[currentMonthIndex]] : yearCalendar} 
                   className={isMobileView === true ? "h-auto" : "h-[calc(100vh-12rem)] overflow-y-auto"}
+                  isMobile={isMobileView === true}
+                  currentMonthIndex={currentMonthIndex}
+                  onNavigate={(direction) => {
+                    if (direction === 'prev') goToPreviousMonth();
+                    else goToNextMonth();
+                  }}
+                  totalMonths={yearCalendar.length}
                 />
               </div>
+              
+              {/* Progress Dots - Mobile Only */}
+              {isMobileView === true && yearCalendar.length > 0 && (
+                <div className="flex justify-center gap-1.5 mt-4">
+                  {yearCalendar.map((_, index) => (
+                    <button
+                      key={index}
+                      onClick={() => setCurrentMonthIndex(index)}
+                      className={`
+                        transition-all duration-200 rounded-full
+                        ${index === currentMonthIndex 
+                          ? 'w-8 h-2 bg-orange-500' 
+                          : 'w-2 h-2 bg-gray-400/50 hover:bg-gray-400'
+                        }
+                      `}
+                      aria-label={`Go to ${yearCalendar[index]?.month} ${yearCalendar[index]?.year}`}
+                    />
+                  ))}
+                </div>
+              )}
               <DownloadCalendar calendar={yearCalendar} />
             </div>
           </div>

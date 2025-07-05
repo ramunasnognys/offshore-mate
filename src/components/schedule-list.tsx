@@ -2,7 +2,7 @@
 import React from 'react';
 import { MonthData, CalendarDay } from '@/types/rotation';
 import { format } from 'date-fns';
-import { Plane, Wrench, Waves } from 'lucide-react';
+import { Plane, Wrench, Waves, ChevronLeft, ChevronRight } from 'lucide-react';
 
 // Type definitions
 type DayType = 'work' | 'off' | 'transition' | 'inactive';
@@ -10,6 +10,10 @@ type DayType = 'work' | 'off' | 'transition' | 'inactive';
 interface ScheduleListProps {
   calendar: MonthData[];
   className?: string;
+  isMobile?: boolean;
+  currentMonthIndex?: number;
+  onNavigate?: (direction: 'prev' | 'next') => void;
+  totalMonths?: number;
 }
 
 interface DayCellProps {
@@ -18,6 +22,10 @@ interface DayCellProps {
 
 interface CalendarMonthProps {
   month: MonthData;
+  isMobile?: boolean;
+  isFirst?: boolean;
+  isLast?: boolean;
+  onNavigate?: (direction: 'prev' | 'next') => void;
 }
 
 interface LegendItemProps {
@@ -180,7 +188,7 @@ function CalendarLegend() {
   );
 }
 
-function CalendarMonth({ month }: CalendarMonthProps) {
+function CalendarMonth({ month, isMobile, isFirst, isLast, onNavigate }: CalendarMonthProps) {
   return (
     <div 
       className="backdrop-blur-xl bg-white rounded-3xl border border-white/20 shadow-lg p-4 md:p-6 pb-4 md:pb-6"
@@ -188,12 +196,51 @@ function CalendarMonth({ month }: CalendarMonthProps) {
       aria-labelledby={`month-${month.month}-${month.year}`}
     >
       <div className="h-full flex flex-col">
-        <h3 
-          id={`month-${month.month}-${month.year}`}
-          className="text-lg md:text-xl font-semibold text-gray-800 mb-4 md:mb-6 text-center"
-        >
-          {month.month} {month.year}
-        </h3>
+        {isMobile && onNavigate ? (
+          // Mobile header with integrated navigation
+          <div className="flex items-center justify-between mb-4">
+            <button
+              onClick={() => onNavigate('prev')}
+              disabled={isFirst}
+              className={`p-2 rounded-full transition-all duration-200 bg-gray-100/50 ${
+                isFirst 
+                  ? 'opacity-30 cursor-not-allowed' 
+                  : 'hover:bg-gray-200/50 active:scale-95'
+              }`}
+              aria-label="Previous month"
+            >
+              <ChevronLeft className="w-5 h-5 text-gray-700" />
+            </button>
+            
+            <h3 
+              id={`month-${month.month}-${month.year}`}
+              className="text-xl font-bold text-gray-800 px-4"
+            >
+              {month.month} {month.year}
+            </h3>
+            
+            <button
+              onClick={() => onNavigate('next')}
+              disabled={isLast}
+              className={`p-2 rounded-full transition-all duration-200 bg-gray-100/50 ${
+                isLast
+                  ? 'opacity-30 cursor-not-allowed' 
+                  : 'hover:bg-gray-200/50 active:scale-95'
+              }`}
+              aria-label="Next month"
+            >
+              <ChevronRight className="w-5 h-5 text-gray-700" />
+            </button>
+          </div>
+        ) : (
+          // Desktop header (unchanged)
+          <h3 
+            id={`month-${month.month}-${month.year}`}
+            className="text-lg md:text-xl font-semibold text-gray-800 mb-4 md:mb-6 text-center"
+          >
+            {month.month} {month.year}
+          </h3>
+        )}
         
         <CalendarGrid month={month} />
         <CalendarLegend />
@@ -203,7 +250,14 @@ function CalendarMonth({ month }: CalendarMonthProps) {
 }
 
 // Main component
-export function ScheduleList({ calendar, className }: ScheduleListProps) {
+export function ScheduleList({ 
+  calendar, 
+  className, 
+  isMobile, 
+  currentMonthIndex, 
+  onNavigate, 
+  totalMonths 
+}: ScheduleListProps) {
   return (
     <div 
       id="calendar-container"
@@ -211,10 +265,14 @@ export function ScheduleList({ calendar, className }: ScheduleListProps) {
       role="main"
       aria-label="Work rotation schedule"
     >
-      {calendar.map((month) => (
+      {calendar.map((month, index) => (
         <CalendarMonth 
           key={`${month.month}-${month.year}`}
           month={month}
+          isMobile={isMobile}
+          isFirst={currentMonthIndex === 0}
+          isLast={currentMonthIndex === (totalMonths ?? calendar.length) - 1}
+          onNavigate={onNavigate}
         />
       ))}
     </div>
