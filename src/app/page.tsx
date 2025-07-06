@@ -10,13 +10,15 @@ import { DownloadCalendar } from '@/components/download-calendar'
 import { MonthData, RotationPattern } from '@/types/rotation'
 import { downloadCalendarAsImage } from '@/lib/utils/download'
 // Removed static imports for PDF components - will lazy load them
-import { ExportFormatSelector, ExportFormat } from '@/components/export-format-selector'
+import { ExportFormat } from '@/components/export-format-selector'
 import { ExportProgressModal } from '@/components/export-progress-modal'
 import { PDFExportErrorDialog } from '@/components/pdf-export-error-dialog'
 import { ErrorToast } from '@/components/error-toast'
 import { SavedSchedules } from '@/components/saved-schedules'
 import { SettingsDialog } from '@/components/settings-dialog'
 import { SavedSchedule, ScheduleMetadata, saveSchedule, getSchedule, isStorageAvailable, generateScheduleId } from '@/lib/utils/storage'
+import { BottomToolbar } from '@/components/bottom-toolbar'
+import { FloatingActionMenu } from '@/components/floating-action-menu'
 
 type RotationOption = {
   label: string
@@ -545,18 +547,40 @@ export default function Home() {
           </div>
         ) : (
           <div className="space-y-6 md:space-y-8">
-            {/* Header with Back Button and Settings */}
-            <div className="flex justify-between items-center mb-4">
-              <button
-                onClick={() => setIsCalendarGenerated(false)}
-                className="bg-black text-white rounded-full px-4 md:px-6 py-2 md:py-3 text-sm md:text-base font-medium
-                  shadow-sm hover:bg-black/90 transition-all duration-200 group inline-flex"
-              >
-                <span className="flex items-center gap-1.5 md:gap-2">
-                  <ArrowRight className="w-3.5 h-3.5 md:w-4 md:h-4 rotate-180 group-hover:-translate-x-1 transition-transform" />
-                  Back
-                </span>
-              </button>
+            {/* Header with Back Button, Today Button, and Settings */}
+            <div className="flex flex-col gap-3">
+              <div className="flex justify-between items-center">
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => setIsCalendarGenerated(false)}
+                  className="bg-black text-white rounded-full px-4 md:px-6 py-2 md:py-3 text-sm md:text-base font-medium
+                    shadow-sm hover:bg-black/90 transition-all duration-200 group inline-flex"
+                >
+                  <span className="flex items-center gap-1.5 md:gap-2">
+                    <ArrowRight className="w-3.5 h-3.5 md:w-4 md:h-4 rotate-180 group-hover:-translate-x-1 transition-transform" />
+                    Back
+                  </span>
+                </button>
+                
+                {/* Today Button */}
+                <button
+                  onClick={() => {
+                    const todayIndex = findCurrentMonthIndex(yearCalendar);
+                    setCurrentMonthIndex(todayIndex);
+                    
+                    // Smooth scroll to today's month on desktop
+                    if (isMobileView === false && yearCalendar.length > 0) {
+                      const monthElement = document.querySelector(`[aria-labelledby*="${yearCalendar[todayIndex]?.month}-${yearCalendar[todayIndex]?.year}"]`);
+                      monthElement?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }
+                  }}
+                  className="bg-white/80 backdrop-blur-sm text-gray-700 rounded-full px-4 md:px-6 py-2 md:py-3 text-sm md:text-base font-medium
+                    shadow-sm hover:bg-white hover:text-orange-500 transition-all duration-200 border border-gray-200/50 active:scale-95"
+                  title="Jump to current month"
+                >
+                  Today
+                </button>
+              </div>
               
               <SettingsDialog
                 scheduleName={scheduleName}
@@ -570,21 +594,22 @@ export default function Home() {
                 selectedDate={selectedDate}
                 isStorageAvailable={isClient && isStorageAvailable()}
               />
+              </div>
+              
+              {/* Rotation Info Badge */}
+              <div className="flex justify-center">
+                <div className="inline-flex items-center gap-2 bg-white/80 backdrop-blur-sm rounded-full px-4 py-2 shadow-sm border border-gray-200/50">
+                  <span className="text-sm text-gray-600">Rotation:</span>
+                  <span className="text-sm font-semibold text-gray-800">{selectedRotation}</span>
+                  <span className="text-gray-400">•</span>
+                  <span className="text-sm text-gray-600">Started</span>
+                  <span className="text-sm font-medium text-gray-800">
+                    {new Date(selectedDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+                  </span>
+                </div>
+              </div>
             </div>
 
-            {/* Export Format Selector with Download Button */}
-            <ExportFormatSelector 
-              selectedFormat={exportFormat}
-              onFormatChange={(format) => {
-                setExportFormat(format);
-                // Save format preference to localStorage
-                localStorage.setItem('offshore_mate_export_format', format);
-              }}
-              onDownload={handleDownload}
-              isDownloading={isDownloading}
-            />
-            
-            
             <div>
               {/* Calendar Display */}
               <div
@@ -601,7 +626,7 @@ export default function Home() {
                 )}
                 <ScheduleList 
                   calendar={isMobileView === true && yearCalendar.length > 0 ? [yearCalendar[currentMonthIndex]] : yearCalendar} 
-                  className={isMobileView === true ? "h-auto" : "h-[calc(100vh-12rem)] overflow-y-auto"}
+                  className={isMobileView === true ? "h-auto" : ""}
                   isMobile={isMobileView === true}
                   currentMonthIndex={currentMonthIndex}
                   onNavigate={(direction) => {
@@ -614,7 +639,7 @@ export default function Home() {
               
               {/* Progress Dots - Mobile Only */}
               {isMobileView === true && yearCalendar.length > 0 && (
-                <div className="flex justify-center gap-1.5 mt-4">
+                <div className="flex justify-center gap-1.5 mt-4 mb-20">
                   {yearCalendar.map((_, index) => (
                     <button
                       key={index}
@@ -631,6 +656,36 @@ export default function Home() {
                   ))}
                 </div>
               )}
+              
+              {/* Floating Action Menu - Desktop only */}
+              {isMobileView === false && (
+                <FloatingActionMenu 
+                  onExport={(format) => {
+                    setExportFormat(format);
+                    localStorage.setItem('offshore_mate_export_format', format);
+                    handleDownload();
+                  }}
+                  isDownloading={isDownloading}
+                />
+              )}
+              
+              {/* Bottom Toolbar - Mobile only */}
+              {isMobileView === true && (
+                <BottomToolbar 
+                  onExport={(format) => {
+                    setExportFormat(format);
+                    localStorage.setItem('offshore_mate_export_format', format);
+                    handleDownload();
+                  }}
+                  onSettings={() => {
+                    // Open settings dialog
+                    const settingsButton = document.querySelector('[aria-label="Settings"]') as HTMLButtonElement;
+                    settingsButton?.click();
+                  }}
+                  isDownloading={isDownloading}
+                />
+              )}
+              
               <DownloadCalendar calendar={yearCalendar} />
             </div>
           </div>
