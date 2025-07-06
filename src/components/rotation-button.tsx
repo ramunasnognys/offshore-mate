@@ -20,7 +20,7 @@ export function RotationButton({
       type="button"
       onClick={onClick}
       className={cn(
-        "relative w-full px-5 py-2.5 md:px-6 md:py-4 rounded-full md:rounded-2xl border transition-all duration-200",
+        "relative w-full px-5 py-2.5 md:px-6 md:py-4 rounded-2xl border transition-all duration-200",
         "focus:outline-none focus:ring-2 focus:ring-gray-800 focus:ring-offset-2",
         isSelected
           ? "border-black bg-black text-white"

@@ -542,16 +542,6 @@ export default function Home() {
               Generate
             </button>
             
-            {/* Footer - Version Info */}
-            <div className={`${isMobileView ? 'mt-6' : 'mt-8'} text-center text-sm`}>
-              <p className="text-gray-400">
-                Created by{' '}
-                <span className="text-gray-500">
-                  Ramūnas Nognys
-                </span>
-              </p>
-              {!isMobileView && <p className="mt-1 text-gray-400">Version 1.0.1</p>}
-            </div>
           </div>
         ) : (
           <div className="space-y-6 md:space-y-8">
@@ -649,18 +639,7 @@ export default function Home() {
         {/* Add footer at the bottom - hide on mobile when calendar is generated */}
         {(!isCalendarGenerated || isMobileView !== true) && (
           <div className="mt-8 text-center text-sm text-gray-300 tracking-wide">
-            <p>
-              Created by{' '}
-              <a 
-                href="https://my-portfolio-r80lxqbzb-ramunasnognys1s-projects.vercel.app/" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="text-gray-300 hover:text-gray-500 underline transition-colors tracking-wide"
-              >
-                Ramūnas Nognys
-              </a>
-            </p>
-            <p className="mt-1 tracking-wide">Version 1.0.1</p>
+            <p className="tracking-wide">Version v.2</p>
           </div>
         )}
       </div>

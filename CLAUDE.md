@@ -130,3 +130,26 @@ The application implements a comprehensive mobile-first approach:
 - Centralized schedule management moved from main interface to settings
 - Mobile-responsive dialog with proper touch interactions
 - Transparent button styling with black border for visual balance
+
+### Design System and Styling
+
+**Glass-Morphism Cards**:
+- Consistent card styling: `backdrop-blur-xl bg-white/30 rounded-2xl md:rounded-3xl shadow-card border border-white/30`
+- Custom shadow utilities in `globals.css`:
+  - `shadow-card`: Multi-layered shadow with inset highlight
+  - `shadow-card-hover`: Enhanced shadow for hover states
+- Unified styling across mobile and desktop (no conditional styling for cards)
+
+**Custom CSS Utilities**:
+- Today cell animations with gradient background and pulse effect
+- Smooth transitions using `transition-all duration-300`
+- Active state scaling: `active:scale-[0.98]`
+
+**Color Scheme**:
+- Work days: Orange (`bg-orange-100`, `text-orange-600`)
+- Off days: Green (`bg-green-100`, `text-green-600`)
+- Transition days: Pink/Rose (`bg-pink-100`, `text-pink-600`)
+- Today indicator: Blue gradient with animation
+
+### Version Information
+Current version: v.2 (displayed in footer)
