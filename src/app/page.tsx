@@ -92,8 +92,18 @@ export default function Home() {
   }
 
   const handleGenerateCalendar = () => {
-    if (!selectedDate || !selectedRotation) {
-      alert('Please select both a start date and rotation pattern')
+    if (!selectedDate && !selectedRotation) {
+      setErrorMessage('Please select both a start date and rotation pattern to generate your calendar')
+      return
+    }
+    
+    if (!selectedDate) {
+      setErrorMessage('Please select a start date for your rotation schedule')
+      return
+    }
+    
+    if (!selectedRotation) {
+      setErrorMessage('Please select a work rotation pattern (14/14, 14/21, or Other)')
       return
     }
     
@@ -102,8 +112,18 @@ export default function Home() {
       const workDays = parseInt(customWorkDays)
       const offDays = parseInt(customOffDays)
       
-      if (!workDays || !offDays || workDays < 1 || offDays < 1) {
-        alert('Please enter valid work and off days for custom rotation')
+      if (!customWorkDays || !customOffDays) {
+        setErrorMessage('Please enter both work days and off days for your custom rotation')
+        return
+      }
+      
+      if (workDays < 1 || workDays > 365) {
+        setErrorMessage('Work days must be between 1 and 365 days')
+        return
+      }
+      
+      if (offDays < 1 || offDays > 365) {
+        setErrorMessage('Off days must be between 1 and 365 days')
         return
       }
     }
@@ -155,19 +175,19 @@ export default function Home() {
       setCurrentMonthIndex(currentMonthIndex)
     } catch (error) {
       console.error('Error loading schedule:', error)
-      alert('Could not load the saved schedule. It may be in an invalid format.')
+      setErrorMessage('Unable to load the saved schedule. The file may be corrupted or in an outdated format.')
     }
   }
 
   // Handle saving the current schedule
   const handleSaveSchedule = () => {
     if (!isClient || !isStorageAvailable()) {
-      alert('Local storage is not available in your browser. Unable to save the schedule.')
+      setErrorMessage('Your browser does not support local storage. Unable to save schedules.')
       return
     }
 
     if (!yearCalendar || yearCalendar.length === 0) {
-      alert('Please generate a calendar before saving')
+      setErrorMessage('Please generate a calendar before saving it to your device')
       return
     }
 
@@ -200,11 +220,11 @@ export default function Home() {
         setSaveNotification('Schedule saved successfully!')
         setTimeout(() => setSaveNotification(''), 3000) // Clear after 3 seconds
       } else {
-        alert('Failed to save the schedule. Please try again.')
+        setErrorMessage('Failed to save the schedule. Your storage may be full or restricted.')
       }
     } catch (error) {
       console.error('Error saving schedule:', error)
-      alert('An error occurred while saving the schedule.')
+      setErrorMessage('Unable to save the schedule. Please check your browser settings and try again.')
     } finally {
       setIsSaving(false)
     }
@@ -411,6 +431,7 @@ export default function Home() {
                 <DatePicker 
                   date={selectedDate ? new Date(selectedDate) : undefined}
                   onSelect={handleDateSelect}
+                  selectedRotation={selectedRotation}
                 />
               </div>
             </div>
@@ -534,13 +555,8 @@ export default function Home() {
             {/* Generate Button */}
             <button
               onClick={handleGenerateCalendar}
-              disabled={!selectedDate || !selectedRotation}
-              className={`w-full text-white rounded-full px-6 py-4 font-semibold text-lg 
-                transition-all duration-300 relative
-                ${(!selectedDate || !selectedRotation) 
-                  ? 'opacity-50 cursor-not-allowed bg-gray-400' 
-                  : 'bg-black hover:bg-gray-900 active:scale-[0.98]'
-                }`}
+              className="w-full text-white rounded-full px-6 py-4 font-semibold text-lg 
+                transition-all duration-300 relative bg-black hover:bg-gray-900 active:scale-[0.98]"
             >
               Generate
             </button>

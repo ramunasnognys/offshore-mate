@@ -29,6 +29,39 @@
   animation: slide-up 0.3s ease-out;
 }
 
+/* Bottom sheet animations */
+@keyframes slide-in-from-bottom {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+@keyframes slide-out-to-bottom {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(100%);
+  }
+}
+
+.animate-in {
+  animation-duration: 300ms;
+  animation-fill-mode: both;
+}
+
+.slide-in-from-bottom-full {
+  animation-name: slide-in-from-bottom;
+}
+
+/* Touch feedback for mobile */
+.touch-manipulation {
+  touch-action: manipulation;
+}
+
 /* Today cell pulse animation */
 @keyframes todayPulse {
   0% { 

@@ -10,14 +10,27 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
+import { MobileDatePicker } from "./mobile-date-picker"
 
 interface DatePickerProps {
   date?: Date
   onSelect: (date: Date | undefined) => void
+  selectedRotation?: string
 }
 
-export function DatePicker({ date, onSelect }: DatePickerProps) {
+export function DatePicker({ date, onSelect, selectedRotation }: DatePickerProps) {
   const [open, setOpen] = React.useState(false)
+  const [isMobile, setIsMobile] = React.useState(false)
+
+  React.useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768)
+    }
+    
+    checkMobile()
+    window.addEventListener('resize', checkMobile)
+    return () => window.removeEventListener('resize', checkMobile)
+  }, [])
 
   const handleSelect = (date: Date | undefined) => {
     onSelect(date)
@@ -31,6 +44,11 @@ export function DatePicker({ date, onSelect }: DatePickerProps) {
       day: 'numeric',
       year: 'numeric'
     })
+  }
+
+  // Use mobile date picker on mobile devices
+  if (isMobile) {
+    return <MobileDatePicker date={date} onSelect={onSelect} selectedRotation={selectedRotation} />
   }
 
   return (
@@ -47,8 +65,10 @@ export function DatePicker({ date, onSelect }: DatePickerProps) {
           </div>
         </button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px] bg-white/95 backdrop-blur-md border-0 shadow-lg rounded-3xl
-        max-h-screen h-screen sm:h-auto w-screen sm:w-auto m-0 sm:m-4">
+      <DialogContent className="sm:max-w-[425px] bg-white/80 backdrop-blur-2xl border-0 shadow-2xl rounded-3xl
+        max-h-screen h-screen sm:h-auto w-screen sm:w-auto m-0 sm:m-4
+        before:absolute before:inset-0 before:rounded-3xl before:bg-gradient-to-b 
+        before:from-white/20 before:to-transparent before:pointer-events-none">
         <DialogHeader>
           <DialogTitle className="text-center">
             <p className="text-lg font-medium text-gray-600">Today</p>
@@ -68,22 +88,31 @@ export function DatePicker({ date, onSelect }: DatePickerProps) {
             onSelect={handleSelect}
             initialFocus
             weekStartsOn={1}
-            className="rounded-lg border-0 bg-transparent w-full px-4
-              [&_.rdp-caption]:text-xl [&_.rdp-caption]:font-semibold [&_.rdp-caption]:text-gray-800 
+            className="rounded-2xl border border-white/30 bg-white/30 backdrop-blur-sm w-full p-6
+              [&_.rdp-caption]:text-xl [&_.rdp-caption]:font-semibold [&_.rdp-caption]:text-gray-800 [&_.rdp-caption]:mb-4
               [&_.rdp-months]:w-full
               [&_.rdp-month]:w-full
-              [&_tr]:grid [&_tr]:grid-cols-7 [&_tr]:gap-1
+              [&_tr]:grid [&_tr]:grid-cols-7 [&_tr]:gap-2
               [&_.rdp-head_cell]:flex [&_.rdp-head_cell]:justify-center
               [&_.rdp-head_th]:text-orange-500 [&_.rdp-head_th]:font-medium [&_.rdp-head_th]:h-8 [&_.rdp-head_th]:w-12 [&_.rdp-head_th]:text-base
               [&_.rdp-tbody]:w-full
               [&_.rdp-cell]:flex [&_.rdp-cell]:justify-center
-              [&_.rdp-button]:h-12 [&_.rdp-button]:w-12 [&_.rdp-button]:rounded-full 
-              [&_.rdp-button]:text-base [&_.rdp-button]:transition-colors [&_.rdp-button]:text-gray-700
-              [&_.rdp-button:hover]:bg-white [&_.rdp-button:hover]:shadow-md
-              [&_.rdp-day_selected]:bg-blue-500 [&_.rdp-day_selected]:text-white
-              [&_.rdp-day_today]:bg-orange-500 [&_.rdp-day_today]:text-white [&_.rdp-day_today]:font-semibold [&_.rdp-day_today]:border [&_.rdp-day_today]:border-orange-500
-              [&_.rdp-nav_button]:text-gray-600 [&_.rdp-nav_button:hover]:text-gray-800 [&_.rdp-nav_button]:transition-colors
-              [&_.rdp-nav_button]:w-6 [&_.rdp-nav_button]:h-6"
+              [&_.rdp-button]:h-12 [&_.rdp-button]:w-12 [&_.rdp-button]:rounded-xl
+              [&_.rdp-button]:text-base [&_.rdp-button]:transition-all [&_.rdp-button]:duration-200 [&_.rdp-button]:text-gray-700
+              [&_.rdp-button]:bg-white/40 [&_.rdp-button]:backdrop-blur-sm [&_.rdp-button]:border [&_.rdp-button]:border-white/50
+              [&_.rdp-button]:shadow-sm
+              [&_.rdp-button:hover]:bg-white/70 [&_.rdp-button:hover]:shadow-lg [&_.rdp-button:hover]:-translate-y-0.5
+              [&_.rdp-button:hover]:border-orange-300/50 [&_.rdp-button:active]:scale-95
+              [&_.rdp-day_selected]:bg-gradient-to-br [&_.rdp-day_selected]:from-blue-500 [&_.rdp-day_selected]:to-blue-600
+              [&_.rdp-day_selected]:text-white [&_.rdp-day_selected]:font-semibold [&_.rdp-day_selected]:shadow-xl 
+              [&_.rdp-day_selected]:shadow-blue-500/25 [&_.rdp-day_selected]:border-blue-400
+              [&_.rdp-day_today]:bg-gradient-to-br [&_.rdp-day_today]:from-orange-500 [&_.rdp-day_today]:to-orange-600 
+              [&_.rdp-day_today]:text-white [&_.rdp-day_today]:font-bold [&_.rdp-day_today]:shadow-xl
+              [&_.rdp-day_today]:shadow-orange-500/25 [&_.rdp-day_today]:animate-pulse
+              [&_.rdp-nav_button]:text-gray-600 [&_.rdp-nav_button:hover]:text-gray-800 [&_.rdp-nav_button]:transition-all
+              [&_.rdp-nav_button]:w-8 [&_.rdp-nav_button]:h-8 [&_.rdp-nav_button]:rounded-full
+              [&_.rdp-nav_button]:bg-white/50 [&_.rdp-nav_button]:backdrop-blur-sm [&_.rdp-nav_button]:border
+              [&_.rdp-nav_button]:border-white/50 [&_.rdp-nav_button:hover]:bg-white/70 [&_.rdp-nav_button:hover]:shadow-md"
           />
         </div>
         {date && (
