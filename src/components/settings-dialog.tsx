@@ -29,6 +29,10 @@ interface SettingsDialogProps {
   
   // Storage availability check
   isStorageAvailable: boolean;
+  
+  // Dialog control
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
 }
 
 export function SettingsDialog({
@@ -41,7 +45,9 @@ export function SettingsDialog({
   onSave,
   selectedRotation,
   selectedDate,
-  isStorageAvailable
+  isStorageAvailable,
+  open,
+  onOpenChange
 }: SettingsDialogProps) {
   const formatDate = (dateString: string) => {
     try {
@@ -56,18 +62,20 @@ export function SettingsDialog({
   };
 
   return (
-    <Dialog>
-      <DialogTrigger asChild>
-        <button
-          className="bg-transparent border-2 border-black text-black rounded-full px-4 md:px-6 py-2 md:py-3 text-sm md:text-base font-medium
-            shadow-sm hover:bg-black hover:text-white transition-all duration-200 group inline-flex"
-        >
-          <span className="flex items-center gap-1.5 md:gap-2">
-            <Settings className="w-3.5 h-3.5 md:w-4 md:h-4 group-hover:rotate-90 transition-transform duration-300" />
-            Settings
-          </span>
-        </button>
-      </DialogTrigger>
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      {!open && (
+        <DialogTrigger asChild>
+          <button
+            className="bg-transparent border-2 border-black text-black rounded-full px-4 md:px-6 py-2 md:py-3 text-sm md:text-base font-medium
+              shadow-sm hover:bg-black hover:text-white transition-all duration-200 group inline-flex"
+          >
+            <span className="flex items-center gap-1.5 md:gap-2">
+              <Settings className="w-3.5 h-3.5 md:w-4 md:h-4 group-hover:rotate-90 transition-transform duration-300" />
+              Settings
+            </span>
+          </button>
+        </DialogTrigger>
+      )}
       
       <DialogContent className="sm:max-w-[450px] backdrop-blur-xl bg-white/95 border border-white/30">
         <DialogHeader>

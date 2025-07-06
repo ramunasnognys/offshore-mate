@@ -48,6 +48,7 @@ export default function Home() {
   const [touchEnd, setTouchEnd] = useState(0)
   const [isClient, setIsClient] = useState(false)
   const [isEditingName, setIsEditingName] = useState(false)
+  const [showSettings, setShowSettings] = useState(false)
   const [exportFormat, setExportFormat] = useState<ExportFormat>(() => {
     // Load saved format preference from localStorage
     if (typeof window !== 'undefined') {
@@ -582,18 +583,6 @@ export default function Home() {
                 </button>
               </div>
               
-              <SettingsDialog
-                scheduleName={scheduleName}
-                setScheduleName={setScheduleName}
-                isEditingName={isEditingName}
-                setIsEditingName={setIsEditingName}
-                isSaving={isSaving}
-                isSaved={isSaved}
-                onSave={handleSaveSchedule}
-                selectedRotation={selectedRotation}
-                selectedDate={selectedDate}
-                isStorageAvailable={isClient && isStorageAvailable()}
-              />
               </div>
               
               {/* Rotation Info Badge */}
@@ -678,9 +667,7 @@ export default function Home() {
                     handleDownload();
                   }}
                   onSettings={() => {
-                    // Open settings dialog
-                    const settingsButton = document.querySelector('[aria-label="Settings"]') as HTMLButtonElement;
-                    settingsButton?.click();
+                    setShowSettings(true);
                   }}
                   isDownloading={isDownloading}
                 />
@@ -688,6 +675,22 @@ export default function Home() {
               
               <DownloadCalendar calendar={yearCalendar} />
             </div>
+            
+            {/* Settings Dialog - Controlled by state */}
+            <SettingsDialog
+              scheduleName={scheduleName}
+              setScheduleName={setScheduleName}
+              isEditingName={isEditingName}
+              setIsEditingName={setIsEditingName}
+              isSaving={isSaving}
+              isSaved={isSaved}
+              onSave={handleSaveSchedule}
+              selectedRotation={selectedRotation}
+              selectedDate={selectedDate}
+              isStorageAvailable={isClient && isStorageAvailable()}
+              onOpenChange={setShowSettings}
+              open={showSettings}
+            />
           </div>
         )}
 
