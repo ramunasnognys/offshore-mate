@@ -400,7 +400,7 @@ export default function Home() {
         {!isCalendarGenerated ? (
           <div className={`${isMobileView ? 'space-y-3' : 'space-y-4 md:space-y-6'}`}>
             {/* Date Picker Button */}
-            <div className={`${isMobileView ? 'bg-gray-50 rounded-xl' : 'backdrop-blur-xl bg-white/30 rounded-2xl md:rounded-3xl shadow-lg border border-white/30 transition-all duration-300 hover:shadow-xl hover:bg-white/40'}`}>
+            <div className="backdrop-blur-xl bg-white/30 rounded-2xl md:rounded-3xl shadow-card border border-white/30 transition-all duration-300 hover:shadow-card-hover hover:bg-white/40">
               <div className="px-4 md:px-6 py-3 md:py-4">
                 <span className="text-gray-500 text-xs md:text-sm font-medium mb-0.5 md:mb-1 block">
                   Start Date
@@ -413,7 +413,7 @@ export default function Home() {
             </div>
 
             {/* Work Rotation */}
-            <div className={`${isMobileView ? 'bg-gray-50 rounded-xl p-4' : 'backdrop-blur-xl bg-white/30 rounded-2xl md:rounded-3xl shadow-lg border border-white/30 p-4 md:p-6'}`}>
+            <div className="backdrop-blur-xl bg-white/30 rounded-2xl md:rounded-3xl shadow-card border border-white/30 p-4 md:p-6">
               <span className="text-gray-600 text-sm md:text-base font-medium mb-3 block">
                 Work Rotation
               </span>
@@ -440,7 +440,7 @@ export default function Home() {
               
               {/* Custom rotation input */}
               {showCustomInput && (
-                <div className={`mt-3 ${isMobileView ? 'bg-white' : 'backdrop-blur-xl bg-white/30 border border-white/30'} rounded-lg p-4`}>
+                <div className="mt-3 backdrop-blur-xl bg-white/30 border border-white/30 rounded-lg p-4">
                   <div className="grid grid-cols-2 gap-3">
                     <div>
                       <label className="text-xs text-gray-600 mb-1 block">Work days</label>
@@ -448,7 +448,7 @@ export default function Home() {
                         type="number"
                         value={customWorkDays}
                         onChange={(e) => setCustomWorkDays(e.target.value)}
-                        className={`w-full px-3 py-2 ${isMobileView ? 'bg-gray-50 border-gray-200' : 'bg-white/50 backdrop-blur-sm border-white/30'} rounded-md border text-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-800`}
+                        className="w-full px-3 py-2 bg-white/50 backdrop-blur-sm border-white/30 rounded-md border text-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-800"
                         placeholder="e.g. 14"
                         min="1"
                         max="365"
@@ -460,7 +460,7 @@ export default function Home() {
                         type="number"
                         value={customOffDays}
                         onChange={(e) => setCustomOffDays(e.target.value)}
-                        className={`w-full px-3 py-2 ${isMobileView ? 'bg-gray-50 border-gray-200' : 'bg-white/50 backdrop-blur-sm border-white/30'} rounded-md border text-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-800`}
+                        className="w-full px-3 py-2 bg-white/50 backdrop-blur-sm border-white/30 rounded-md border text-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-800"
                         placeholder="e.g. 14"
                         min="1"
                         max="365"
@@ -473,7 +473,7 @@ export default function Home() {
             
             {/* My Rotations - Next Hitch */}
             {selectedDate && selectedRotation && (
-              <div className={`${isMobileView ? 'bg-gray-50 rounded-xl p-4' : 'backdrop-blur-xl bg-white/30 rounded-2xl md:rounded-3xl shadow-lg border border-white/30 p-4 md:p-6'}`}>
+              <div className="backdrop-blur-xl bg-white/30 rounded-2xl md:rounded-3xl shadow-card border border-white/30 p-4 md:p-6">
                 <span className="text-gray-600 text-sm md:text-base font-medium mb-2 block">
                   My Rotations
                 </span>
@@ -485,7 +485,7 @@ export default function Home() {
 
             {/* Saved Schedules Button */}
             {isClient && isStorageAvailable() && (
-              <div className={`${isMobileView ? 'bg-gray-50 rounded-xl' : 'backdrop-blur-xl bg-white/30 rounded-2xl md:rounded-3xl shadow-lg border border-white/30 transition-all duration-300 hover:shadow-xl hover:bg-white/40'}`}>
+              <div className="backdrop-blur-xl bg-white/30 rounded-2xl md:rounded-3xl shadow-card border border-white/30 transition-all duration-300 hover:shadow-card-hover hover:bg-white/40">
                 <button
                   onClick={() => setShowSavedSchedules(!showSavedSchedules)}
                   className="w-full px-4 md:px-6 py-3 md:py-4 flex items-center justify-between hover:bg-white/10 transition-all duration-200 group rounded-2xl md:rounded-3xl"

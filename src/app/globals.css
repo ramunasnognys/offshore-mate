@@ -75,6 +75,25 @@
     transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
     transition-duration: 150ms;
   }
+  
+  /* Custom shadow for glass-morphism cards */
+  .shadow-card {
+    box-shadow: 
+      0 0 0 1px rgba(255, 255, 255, 0.1) inset,
+      0 4px 6px -1px rgba(0, 0, 0, 0.1),
+      0 2px 4px -1px rgba(0, 0, 0, 0.06),
+      0 20px 25px -5px rgba(0, 0, 0, 0.1),
+      0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  }
+  
+  .shadow-card-hover {
+    box-shadow: 
+      0 0 0 1px rgba(255, 255, 255, 0.2) inset,
+      0 10px 15px -3px rgba(0, 0, 0, 0.1),
+      0 4px 6px -2px rgba(0, 0, 0, 0.05),
+      0 25px 30px -5px rgba(0, 0, 0, 0.12),
+      0 15px 15px -5px rgba(0, 0, 0, 0.06);
+  }
 }
 
 @layer base {
