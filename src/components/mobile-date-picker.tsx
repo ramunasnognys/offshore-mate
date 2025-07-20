@@ -40,6 +40,13 @@ export function MobileDatePicker({ date, onSelect, selectedRotation }: MobileDat
   const [selectedDate, setSelectedDate] = React.useState<Date | undefined>(date)
   const [isAnimating, setIsAnimating] = React.useState(false)
 
+  // Update selectedDate when date prop changes or dialog opens
+  React.useEffect(() => {
+    if (open) {
+      setSelectedDate(date)
+    }
+  }, [date, open])
+
   const handleSelect = (newDate: Date | undefined) => {
     setSelectedDate(newDate)
   }
@@ -180,6 +187,7 @@ export function MobileDatePicker({ date, onSelect, selectedRotation }: MobileDat
               mode="single"
               selected={selectedDate}
               onSelect={handleSelect}
+              defaultMonth={selectedDate || new Date()}
               weekStartsOn={1}
               className="touch-manipulation bg-white rounded-xl p-4 border border-gray-200 shadow-lg
                 [&_.rdp]:mx-auto [&_.rdp]:max-w-fit
@@ -269,6 +277,7 @@ export function MobileDatePicker({ date, onSelect, selectedRotation }: MobileDat
                   setOpen(false)
                 }, 200)
               }}
+              defaultMonth={selectedDate || new Date()}
               weekStartsOn={1}
               className="rounded-lg w-full"
               disabled={(date) => date < new Date(new Date().setHours(0, 0, 0, 0))}
