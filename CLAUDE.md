@@ -19,6 +19,9 @@ npm start          # Start production server
 
 # Code Quality
 npm run lint       # Run ESLint
+
+# Testing
+npx playwright test  # Run end-to-end tests
 ```
 
 Note: The project recommends using `bun` as the package manager, though `npm` also works.
@@ -54,6 +57,7 @@ The rotation calculation uses date-fns for date manipulation and generates work 
 - **Date Handling**: date-fns library
 - **Export**: html2canvas for PNG generation, jsPDF for PDF export
 - **Animation**: Framer Motion
+- **Testing**: Playwright for end-to-end testing
 
 ### Storage System
 Local storage implementation saves schedules with metadata including:
@@ -150,6 +154,24 @@ The application implements a comprehensive mobile-first approach:
 - Off days: Green (`bg-green-100`, `text-green-600`)
 - Transition days: Pink/Rose (`bg-pink-100`, `text-pink-600`)
 - Today indicator: Blue gradient with animation
+
+### Testing Architecture
+
+**Playwright End-to-End Testing**:
+- **Test Location**: `/tests/` directory with `.spec.ts` files
+- **Framework**: Playwright for cross-browser end-to-end testing
+- **Test Coverage**: Date picker functionality, mobile/desktop responsive behavior
+- **Viewport Testing**: Both mobile (375x812) and desktop (1280x900) viewports
+- **Test Types**:
+  - User interaction flows (date selection, dialog interactions)
+  - Mobile-specific UI behavior (confirm/cancel buttons)
+  - Validation logic (past date restrictions, quick select)
+  - State management across component interactions
+
+**Running Tests**:
+- Use `npx playwright test` to run all tests
+- Tests validate both mobile and desktop user experiences
+- Component-level integration testing for date picker workflows
 
 ### Version Information
 Current version: v.2 (displayed in footer)
