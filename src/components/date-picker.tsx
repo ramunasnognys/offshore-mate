@@ -10,7 +10,6 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
-import { MobileDatePicker } from "./mobile-date-picker"
 
 interface DatePickerProps {
   date?: Date
@@ -46,10 +45,6 @@ export function DatePicker({ date, onSelect, selectedRotation }: DatePickerProps
     })
   }
 
-  // Use mobile date picker on mobile devices
-  if (isMobile) {
-    return <MobileDatePicker date={date} onSelect={onSelect} selectedRotation={selectedRotation} />
-  }
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
