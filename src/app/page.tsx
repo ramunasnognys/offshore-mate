@@ -431,7 +431,6 @@ export default function Home() {
                 <DatePicker 
                   date={selectedDate ? new Date(selectedDate) : undefined}
                   onSelect={handleDateSelect}
-                  selectedRotation={selectedRotation}
                 />
               </div>
             </div>
