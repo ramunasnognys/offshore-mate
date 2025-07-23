@@ -105,8 +105,127 @@
   box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
 }
 
+/* Modern Current Date Styling */
+@keyframes todayGlowModern {
+  0% { 
+    box-shadow: 
+      0 0 0 0 rgba(59, 130, 246, 0.4),
+      0 0 20px rgba(59, 130, 246, 0.2),
+      inset 0 1px 0 rgba(255, 255, 255, 0.3);
+  }
+  50% { 
+    box-shadow: 
+      0 0 0 4px rgba(59, 130, 246, 0.2),
+      0 0 30px rgba(59, 130, 246, 0.4),
+      inset 0 1px 0 rgba(255, 255, 255, 0.4);
+  }
+  100% { 
+    box-shadow: 
+      0 0 0 0 rgba(59, 130, 246, 0.4),
+      0 0 20px rgba(59, 130, 246, 0.2),
+      inset 0 1px 0 rgba(255, 255, 255, 0.3);
+  }
+}
+
+@keyframes todayPulseModern {
+  0% { 
+    transform: scale(1);
+  }
+  50% { 
+    transform: scale(1.05);
+  }
+  100% { 
+    transform: scale(1);
+  }
+}
+
+@keyframes todayShimmer {
+  0% { 
+    background-position: -200% 0;
+  }
+  100% { 
+    background-position: 200% 0;
+  }
+}
+
+.today-modern {
+  position: relative;
+  background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 50%, #ec4899 100%);
+  color: white !important;
+  font-weight: 700 !important;
+  border: 2px solid rgba(255, 255, 255, 0.3) !important;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  animation: todayGlowModern 3s ease-in-out infinite, todayPulseModern 2s ease-in-out infinite;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: hidden;
+  z-index: 10;
+}
+
+.today-modern::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -200%;
+  width: 200%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.2),
+    transparent
+  );
+  animation: todayShimmer 3s infinite;
+}
+
+.today-modern:hover {
+  transform: scale(1.1) !important;
+  box-shadow: 
+    0 0 0 6px rgba(59, 130, 246, 0.3),
+    0 0 40px rgba(59, 130, 246, 0.5),
+    inset 0 2px 0 rgba(255, 255, 255, 0.4);
+  animation-play-state: paused;
+}
+
+.today-modern:active {
+  transform: scale(0.95) !important;
+  transition: transform 0.1s ease;
+}
+
+.today-modern:focus-visible {
+  outline: 3px solid rgba(59, 130, 246, 0.5);
+  outline-offset: 2px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 640px) {
+  .today-modern {
+    font-size: 0.875rem;
+    animation: todayGlowModern 3s ease-in-out infinite;
+  }
+  
+  .today-modern:hover {
+    transform: scale(1.08) !important;
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .today-modern {
+    animation: none;
+  }
+  
+  .today-modern::before {
+    animation: none;
+  }
+  
+  .today-modern:hover {
+    animation: none;
+  }
+}
+
 /* Bottom sheet animations for mobile date picker */
-@keyframes slide-in-from-bottom {
+@keyframes slide-in-from-bottom-full {
   from {
     transform: translateY(100%);
     opacity: 0;
@@ -117,7 +236,7 @@
   }
 }
 
-@keyframes slide-out-to-bottom {
+@keyframes slide-out-to-bottom-full {
   from {
     transform: translateY(0);
     opacity: 1;
@@ -134,6 +253,41 @@
 
 .slide-out-to-bottom {
   animation: slide-out-to-bottom 0.3s ease-out;
+}
+
+/* Better bottom sheet styles */
+.bottom-sheet {
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-top-left-radius: 1.5rem;
+  border-top-right-radius: 1.5rem;
+  box-shadow: 
+    0 -10px 25px -5px rgba(0, 0, 0, 0.1),
+    0 -4px 6px -2px rgba(0, 0, 0, 0.05),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+.bottom-sheet-handle {
+  width: 48px;
+  height: 6px;
+  background: rgba(156, 163, 175, 0.6);
+  border-radius: 9999px;
+  transition: all 0.2s ease;
+}
+
+.bottom-sheet-handle:hover {
+  background: rgba(156, 163, 175, 0.8);
+  transform: scaleX(1.2);
+}
+
+/* Hide scrollbars */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
 }
 
 /* Pressed state for buttons */
