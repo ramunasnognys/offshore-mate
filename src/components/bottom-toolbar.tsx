@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState } from 'react';
-import { Download, Share2, Settings, ChevronUp } from 'lucide-react';
+import { Download, Share2, Settings, ChevronUp, CalendarPlus } from 'lucide-react';
 import { ExportFormat } from './export-format-selector';
 
 interface BottomToolbarProps {
@@ -104,6 +104,33 @@ export function BottomToolbar({ onExport, onSettings, isDownloading = false, cla
                   )}
                 </div>
               </label>
+              
+              <label className="flex items-center justify-between p-3 rounded-xl bg-gray-50 border-2 border-transparent has-[:checked]:border-orange-500 has-[:checked]:bg-orange-50 transition-all cursor-pointer">
+                <div className="flex items-center gap-3">
+                  <input
+                    type="radio"
+                    name="exportFormat"
+                    value="ics"
+                    checked={selectedFormat === 'ics'}
+                    onChange={() => setSelectedFormat('ics')}
+                    className="sr-only"
+                  />
+                  <div className="w-10 h-10 bg-white rounded-lg flex items-center justify-center shadow-sm">
+                    <CalendarPlus className="w-5 h-5 text-gray-700" />
+                  </div>
+                  <div>
+                    <div className="font-medium text-gray-800">Add to Calendar</div>
+                    <div className="text-sm text-gray-500">Import to calendar app</div>
+                  </div>
+                </div>
+                <div className={`w-5 h-5 rounded-full border-2 ${selectedFormat === 'ics' ? 'border-orange-500 bg-orange-500' : 'border-gray-300'} relative`}>
+                  {selectedFormat === 'ics' && (
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <div className="w-2 h-2 bg-white rounded-full" />
+                    </div>
+                  )}
+                </div>
+              </label>
             </div>
             
             {/* Export Button */}
@@ -113,7 +140,7 @@ export function BottomToolbar({ onExport, onSettings, isDownloading = false, cla
               className="w-full bg-black text-white rounded-xl py-3 font-medium flex items-center justify-center gap-2 hover:bg-gray-900 transition-colors disabled:opacity-50"
             >
               <Download className={`w-5 h-5 ${isDownloading ? 'animate-bounce' : ''}`} />
-              {isDownloading ? 'Exporting...' : 'Export Calendar'}
+              {isDownloading ? (selectedFormat === 'ics' ? 'Creating...' : 'Exporting...') : 'Export Calendar'}
             </button>
           </div>
         </div>

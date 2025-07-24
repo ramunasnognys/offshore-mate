@@ -1,7 +1,7 @@
 import React from 'react';
 import { FileImage, FileText, Download } from 'lucide-react';
 
-export type ExportFormat = 'png' | 'pdf';
+export type ExportFormat = 'png' | 'pdf' | 'ics';
 
 interface ExportFormatSelectorProps {
   selectedFormat: ExportFormat;

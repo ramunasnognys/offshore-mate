@@ -53,7 +53,7 @@ export default function Home() {
     // Load saved format preference from localStorage
     if (typeof window !== 'undefined') {
       const savedFormat = localStorage.getItem('offshore_mate_export_format');
-      return (savedFormat === 'pdf' || savedFormat === 'png') ? savedFormat : 'png';
+      return (savedFormat === 'pdf' || savedFormat === 'png' || savedFormat === 'ics') ? savedFormat : 'png';
     }
     return 'png';
   })
@@ -252,6 +252,20 @@ export default function Home() {
           rotationPattern: selectedRotation,
           startDate: selectedDate
         })
+      } else if (exportFormat === 'ics') {
+        // Use dynamic import for ical export
+        const { exportCalendarAsICS } = await import('@/lib/utils/ical-export');
+        
+        await exportCalendarAsICS({
+          calendar: yearCalendar,
+          scheduleName: scheduleName || 'Offshore Schedule',
+          rotationPattern: selectedRotation,
+          startDate: selectedDate
+        })
+        
+        // Show success notification
+        setSaveNotification('Your schedule is ready. Check your device for a calendar import prompt.');
+        setTimeout(() => setSaveNotification(''), 5000);
       } else {
         const filename = `offshore-calendar-${selectedRotation}-${selectedDate}.png`
         await downloadCalendarAsImage('download-calendar', filename)
@@ -269,6 +283,11 @@ export default function Home() {
           'Failed to generate PDF. Your browser may not support PDF generation. Please try using PNG format instead.';
         setPdfErrorMessage(message);
         setShowPDFError(true);
+      } else if (exportFormat === 'ics') {
+        // iCalendar export errors
+        const message = error instanceof Error ? error.message : 
+          'Failed to create calendar file. Please try again.';
+        setErrorMessage(message);
       } else {
         // PNG export errors
         const message = error instanceof Error ? error.message : 
@@ -377,7 +396,7 @@ export default function Home() {
       {/* Export Progress Modal */}
       <ExportProgressModal 
         isOpen={isDownloading && exportFormat === 'pdf' && !showPDFError} 
-        format={exportFormat}
+        format='pdf'
       />
       
       {/* PDF Export Error Dialog */}

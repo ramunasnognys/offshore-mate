@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState } from 'react';
-import { Download, FileImage, FileText, X, Share2 } from 'lucide-react';
+import { Download, FileImage, FileText, X, Share2, CalendarPlus } from 'lucide-react';
 import { ExportFormat } from './export-format-selector';
 
 interface FloatingActionMenuProps {
@@ -63,6 +63,20 @@ export function FloatingActionMenu({ onExport, isDownloading = false, className 
             </span>
           </button>
           
+          {/* iCalendar Export */}
+          <button
+            className="flex items-center gap-3 bg-white rounded-full pl-4 pr-5 py-3 shadow-lg hover:shadow-xl transition-all duration-200 group"
+            onMouseEnter={() => setHoveredFormat('ics')}
+            onMouseLeave={() => setHoveredFormat(null)}
+            onClick={() => handleExport('ics')}
+            disabled={isDownloading}
+          >
+            <CalendarPlus className="w-5 h-5 text-gray-700 group-hover:text-orange-500 transition-colors" />
+            <span className="text-sm font-medium text-gray-700 group-hover:text-orange-500 transition-colors">
+              Add to Calendar
+            </span>
+          </button>
+          
           {/* PNG Export */}
           <button
             className="flex items-center gap-3 bg-white rounded-full pl-4 pr-5 py-3 shadow-lg hover:shadow-xl transition-all duration-200 group"
@@ -105,7 +119,7 @@ export function FloatingActionMenu({ onExport, isDownloading = false, className 
       {/* Tooltip */}
       {hoveredFormat && !isDownloading && (
         <div className="absolute bottom-20 right-20 bg-gray-900 text-white text-xs rounded-lg px-3 py-2 pointer-events-none whitespace-nowrap">
-          {hoveredFormat === 'png' ? 'High-quality image' : 'Printable document'}
+          {hoveredFormat === 'png' ? 'High-quality image' : hoveredFormat === 'pdf' ? 'Printable document' : 'Import to calendar app'}
           <div className="absolute bottom-0 right-4 transform translate-y-1/2 rotate-45 w-2 h-2 bg-gray-900" />
         </div>
       )}
