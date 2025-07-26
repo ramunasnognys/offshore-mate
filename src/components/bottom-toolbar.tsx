@@ -5,18 +5,19 @@ import { Download, Share2, Settings, ChevronUp, CalendarPlus } from 'lucide-reac
 import { ExportFormat } from './export-format-selector';
 
 interface BottomToolbarProps {
-  onExport: (format: ExportFormat) => void;
+  onExport: () => void;
+  onFormatChange: (format: ExportFormat) => void;
   onSettings: () => void;
+  selectedFormat: ExportFormat;
   isDownloading?: boolean;
   className?: string;
 }
 
-export function BottomToolbar({ onExport, onSettings, isDownloading = false, className = '' }: BottomToolbarProps) {
+export function BottomToolbar({ onExport, onFormatChange, onSettings, selectedFormat, isDownloading = false, className = '' }: BottomToolbarProps) {
   const [isExpanded, setIsExpanded] = useState(false);
-  const [selectedFormat, setSelectedFormat] = useState<ExportFormat>('png');
 
   const handleExport = () => {
-    onExport(selectedFormat);
+    onExport();
     setIsExpanded(false);
   };
 
@@ -58,7 +59,7 @@ export function BottomToolbar({ onExport, onSettings, isDownloading = false, cla
                     name="exportFormat"
                     value="png"
                     checked={selectedFormat === 'png'}
-                    onChange={() => setSelectedFormat('png')}
+                    onChange={() => onFormatChange('png')}
                     className="sr-only"
                   />
                   <div className="w-10 h-10 bg-white rounded-lg flex items-center justify-center shadow-sm">
@@ -85,7 +86,7 @@ export function BottomToolbar({ onExport, onSettings, isDownloading = false, cla
                     name="exportFormat"
                     value="pdf"
                     checked={selectedFormat === 'pdf'}
-                    onChange={() => setSelectedFormat('pdf')}
+                    onChange={() => onFormatChange('pdf')}
                     className="sr-only"
                   />
                   <div className="w-10 h-10 bg-white rounded-lg flex items-center justify-center shadow-sm">
@@ -112,7 +113,7 @@ export function BottomToolbar({ onExport, onSettings, isDownloading = false, cla
                     name="exportFormat"
                     value="ics"
                     checked={selectedFormat === 'ics'}
-                    onChange={() => setSelectedFormat('ics')}
+                    onChange={() => onFormatChange('ics')}
                     className="sr-only"
                   />
                   <div className="w-10 h-10 bg-white rounded-lg flex items-center justify-center shadow-sm">

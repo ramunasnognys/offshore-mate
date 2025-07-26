@@ -692,11 +692,12 @@ export default function Home() {
               {/* Bottom Toolbar - Mobile only */}
               {isMobileView === true && (
                 <BottomToolbar 
-                  onExport={(format) => {
+                  selectedFormat={exportFormat}
+                  onFormatChange={(format) => {
                     setExportFormat(format);
                     localStorage.setItem('offshore_mate_export_format', format);
-                    handleDownload();
                   }}
+                  onExport={handleDownload}
                   onSettings={() => {
                     setShowSettings(true);
                   }}
