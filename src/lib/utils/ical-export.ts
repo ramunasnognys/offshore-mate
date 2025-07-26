@@ -1,11 +1,13 @@
 'use client';
 
-import { MonthData } from '@/types/rotation';
+import { MonthData, RotationPattern } from '@/types/rotation';
+import { format, addDays } from 'date-fns';
+import { rotationConfigs, normalizeToPrecedingTuesday } from './rotation';
 
 interface ICalExportOptions {
   calendar: MonthData[];
   scheduleName: string;
-  rotationPattern: string;
+  rotationPattern: RotationPattern;
   startDate: string;
 }
 
@@ -16,6 +18,9 @@ interface WorkPeriod {
   totalDays: number;
   hasStartTravel: boolean;
   hasEndTravel: boolean;
+  rotationStart?: Date;
+  rotationEnd?: Date;
+  actualWorkEnd?: Date;
 }
 
 /**
@@ -36,12 +41,20 @@ export async function exportCalendarAsICS(options: ICalExportOptions): Promise<v
       timezone: null  // Floating time for universal compatibility
     });
     
-    // Convert MonthData to work/off periods
-    const periods = extractWorkPeriods(options.calendar);
+    // Convert MonthData to work/off periods using rotation boundaries
+    const periods = extractWorkPeriods(options.calendar, options.rotationPattern, options.startDate);
     
-    // Create events for each period
+    // Create events for each work period
     periods.forEach(period => {
-      const summary = `${options.scheduleName} (${period.type === 'work' ? 'Work' : 'Off Duty'})`;
+      // Format dates for the title: rotation start (Tuesday) to actual work end (Monday)
+      // This gives us the Tuesday -> Monday format that matches the work period
+      const titleStartDate = period.rotationStart || period.start;
+      const titleEndDate = period.actualWorkEnd || new Date(period.end.getTime() - 24 * 60 * 60 * 1000); // Remove +1 day adjustment
+      
+      const startFormatted = format(titleStartDate, 'MMM d');
+      const endFormatted = format(titleEndDate, 'MMM d');
+      const summary = `(${startFormatted} -> ${endFormatted})`;
+      
       const description = generateEventDescription(period);
       
       calendar.createEvent({
@@ -81,84 +94,104 @@ export async function exportCalendarAsICS(options: ICalExportOptions): Promise<v
 }
 
 /**
- * Extracts continuous work/off periods from the calendar data
+ * Extracts work periods based on rotation cycles (Tuesday-to-Tuesday boundaries)
+ * Uses the same logic as the rotation calculation to ensure proper alignment
  */
-function extractWorkPeriods(calendar: MonthData[]): WorkPeriod[] {
-  const periods: WorkPeriod[] = [];
-  let currentPeriod: WorkPeriod | null = null;
+function extractWorkPeriods(calendar: MonthData[], rotationPattern: RotationPattern, startDateStr: string): WorkPeriod[] {
+  const config = rotationConfigs[rotationPattern];
   
-  // Flatten all days from all months
-  const allDays = calendar.flatMap(month => month.days);
-  
-  for (const day of allDays) {
-    // Skip days not in rotation
-    if (!day.isInRotation) continue;
-    
-    const isWork = day.isWorkDay || day.isTransitionDay;
-    const dayDate = new Date(day.date);
-    
-    // Start of a new period
-    if (!currentPeriod || (currentPeriod.type === 'work') !== isWork) {
-      // Save the previous period if it exists
-      if (currentPeriod) {
-        // End date should be the day after the last day for all-day events
-        const endDate = new Date(currentPeriod.end);
-        endDate.setDate(endDate.getDate() + 1);
-        currentPeriod.end = endDate;
-        periods.push(currentPeriod);
-      }
-      
-      // Start new period
-      currentPeriod = {
-        start: dayDate,
-        end: dayDate,
-        type: isWork ? 'work' : 'off',
-        totalDays: 1,
-        hasStartTravel: day.isTransitionDay,
-        hasEndTravel: false
-      };
-    } else {
-      // Continue current period
-      currentPeriod.end = dayDate;
-      currentPeriod.totalDays++;
-      
-      // Check if this is the last day of work period with travel
-      if (day.isTransitionDay && currentPeriod.type === 'work') {
-        currentPeriod.hasEndTravel = true;
-      }
-    }
+  // Handle custom rotation by defaulting to 14/14 if Other is selected
+  if (rotationPattern === 'Other') {
+    console.warn('Custom rotation not supported for calendar export, using 14/14 pattern');
+    const defaultConfig = rotationConfigs['14/14'];
+    return extractWorkPeriodsWithConfig(calendar, defaultConfig, startDateStr);
   }
   
-  // Don't forget the last period
-  if (currentPeriod) {
-    // End date should be the day after the last day for all-day events
-    const endDate = new Date(currentPeriod.end);
-    endDate.setDate(endDate.getDate() + 1);
-    currentPeriod.end = endDate;
-    periods.push(currentPeriod);
+  return extractWorkPeriodsWithConfig(calendar, config, startDateStr);
+}
+
+/**
+ * Extracts work periods using the specified rotation configuration
+ */
+function extractWorkPeriodsWithConfig(calendar: MonthData[], config: { workDays: number; offDays: number }, startDateStr: string): WorkPeriod[] {
+  const periods: WorkPeriod[] = [];
+  const startDate = new Date(startDateStr);
+  
+  // Normalize the start date to the preceding Tuesday (same as rotation calculation)
+  const normalizedStartDate = normalizeToPrecedingTuesday(startDate);
+  
+  // Flatten all days to find the date range
+  const allDays = calendar.flatMap(month => month.days);
+  if (allDays.length === 0) return periods;
+  
+  const firstDay = new Date(allDays[0].date);
+  const lastDay = new Date(allDays[allDays.length - 1].date);
+  
+  // Calculate work periods starting from normalized start date
+  let periodStart = new Date(normalizedStartDate);
+  
+  while (periodStart <= lastDay) {
+    // Calculate end of current work period (inclusive)
+    const periodEnd = addDays(periodStart, config.workDays - 1);
+    
+    // Check if this period overlaps with our calendar data
+    if (periodEnd >= firstDay && periodStart <= lastDay) {
+      // Find the actual work days in this period from the calendar
+      const workDaysInPeriod = allDays.filter(day => {
+        const dayDate = new Date(day.date);
+        return day.isInRotation && 
+               (day.isWorkDay || day.isTransitionDay) &&
+               dayDate >= periodStart && 
+               dayDate <= periodEnd;
+      });
+      
+      if (workDaysInPeriod.length > 0) {
+        const actualStartDate = new Date(workDaysInPeriod[0].date);
+        const actualEndDate = new Date(workDaysInPeriod[workDaysInPeriod.length - 1].date);
+        
+        // For iCal all-day events, end date should be the next day after the last day
+        const icalEndDate = addDays(actualEndDate, 1);
+        
+        // Check for travel days
+        const hasStartTravel = workDaysInPeriod[0].isTransitionDay;
+        const hasEndTravel = workDaysInPeriod[workDaysInPeriod.length - 1].isTransitionDay;
+        
+        periods.push({
+          start: actualStartDate,
+          end: icalEndDate,
+          type: 'work',
+          totalDays: workDaysInPeriod.length,
+          hasStartTravel,
+          hasEndTravel,
+          // Store the calculated rotation period boundaries and actual work end for title generation
+          rotationStart: new Date(periodStart),
+          rotationEnd: new Date(periodEnd),
+          actualWorkEnd: new Date(actualEndDate)
+        });
+      }
+    }
+    
+    // Move to next period start (same calculation as rotation.ts)
+    periodStart = addDays(periodEnd, config.offDays + 1);
   }
   
   return periods;
 }
 
 /**
- * Generates description text for calendar events including travel information
+ * Generates description text for work period events including travel information
  */
 function generateEventDescription(period: WorkPeriod): string {
   const lines: string[] = [];
   
-  if (period.type === 'work') {
-    lines.push(`Work rotation period (${period.totalDays} days)`);
-    
-    if (period.hasStartTravel) {
-      lines.push('First day includes travel to location');
-    }
-    
-    if (period.hasEndTravel) {
-      lines.push('Last day includes travel home');
-    }
-  } else {
-    lines.push(`Off duty period (${period.totalDays} days)`);
+  lines.push(`Work rotation period (${period.totalDays} days)`);
+  
+  if (period.hasStartTravel) {
+    lines.push('First day includes travel to location');
+  }
+  
+  if (period.hasEndTravel) {
+    lines.push('Last day includes travel home');
   }
   
   return lines.join('\n');

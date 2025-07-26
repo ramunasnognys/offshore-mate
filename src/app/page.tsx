@@ -259,7 +259,7 @@ export default function Home() {
         await exportCalendarAsICS({
           calendar: yearCalendar,
           scheduleName: scheduleName || 'Offshore Schedule',
-          rotationPattern: selectedRotation,
+          rotationPattern: selectedRotation as RotationPattern,
           startDate: selectedDate
         })
         
