@@ -53,7 +53,7 @@ export async function exportCalendarAsICS(options: ICalExportOptions): Promise<v
       
       const startFormatted = format(titleStartDate, 'MMM d');
       const endFormatted = format(titleEndDate, 'MMM d');
-      const summary = `(${startFormatted} -> ${endFormatted})`;
+      const summary = `🛠️ (${startFormatted} -> ${endFormatted})`;
       
       const description = generateEventDescription(period);
       
