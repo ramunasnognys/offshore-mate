@@ -46,10 +46,10 @@ export async function exportCalendarAsICS(options: ICalExportOptions): Promise<v
     
     // Create events for each work period
     periods.forEach(period => {
-      // Format dates for the title: rotation start (Tuesday) to actual work end (Monday)
-      // This gives us the Tuesday -> Monday format that matches the work period
-      const titleStartDate = period.rotationStart || period.start;
-      const titleEndDate = period.actualWorkEnd || new Date(period.end.getTime() - 24 * 60 * 60 * 1000); // Remove +1 day adjustment
+      // Format dates for the title: show the visual work period (first day to last work day)
+      // For 14/21 rotation: Tuesday (incl. travel) to Monday (last actual work day, excl. final travel day)
+      const titleStartDate = period.start; // First day (includes initial travel day)
+      const titleEndDate = new Date(period.end.getTime() - 24 * 60 * 60 * 1000); // Last work day (excludes iCal +1 day and final travel day)
       
       const startFormatted = format(titleStartDate, 'MMM d');
       const endFormatted = format(titleEndDate, 'MMM d');
@@ -129,6 +129,7 @@ function extractWorkPeriodsWithConfig(calendar: MonthData[], config: { workDays:
   
   // Calculate work periods starting from normalized start date
   let periodStart = new Date(normalizedStartDate);
+  let periodIndex = 0;
   
   while (periodStart <= lastDay) {
     // Calculate end of current work period (inclusive)
@@ -173,6 +174,7 @@ function extractWorkPeriodsWithConfig(calendar: MonthData[], config: { workDays:
     
     // Move to next period start (same calculation as rotation.ts)
     periodStart = addDays(periodEnd, config.offDays + 1);
+    periodIndex++;
   }
   
   return periods;
