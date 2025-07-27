@@ -89,7 +89,29 @@ export async function exportCalendarAsICS(options: ICalExportOptions): Promise<v
     console.log('iCalendar export completed successfully');
   } catch (error) {
     console.error('Calendar export failed:', error);
-    throw new Error('Failed to create calendar file');
+    console.error('iCS Export Debug Info:', {
+      errorType: error?.constructor?.name,
+      errorMessage: error instanceof Error ? error.message : 'Unknown error',
+      calendarDataLength: options.calendar?.length || 0,
+      scheduleName: options.scheduleName,
+      rotationPattern: options.rotationPattern,
+      startDate: options.startDate,
+      icalGeneratorAvailable: typeof import('ical-generator') !== 'undefined',
+      blobSupport: typeof Blob !== 'undefined',
+      urlSupport: typeof URL !== 'undefined'
+    });
+    
+    // More specific error messages
+    if (error instanceof Error) {
+      if (error.message.includes('dynamic import')) {
+        throw new Error('Calendar export failed: Unable to load calendar library. Please refresh and try again.');
+      } else if (error.message.includes('Blob') || error.message.includes('URL')) {
+        throw new Error('Calendar export failed: Browser does not support file downloads.');
+      } else {
+        throw new Error(`Calendar export failed: ${error.message}`);
+      }
+    }
+    throw new Error('Failed to create calendar file - unknown error occurred');
   }
 }
 

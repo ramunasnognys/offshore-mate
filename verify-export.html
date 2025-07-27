@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Export Verification</title>
+</head>
+<body>
+  <h1>Export Functionality Verification</h1>
+  <p>To verify the export functionality is working:</p>
+  <ol>
+    <li>Run <code>npm run dev</code> to start the development server</li>
+    <li>Open http://localhost:3000 in your browser</li>
+    <li>Fill in the calendar form:
+      <ul>
+        <li>Select a start date</li>
+        <li>Choose a rotation pattern (e.g., 14/14)</li>
+        <li>Click "Generate"</li>
+      </ul>
+    </li>
+    <li>Once the calendar is generated, on desktop:
+      <ul>
+        <li>Look for a floating action button (FAB) in the bottom-right corner</li>
+        <li>Click it to open the export menu</li>
+        <li>Select PNG, PDF, or Add to Calendar (.ics)</li>
+        <li>The file should download</li>
+      </ul>
+    </li>
+  </ol>
+  
+  <h2>Expected Results:</h2>
+  <ul>
+    <li>✅ FAB appears in bottom-right corner on desktop</li>
+    <li>✅ Clicking FAB shows export menu with 3 options</li>
+    <li>✅ PNG export creates image file</li>
+    <li>✅ PDF export creates PDF document</li>
+    <li>✅ Add to Calendar creates .ics file</li>
+    <li>✅ Success toast notifications appear</li>
+  </ul>
+</body>
+</html>

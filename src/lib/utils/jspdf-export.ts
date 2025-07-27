@@ -94,7 +94,26 @@ export async function exportCalendarAsJsPDF(options: PDFExportOptions): Promise<
     }
   } catch (error) {
     console.error('Error generating PDF with jsPDF:', error);
-    throw new Error(`Failed to generate PDF: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    console.error('PDF Export Debug Info:', {
+      errorType: error?.constructor?.name,
+      errorMessage: error instanceof Error ? error.message : 'Unknown error',
+      calendarDataLength: options.calendar?.length || 0,
+      browserInfo: navigator.userAgent,
+      jsPDFAvailable: typeof jsPDF !== 'undefined',
+      html2canvasAvailable: typeof html2canvas !== 'undefined'
+    });
+    
+    // More specific error messages
+    if (error instanceof Error) {
+      if (error.message.includes('canvas')) {
+        throw new Error('PDF generation failed: Canvas rendering issue. Try using PNG export instead.');
+      } else if (error.message.includes('memory')) {
+        throw new Error('PDF generation failed: Insufficient memory. Try a smaller calendar or refresh the page.');
+      } else {
+        throw new Error(`PDF generation failed: ${error.message}`);
+      }
+    }
+    throw new Error('PDF generation failed: Unknown error occurred');
   }
 }
 
