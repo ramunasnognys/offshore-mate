@@ -21,6 +21,7 @@ interface UseCalendarGenerationReturn {
   setCurrentScheduleId: (id: string | null) => void
   setIsSaved: (saved: boolean) => void
   setYearCalendar: (calendar: MonthData[]) => void
+  setIsCalendarGenerated: (generated: boolean) => void
   
   // Computed values
   currentPeriodStatus: {
@@ -121,6 +122,7 @@ export function useCalendarGeneration(): UseCalendarGenerationReturn {
     setCurrentScheduleId,
     setIsSaved,
     setYearCalendar,
+    setIsCalendarGenerated,
     currentPeriodStatus
   }
 }

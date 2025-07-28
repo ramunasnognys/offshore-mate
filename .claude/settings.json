@@ -1,0 +1,38 @@
+{
+  "description": "Claude Code settings for Offshore Mate project",
+  "hooks": {
+    "PostToolUse": [
+      {
+        "description": "Track file changes and suggest documentation updates",
+        "matcher": "Write|Edit|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/track-changes.sh"
+          }
+        ]
+      }
+    ]
+  },
+  "slash_commands": {
+    "update-docs": {
+      "description": "Automatically update project documentation based on recent code changes",
+      "aliases": ["ud", "update-documentation", "docs-update"]
+    }
+  },
+  "documentation": {
+    "auto_update": {
+      "enabled": true,
+      "files": [
+        "README.md",
+        "CLAUDE.md",
+        "docs/instructions.md",
+        "docs/prd.md",
+        "docs/projectplan.md"
+      ],
+      "change_threshold": 5,
+      "preserve_manual_content": true,
+      "use_markers": true
+    }
+  }
+}

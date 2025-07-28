@@ -18,6 +18,7 @@ interface CalendarContextType {
   setCurrentScheduleId: (id: string | null) => void
   setIsSaved: (saved: boolean) => void
   setYearCalendar: (calendar: MonthData[]) => void
+  setIsCalendarGenerated: (generated: boolean) => void
   currentPeriodStatus: ReturnType<typeof useCalendarGeneration>['currentPeriodStatus']
   
   // From useRotationForm

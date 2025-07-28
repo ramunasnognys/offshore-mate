@@ -31,7 +31,8 @@ function HomeContent() {
     setIsSaved,
     setSelectedDate,
     handleRotationSelect,
-    resetCalendar
+    resetCalendar,
+    setIsCalendarGenerated
   } = useCalendar()
 
   // Schedule management
@@ -52,6 +53,7 @@ function HomeContent() {
       setScheduleName(schedule.metadata.name)
       setCurrentScheduleId(schedule.metadata.id)
       setIsSaved(true)
+      setIsCalendarGenerated(true)
     }
   })
 

@@ -6,6 +6,7 @@ Offshore Mate is a modern web application built with Next.js 14 that helps offsh
 
 ## 🌟 Features
 
+<!-- AUTO-UPDATE:START -->
 - **Multiple Rotation Patterns**
   - 14/14 (14 days on, 14 days off)
   - 14/21 (14 days on, 21 days off)
@@ -22,6 +23,7 @@ Offshore Mate is a modern web application built with Next.js 14 that helps offsh
   - Download calendars as high-quality PNG images
   - Perfect for sharing or printing
   - Optimized for various screen sizes
+<!-- AUTO-UPDATE:END -->
 
 ## 🚀 Getting Started
 
@@ -70,6 +72,7 @@ npm run build
 
 ## 🛠️ Tech Stack
 
+<!-- AUTO-UPDATE:START -->
 - **Framework:** Next.js 14
 - **Language:** TypeScript
 - **Styling:** Tailwind CSS
@@ -81,6 +84,7 @@ npm run build
 - **Calendar Generation:** Custom implementation
 - **Image Export:** html2canvas
 - **Icons:** Lucide React
+<!-- AUTO-UPDATE:END -->
 
 ## 📱 Usage
 
@@ -130,6 +134,7 @@ This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md
 
 ## 🔄 Version History
 
+<!-- AUTO-UPDATE:START -->
 - **1.0.1** - Current stable release
   - Enhanced download functionality
   - Improved mobile responsiveness
@@ -139,6 +144,7 @@ This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md
   - Basic calendar generation
   - Four rotation patterns
   - Download functionality
+<!-- AUTO-UPDATE:END -->
 
 ## 📞 Support
 

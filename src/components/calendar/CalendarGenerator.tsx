@@ -117,18 +117,6 @@ export function CalendarGenerator({
           </div>
         )}
       </div>
-      
-      {/* My Rotations - Next Hitch (placeholder for now) */}
-      {selectedDate && selectedRotation && (
-        <div className="backdrop-blur-xl bg-white/30 rounded-2xl md:rounded-3xl shadow-card border border-white/30 p-4 md:p-6">
-          <span className="text-gray-600 text-sm md:text-base font-medium mb-2 block">
-            My Rotations
-          </span>
-          <div className="text-gray-800 text-lg md:text-xl font-semibold">
-            Next hitch: Calculating...
-          </div>
-        </div>
-      )}
 
       {/* Saved Schedules Button */}
       {hasStorageSupport && (

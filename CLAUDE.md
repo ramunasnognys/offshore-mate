@@ -6,60 +6,86 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 Offshore Mate is a Next.js 15 web application that generates visual work rotation calendars for offshore workers. The app supports multiple rotation patterns (14/14, 14/21, 21/21, 28/28) and allows users to save/load schedules with local storage.
 
+## Common Development Commands
 
+**Development:**
+```bash
+npm run dev          # Start development server with turbopack
+npm run build        # Build for production  
+npm run start        # Start production server
+npm run lint         # Run ESLint
+```
 
-### 🔄 Project Awareness & Context
-- **Always read `PLANNING.md`** at the start of a new conversation to understand the project's architecture, goals, style, and constraints.
-- **Check `TASK.md`** before starting a new task. If the task isn’t listed, add it with a brief description and today's date.
-- **Use consistent naming conventions, file structure, and architecture patterns** as described in `PLANNING.md`.
-- **Use venv_linux** (the virtual environment) whenever executing Python commands, including for unit tests.
+**Testing:**
+```bash
+npx playwright test  # Run all Playwright tests
+npx playwright test --ui  # Run tests with UI mode
+```
 
-### 🧱 Code Structure & Modularity
-- **Never create a file longer than 500 lines of code.** If a file approaches this limit, refactor by splitting it into modules or helper files.
-- **Organize code into clearly separated modules**, grouped by feature or responsibility.
-  For agents this looks like:
-    - `agent.py` - Main agent definition and execution logic 
-    - `tools.py` - Tool functions used by the agent 
-    - `prompts.py` - System prompts
-- **Use clear, consistent imports** (prefer relative imports within packages).
-- **Use clear, consistent imports** (prefer relative imports within packages).
-- **Use python_dotenv and load_env()** for environment variables.
+## Architecture Overview
 
+### Context-Based State Management
+- **CalendarContext** (`src/contexts/CalendarContext.tsx`) - Central state for calendar generation and rotation form data
+- **UIContext** (`src/contexts/UIContext.tsx`) - UI state management for mobile responsiveness and user interactions
+- Custom hooks encapsulate business logic: `useCalendarGeneration`, `useRotationForm`, `useScheduleManagement`
 
+### Key Components Architecture
+- **Calendar Generation**: `src/lib/utils/rotation.ts` contains core rotation calculation logic with `generateRotationCalendar()` function
+- **Export System**: Separate utilities for PNG (`html2canvas`), PDF (`jsPDF`), and iCal (`ical-generator`) exports
+- **Storage**: LocalStorage management in `src/lib/utils/storage.ts` with SSR safety checks
+- **Mobile-First Design**: Components use `isMobileView` context for responsive rendering
 
-### ✅ Task Completion
-- **Mark completed tasks in `TASK.md`** immediately after finishing them.
-- Add new sub-tasks or TODOs discovered during development to `TASK.md` under a “Discovered During Work” section.
-
-
-### 📚 Documentation & Explainability
-- **Update `README.md`** when new features are added, dependencies change, or setup steps are modified.
-- **Comment non-obvious code** and ensure everything is understandable to a mid-level developer.
-- When writing complex logic, **add an inline `# Reason:` comment** explaining the why, not just the what.
-
-### 🧠 AI Behavior Rules
-- **Never assume missing context. Ask questions if uncertain.**
-- **Never hallucinate libraries or functions** – only use known, verified Python packages.
-- **Always confirm file paths and module names** exist before referencing them in code or tests.
-- **Never delete or overwrite existing code** unless explicitly instructed to or if part of a task from `TASK.md`.
-
+### File Structure Patterns
+```
+src/
+├── components/           # UI components
+│   ├── ui/              # Radix UI-based primitives  
+│   └── calendar/        # Calendar-specific components
+├── contexts/            # React context providers
+├── hooks/               # Custom hooks for business logic
+├── lib/utils/           # Utility functions and core logic
+└── types/               # TypeScript type definitions
+```
 
 ## Development Guidelines
 
+### TypeScript & React Patterns
+- **Strict TypeScript** - All components must be properly typed with interfaces from `src/types/rotation.ts`
+- **React 19 RC** - Be aware of potential compatibility issues; avoid deprecated patterns
+- **SSR Safety** - Always use client-side checks for `localStorage` and browser APIs:
+  ```typescript
+  const isClient = typeof window !== 'undefined'
+  if (isClient && isStorageAvailable()) { /* use localStorage */ }
+  ```
+
+### Component Development Standards  
+- **Radix UI Primitives** - Use existing UI components from `src/components/ui/`
+- **Glass-morphism Design** - Follow `backdrop-blur-xl bg-white/30` styling patterns
+- **Mobile-First Responsive** - Always implement responsive design with `isMobileView` context
+- **Accessibility** - Radix components provide built-in accessibility; maintain these standards
+
+### State Management Patterns
+- **Context over Props Drilling** - Use `CalendarContext` and `UIContext` for shared state
+- **Custom Hooks** - Extract business logic into hooks (see `src/hooks/` for examples)
+- **LocalStorage Integration** - Use `useScheduleManagement` hook for persistent data
+
+### Export Functionality Standards
+- **Multi-format Support** - Handle PNG, PDF, and iCal exports with proper error handling
+- **Progress Indicators** - Use `ExportProgressModal` for long-running export operations  
+- **Mobile Considerations** - Different export flows for mobile vs desktop
+
+### Testing Approach
+- **Playwright E2E Tests** - Tests are configured in `playwright.config.ts` 
+- **Test Environment** - Tests run against `http://localhost:3000` with automatic dev server startup
+- **Cross-browser Testing** - Chromium, Firefox, and WebKit support configured
+
 ### Git Branch Strategy
-- Feature branches should be named descriptively (e.g., `feature/calendar-improvements`)
-- Main branch is `main` for production deployments
-- Always commit changes with descriptive messages after completing tasks
+- Feature branches: `feature/descriptive-name`
+- Main branch: `main` for production deployments
+- Always commit with descriptive messages after completing tasks
 
-### Code Quality Standards
-- TypeScript strict mode is enabled - maintain type safety
-- React 19 RC is used - be aware of potential compatibility issues with older patterns
-- SSR compatibility is critical - always check for `isClient` and `isStorageAvailable()` patterns
-- Mobile-first responsive design is mandatory - test both mobile (375x812) and desktop (1280x900) viewports
-
-
-### Component Development Patterns
-- Use Radix UI primitives for consistent accessibility
-- Follow existing glass-morphism design system with `backdrop-blur-xl bg-white/30` patterns
-- Implement mobile-responsive patterns with conditional rendering based on `isMobileView`
-- Export functionality should handle both PNG (html2canvas) and PDF (jsPDF) formats with proper error handling
+### Performance Considerations
+- **Next.js 15** - Built-in optimizations enabled
+- **Turbopack** - Used in development for faster builds
+- **Image Optimization** - html2canvas exports are optimized for file size
+- **Bundle Analysis** - Monitor bundle size when adding new dependencies
