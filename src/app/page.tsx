@@ -104,7 +104,7 @@ function HomeContent() {
               ? 'text-3xl mb-1' 
               : 'text-4xl md:text-5xl lg:text-5xl mb-2'
           }`}>
-            Offshore Mate (NEW)
+            Offshore Mate 2
           </h1>
           <p className={`text-center text-orange-500 tracking-wide uppercase font-light ${
             isCalendarGenerated && isMobileView === true 
