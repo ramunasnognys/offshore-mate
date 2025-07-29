@@ -1,5 +1,5 @@
 import { useState, useCallback, useEffect } from 'react'
-import { useMotionValue, useVelocity, useTransform } from 'framer-motion'
+import { useMotionValue, useVelocity, useTransform, MotionValue } from 'framer-motion'
 
 interface UseSwipeableCalendarProps {
   totalMonths: number
@@ -10,11 +10,11 @@ interface UseSwipeableCalendarProps {
 interface UseSwipeableCalendarReturn {
   currentIndex: number
   direction: number
-  x: ReturnType<typeof useMotionValue>
-  velocity: ReturnType<typeof useVelocity>
-  scale: ReturnType<typeof useTransform>
-  opacity: ReturnType<typeof useTransform>
-  rotateY: ReturnType<typeof useTransform>
+  x: MotionValue<number>
+  velocity: MotionValue<number>
+  scale: MotionValue<number>
+  opacity: MotionValue<number>
+  rotateY: MotionValue<number>
   isDragging: boolean
   isAnimating: boolean
   canGoPrevious: boolean
