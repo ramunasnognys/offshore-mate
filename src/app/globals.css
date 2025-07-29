@@ -62,6 +62,31 @@
   touch-action: manipulation;
 }
 
+/* Swipeable calendar styles */
+.swipeable-calendar {
+  touch-action: pan-y pinch-zoom;
+}
+
+.swipeable-calendar-item {
+  will-change: transform;
+  backface-visibility: hidden;
+  perspective: 1000px;
+  transform-style: preserve-3d;
+}
+
+/* Disable pull-to-refresh on calendar */
+.calendar-swipe-container {
+  overscroll-behavior-y: contain;
+}
+
+/* Prevent text selection during swipe */
+.no-select {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
 /* Fix for mobile dialog pointer events */
 [role="dialog"] * {
   pointer-events: auto !important;

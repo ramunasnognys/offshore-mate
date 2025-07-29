@@ -3,6 +3,7 @@
 import React from 'react'
 import { ArrowRight } from 'lucide-react'
 import { ScheduleList } from '@/components/schedule-list'
+import { SwipeableCalendar } from './SwipeableCalendar'
 import { DownloadCalendar } from '@/components/download-calendar'
 import { BottomToolbar } from '@/components/bottom-toolbar'
 import { FloatingActionMenu } from '@/components/floating-action-menu'
@@ -11,7 +12,6 @@ import { useCalendar } from '@/contexts/CalendarContext'
 import { useUI } from '@/contexts/UIContext'
 import { useMobileDetection } from '@/hooks/useMobileDetection'
 import { useMonthNavigation } from '@/hooks/useMonthNavigation'
-import { useSwipeGesture } from '@/hooks/useSwipeGesture'
 import { useExportCalendar } from '@/hooks/useExportCalendar'
 import { MonthData } from '@/types/rotation'
 
@@ -49,8 +49,6 @@ export function CalendarDisplay({
   const {
     currentMonthIndex,
     setCurrentMonthIndex,
-    goToPreviousMonth,
-    goToNextMonth,
     goToToday
   } = useMonthNavigation({ 
     yearCalendar, 
@@ -71,12 +69,10 @@ export function CalendarDisplay({
     }
   })
 
-  // Swipe gestures for mobile
-  const swipeHandlers = useSwipeGesture({
-    onSwipeLeft: goToNextMonth,
-    onSwipeRight: goToPreviousMonth,
-    enabled: isMobileView === true
-  })
+  // Handle month index change from swipeable calendar
+  const handleMonthIndexChange = (index: number) => {
+    setCurrentMonthIndex(index)
+  }
 
   const handleDownload = async () => {
     await handleExport(yearCalendar, scheduleName, selectedRotation, selectedDate)
@@ -137,52 +133,22 @@ export function CalendarDisplay({
 
       {/* Calendar Display */}
       <div>
-        <div
-          onTouchStart={swipeHandlers.handleTouchStart}
-          onTouchMove={swipeHandlers.handleTouchMove}
-          onTouchEnd={swipeHandlers.handleTouchEnd}
-          className={isMobileView === true ? "touch-pan-y relative" : ""}
-        >
-          {/* Swipe indicator for mobile */}
-          {isMobileView === true && yearCalendar.length > 1 && (
-            <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 flex gap-1 z-10">
-              <div className="w-8 h-1 bg-gray-300 rounded-full opacity-50"></div>
-            </div>
-          )}
-          <ScheduleList 
-            calendar={isMobileView === true && yearCalendar.length > 0 
-              ? [yearCalendar[currentMonthIndex]] 
-              : yearCalendar
-            } 
-            className={isMobileView === true ? "h-auto" : ""}
-            isMobile={isMobileView === true}
-            currentMonthIndex={currentMonthIndex}
-            onNavigate={(direction) => {
-              if (direction === 'prev') goToPreviousMonth()
-              else goToNextMonth()
-            }}
-            totalMonths={yearCalendar.length}
-          />
-        </div>
-        
-        {/* Progress Dots - Mobile Only */}
-        {isMobileView === true && yearCalendar.length > 0 && (
-          <div className="flex justify-center gap-1.5 mt-4 mb-20">
-            {yearCalendar.map((_, index) => (
-              <button
-                key={index}
-                onClick={() => setCurrentMonthIndex(index)}
-                className={`
-                  transition-all duration-200 rounded-full
-                  ${index === currentMonthIndex 
-                    ? 'w-8 h-2 bg-orange-500' 
-                    : 'w-2 h-2 bg-gray-400/50 hover:bg-gray-400'
-                  }
-                `}
-                aria-label={`Go to ${yearCalendar[index]?.month} ${yearCalendar[index]?.year}`}
-              />
-            ))}
+        {isMobileView === true && yearCalendar.length > 0 ? (
+          // Mobile view with swipeable calendar
+          <div className="mb-20">
+            <SwipeableCalendar
+              months={yearCalendar}
+              currentIndex={currentMonthIndex}
+              onIndexChange={handleMonthIndexChange}
+            />
           </div>
+        ) : (
+          // Desktop view with scrollable list
+          <ScheduleList 
+            calendar={yearCalendar} 
+            className=""
+            isMobile={false}
+          />
         )}
         
         {/* Floating Action Menu - Desktop only */}
