@@ -129,13 +129,13 @@ export function SwipeableCalendar({
   
   return (
     <div className={`relative calendar-swipe-container ${className}`}>
-      {/* Navigation Arrows */}
-      <div className="absolute inset-y-0 left-0 flex items-center z-20">
+      {/* Month Navigation Header */}
+      <div className="flex items-center justify-between mb-4 px-4">
         <button
           onClick={goToPrevious}
           disabled={isFirstMonth}
           className={`
-            ml-2 p-2 rounded-full bg-white/80 backdrop-blur-sm shadow-lg
+            p-2 rounded-full bg-white/80 backdrop-blur-sm shadow-lg
             transition-all duration-200
             ${isFirstMonth 
               ? 'opacity-30 cursor-not-allowed' 
@@ -146,14 +146,19 @@ export function SwipeableCalendar({
         >
           <ChevronLeft className="w-5 h-5 text-gray-700" />
         </button>
-      </div>
-      
-      <div className="absolute inset-y-0 right-0 flex items-center z-20">
+        
+        {/* Month Title */}
+        <div className="flex-1 text-center">
+          <h3 className="text-lg font-semibold text-gray-800">
+            {months[currentIndex]?.month} {months[currentIndex]?.year}
+          </h3>
+        </div>
+        
         <button
           onClick={goToNext}
           disabled={isLastMonth}
           className={`
-            mr-2 p-2 rounded-full bg-white/80 backdrop-blur-sm shadow-lg
+            p-2 rounded-full bg-white/80 backdrop-blur-sm shadow-lg
             transition-all duration-200
             ${isLastMonth 
               ? 'opacity-30 cursor-not-allowed' 
@@ -195,6 +200,7 @@ export function SwipeableCalendar({
                   isMobile={true}
                   currentMonthIndex={0}
                   totalMonths={1}
+                  hideNavigation={true}
                 />
               )}
             </motion.div>

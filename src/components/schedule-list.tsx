@@ -14,6 +14,7 @@ interface ScheduleListProps {
   currentMonthIndex?: number;
   onNavigate?: (direction: 'prev' | 'next') => void;
   totalMonths?: number;
+  hideNavigation?: boolean;
 }
 
 interface DayCellProps {
@@ -26,6 +27,7 @@ interface CalendarMonthProps {
   isFirst?: boolean;
   isLast?: boolean;
   onNavigate?: (direction: 'prev' | 'next') => void;
+  hideNavigation?: boolean;
 }
 
 interface LegendItemProps {
@@ -201,7 +203,7 @@ function CalendarLegend() {
   );
 }
 
-function CalendarMonth({ month, isMobile, isFirst, isLast, onNavigate }: CalendarMonthProps) {
+function CalendarMonth({ month, isMobile, isFirst, isLast, onNavigate, hideNavigation }: CalendarMonthProps) {
   return (
     <div 
       className="backdrop-blur-xl bg-white rounded-3xl border border-white/20 shadow-lg p-3 md:p-6 pb-3 md:pb-6"
@@ -209,7 +211,7 @@ function CalendarMonth({ month, isMobile, isFirst, isLast, onNavigate }: Calenda
       aria-labelledby={`month-${month.month}-${month.year}`}
     >
       <div className="h-full flex flex-col">
-        {isMobile && onNavigate ? (
+        {!hideNavigation && isMobile && onNavigate ? (
           // Mobile header with integrated navigation
           <div className="flex items-center justify-between mb-3">
             <button
@@ -245,7 +247,7 @@ function CalendarMonth({ month, isMobile, isFirst, isLast, onNavigate }: Calenda
               <ChevronRight className="w-5 h-5 text-gray-700" />
             </button>
           </div>
-        ) : (
+        ) : !hideNavigation ? (
           // Desktop header (unchanged)
           <h3 
             id={`month-${month.month}-${month.year}`}
@@ -253,7 +255,7 @@ function CalendarMonth({ month, isMobile, isFirst, isLast, onNavigate }: Calenda
           >
             {month.month} {month.year}
           </h3>
-        )}
+        ) : null}
         
         <CalendarGrid month={month} />
         <CalendarLegend />
@@ -269,7 +271,8 @@ export function ScheduleList({
   isMobile, 
   currentMonthIndex, 
   onNavigate, 
-  totalMonths 
+  totalMonths,
+  hideNavigation 
 }: ScheduleListProps) {
   return (
     <div 
@@ -286,6 +289,7 @@ export function ScheduleList({
           isFirst={currentMonthIndex === 0}
           isLast={currentMonthIndex === (totalMonths ?? calendar.length) - 1}
           onNavigate={onNavigate}
+          hideNavigation={hideNavigation}
         />
       ))}
     </div>

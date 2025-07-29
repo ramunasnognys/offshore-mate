@@ -1,0 +1,70 @@
+# Docker Compose for Production Deployment
+
+version: '3.8'
+
+services:
+  # Production Next.js Application
+  offshore-mate:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: runner
+    image: offshore-mate:latest
+    container_name: offshore-mate-prod
+    ports:
+      - "80:3000"
+    environment:
+      - NODE_ENV=production
+      - NEXT_TELEMETRY_DISABLED=1
+      - PORT=3000
+      - HOSTNAME=0.0.0.0
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3000/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 40s
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+    security_opt:
+      - no-new-privileges:true
+    read_only: true
+    tmpfs:
+      - /tmp:noexec,nosuid,size=100m
+    cap_drop:
+      - ALL
+    cap_add:
+      - CHOWN
+      - SETGID
+      - SETUID
+
+  # Nginx reverse proxy (optional)
+  nginx:
+    image: nginx:alpine
+    container_name: offshore-mate-nginx
+    ports:
+      - "443:443"
+      - "80:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./ssl:/etc/nginx/ssl:ro
+    depends_on:
+      - offshore-mate
+    restart: unless-stopped
+    profiles:
+      - nginx
+
+networks:
+  default:
+    name: offshore-mate-prod-network
+    driver: bridge
+
+# Optional: Health check monitoring
+# Uncomment if using external monitoring tools
+# volumes:
+#   prometheus_data:
+#   grafana_data:

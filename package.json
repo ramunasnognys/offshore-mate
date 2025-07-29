@@ -6,7 +6,16 @@
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "docker:build": "docker build -t offshore-mate:latest .",
+    "docker:build-dev": "docker build -f Dockerfile.dev -t offshore-mate:dev .",
+    "docker:run": "docker run -p 3000:3000 offshore-mate:latest",
+    "docker:run-dev": "docker run -p 3001:3000 -v $(pwd):/app -v /app/node_modules offshore-mate:dev",
+    "docker:up": "docker compose up -d",
+    "docker:up-dev": "docker compose --profile dev up -d",
+    "docker:down": "docker compose down",
+    "docker:logs": "docker compose logs -f",
+    "docker:clean": "docker system prune -f && docker image prune -f"
   },
   "dependencies": {
     "@radix-ui/react-dialog": "^1.1.2",
