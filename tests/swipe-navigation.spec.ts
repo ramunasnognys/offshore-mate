@@ -5,12 +5,20 @@ test.describe('Calendar Swipe Navigation', () => {
     await page.goto('/')
     
     // Fill in the form to generate a calendar
-    await page.fill('input[type="date"]', '2024-01-01')
-    await page.selectOption('select', '14/14')
+    // Click date picker button
+    await page.click('button:has-text("Pick your start date")')
+    
+    // Select today from the calendar
+    await page.click('button:has-text("Today")')
+    
+    // Select rotation pattern
+    await page.click('button:has-text("14/14")')
+    
+    // Generate calendar
     await page.click('button:has-text("Generate Calendar")')
     
     // Wait for calendar to be generated
-    await page.waitForSelector('[aria-label="Work rotation schedule"]')
+    await page.waitForSelector('[aria-label="Work rotation schedule"]', { timeout: 10000 })
   })
 
   test('should navigate between months using swipe on mobile', async ({ page }) => {

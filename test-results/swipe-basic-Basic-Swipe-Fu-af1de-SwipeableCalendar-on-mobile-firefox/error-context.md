@@ -5,8 +5,8 @@
   - heading "Offshore Mate" [level=1]
   - paragraph: Navigate your offshore schedule with precision
   - text: Start Date
-  - button "Pick your start date":
-    - text: Pick your start date
+  - button "July 29, 2025":
+    - text: July 29, 2025
     - img
   - text: Work Rotation
   - button "14/14"
