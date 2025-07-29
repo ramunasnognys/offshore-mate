@@ -26,13 +26,13 @@ export function BottomToolbar({ onExport, onFormatChange, onSettings, selectedFo
       {/* Backdrop when expanded */}
       {isExpanded && (
         <div 
-          className="fixed inset-0 bg-black/20 z-40"
+          className="fixed inset-0 bg-black/20 z-20"
           onClick={() => setIsExpanded(false)}
         />
       )}
       
       {/* Bottom Toolbar */}
-      <div className={`fixed bottom-0 left-0 right-0 z-50 ${className}`}>
+      <div className={`fixed bottom-0 left-0 right-0 z-30 ${className}`}>
         {/* Expanded Export Options */}
         <div className={`
           bg-white/95 backdrop-blur-xl border-t border-gray-200/50 
