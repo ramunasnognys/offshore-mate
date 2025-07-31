@@ -213,7 +213,10 @@ function CalendarMonth({ month, isMobile, isFirst, isLast, onNavigate }: Calenda
           // Mobile header with integrated navigation
           <div className="flex items-center justify-between mb-3">
             <button
-              onClick={() => onNavigate('prev')}
+              onClick={(e) => {
+                e.stopPropagation();
+                onNavigate('prev');
+              }}
               disabled={isFirst}
               className={`p-2 rounded-full transition-all duration-200 bg-gray-100/50 ${
                 isFirst 
@@ -233,7 +236,10 @@ function CalendarMonth({ month, isMobile, isFirst, isLast, onNavigate }: Calenda
             </h3>
             
             <button
-              onClick={() => onNavigate('next')}
+              onClick={(e) => {
+                e.stopPropagation();
+                onNavigate('next');
+              }}
               disabled={isLast}
               className={`p-2 rounded-full transition-all duration-200 bg-gray-100/50 ${
                 isLast

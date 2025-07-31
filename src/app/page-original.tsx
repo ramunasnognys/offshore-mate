@@ -376,7 +376,8 @@ export default function Home() {
     onSwipedLeft: goToNextMonth,
     onSwipedRight: goToPreviousMonth,
     preventScrollOnSwipe: true,
-    trackMouse: true
+    trackMouse: false, // Disable mouse tracking to avoid desktop conflicts
+    trackTouch: true   // Only track touch events
   })
 
   const handleUsePNGInstead = async () => {
@@ -629,27 +630,26 @@ export default function Home() {
 
             <div>
               {/* Calendar Display */}
-              <div
-                {...(isMobileView === true ? handlers : {})}
-                className={isMobileView === true ? "relative" : ""}
-              >
+              <div className={isMobileView === true ? "relative" : ""}>
                 {/* Swipe indicator for mobile */}
                 {isMobileView === true && yearCalendar.length > 1 && (
                   <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 flex gap-1 z-10">
                     <div className="w-8 h-1 bg-gray-300 rounded-full opacity-50"></div>
                   </div>
                 )}
-                <ScheduleList 
-                  calendar={isMobileView === true && yearCalendar.length > 0 ? [yearCalendar[currentMonthIndex]] : yearCalendar} 
-                  className={isMobileView === true ? "h-auto" : ""}
-                  isMobile={isMobileView === true}
-                  currentMonthIndex={currentMonthIndex}
-                  onNavigate={(direction) => {
-                    if (direction === 'prev') goToPreviousMonth();
-                    else goToNextMonth();
-                  }}
-                  totalMonths={yearCalendar.length}
-                />
+                <div {...(isMobileView === true ? handlers : {})}>
+                  <ScheduleList 
+                    calendar={isMobileView === true && yearCalendar.length > 0 ? [yearCalendar[currentMonthIndex]] : yearCalendar} 
+                    className={isMobileView === true ? "h-auto" : ""}
+                    isMobile={isMobileView === true}
+                    currentMonthIndex={currentMonthIndex}
+                    onNavigate={(direction) => {
+                      if (direction === 'prev') goToPreviousMonth();
+                      else goToNextMonth();
+                    }}
+                    totalMonths={yearCalendar.length}
+                  />
+                </div>
               </div>
               
               {/* Progress Dots - Mobile Only */}
