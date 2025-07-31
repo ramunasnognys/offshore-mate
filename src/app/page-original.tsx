@@ -1,6 +1,7 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
+import { useSwipeable } from 'react-swipeable'
 import { ArrowRight, XCircle } from 'lucide-react'
 import { DatePicker } from "@/components/date-picker"
 import { RotationButton } from "@/components/rotation-button"
@@ -44,8 +45,6 @@ export default function Home() {
   const [saveNotification, setSaveNotification] = useState('')
   const [currentMonthIndex, setCurrentMonthIndex] = useState(0)
   const [isMobileView, setIsMobileView] = useState<boolean | null>(null)
-  const [touchStart, setTouchStart] = useState(0)
-  const [touchEnd, setTouchEnd] = useState(0)
   const [isClient, setIsClient] = useState(false)
   const [isEditingName, setIsEditingName] = useState(false)
   const [showSettings, setShowSettings] = useState(false)
@@ -372,32 +371,13 @@ export default function Home() {
     }
   }
 
-  // Touch gesture handlers
-  const handleTouchStart = (e: React.TouchEvent) => {
-    setTouchEnd(0) // Reset touchEnd
-    setTouchStart(e.targetTouches[0].clientX)
-  }
-
-  const handleTouchMove = (e: React.TouchEvent) => {
-    setTouchEnd(e.targetTouches[0].clientX)
-  }
-
-  const handleTouchEnd = () => {
-    if (!touchStart || !touchEnd) return
-    
-    const distance = touchStart - touchEnd
-    const minSwipeDistance = 50
-    
-    if (distance > minSwipeDistance && isMobileView === true) {
-      // Swipe left - next month
-      goToNextMonth()
-    }
-    
-    if (distance < -minSwipeDistance && isMobileView === true) {
-      // Swipe right - previous month
-      goToPreviousMonth()
-    }
-  }
+  // Swipe gestures for mobile with react-swipeable
+  const handlers = useSwipeable({
+    onSwipedLeft: goToNextMonth,
+    onSwipedRight: goToPreviousMonth,
+    preventScrollOnSwipe: true,
+    trackMouse: true
+  })
 
   const handleUsePNGInstead = async () => {
     setShowPDFError(false)
@@ -650,10 +630,8 @@ export default function Home() {
             <div>
               {/* Calendar Display */}
               <div
-                onTouchStart={handleTouchStart}
-                onTouchMove={handleTouchMove}
-                onTouchEnd={handleTouchEnd}
-                className={isMobileView === true ? "touch-pan-y relative" : ""}
+                {...(isMobileView === true ? handlers : {})}
+                className={isMobileView === true ? "relative" : ""}
               >
                 {/* Swipe indicator for mobile */}
                 {isMobileView === true && yearCalendar.length > 1 && (

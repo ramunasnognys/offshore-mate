@@ -11,7 +11,7 @@ import { useCalendar } from '@/contexts/CalendarContext'
 import { useUI } from '@/contexts/UIContext'
 import { useMobileDetection } from '@/hooks/useMobileDetection'
 import { useMonthNavigation } from '@/hooks/useMonthNavigation'
-import { useSwipeGesture } from '@/hooks/useSwipeGesture'
+import { useSwipeable } from 'react-swipeable'
 import { useExportCalendar } from '@/hooks/useExportCalendar'
 import { MonthData } from '@/types/rotation'
 
@@ -72,10 +72,11 @@ export function CalendarDisplay({
   })
 
   // Swipe gestures for mobile
-  const swipeHandlers = useSwipeGesture({
-    onSwipeLeft: goToNextMonth,
-    onSwipeRight: goToPreviousMonth,
-    enabled: isMobileView === true
+  const handlers = useSwipeable({
+    onSwipedLeft: goToNextMonth,
+    onSwipedRight: goToPreviousMonth,
+    preventScrollOnSwipe: true,
+    trackMouse: true
   })
 
   const handleDownload = async () => {
@@ -138,10 +139,8 @@ export function CalendarDisplay({
       {/* Calendar Display */}
       <div>
         <div
-          onTouchStart={swipeHandlers.handleTouchStart}
-          onTouchMove={swipeHandlers.handleTouchMove}
-          onTouchEnd={swipeHandlers.handleTouchEnd}
-          className={isMobileView === true ? "touch-pan-y relative" : ""}
+          {...(isMobileView === true ? handlers : {})}
+          className={isMobileView === true ? "relative" : ""}
         >
           {/* Swipe indicator for mobile */}
           {isMobileView === true && yearCalendar.length > 1 && (
