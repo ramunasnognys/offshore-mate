@@ -215,14 +215,24 @@ function CalendarMonth({ month, isMobile, isFirst, isLast, onNavigate }: Calenda
             <button
               onClick={(e) => {
                 e.stopPropagation();
+                e.preventDefault();
                 onNavigate('prev');
               }}
+              onTouchStart={(e) => {
+                e.stopPropagation();
+                console.log('Button touch start - prev');
+              }}
+              onTouchEnd={(e) => {
+                e.stopPropagation();
+                console.log('Button touch end - prev');
+              }}
               disabled={isFirst}
-              className={`p-2 rounded-full transition-all duration-200 bg-gray-100/50 ${
+              className={`p-3 min-w-[44px] min-h-[44px] rounded-full transition-all duration-200 bg-gray-100/50 touch-manipulation ${
                 isFirst 
                   ? 'opacity-30 cursor-not-allowed' 
-                  : 'hover:bg-gray-200/50 active:scale-95'
+                  : 'hover:bg-gray-200/50 active:scale-95 active:bg-gray-300/60'
               }`}
+              style={{ touchAction: 'manipulation' }}
               aria-label="Previous month"
             >
               <ChevronLeft className="w-5 h-5 text-gray-700" />
@@ -238,14 +248,24 @@ function CalendarMonth({ month, isMobile, isFirst, isLast, onNavigate }: Calenda
             <button
               onClick={(e) => {
                 e.stopPropagation();
+                e.preventDefault();
                 onNavigate('next');
               }}
+              onTouchStart={(e) => {
+                e.stopPropagation();
+                console.log('Button touch start - next');
+              }}
+              onTouchEnd={(e) => {
+                e.stopPropagation();
+                console.log('Button touch end - next');
+              }}
               disabled={isLast}
-              className={`p-2 rounded-full transition-all duration-200 bg-gray-100/50 ${
+              className={`p-3 min-w-[44px] min-h-[44px] rounded-full transition-all duration-200 bg-gray-100/50 touch-manipulation ${
                 isLast
                   ? 'opacity-30 cursor-not-allowed' 
-                  : 'hover:bg-gray-200/50 active:scale-95'
+                  : 'hover:bg-gray-200/50 active:scale-95 active:bg-gray-300/60'
               }`}
+              style={{ touchAction: 'manipulation' }}
               aria-label="Next month"
             >
               <ChevronRight className="w-5 h-5 text-gray-700" />

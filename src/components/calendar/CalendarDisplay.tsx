@@ -71,7 +71,7 @@ export function CalendarDisplay({
     }
   })
 
-  // Swipe gestures with react-swipeable
+  // Swipe gestures with react-swipeable - mobile-optimized
   const handlers = useSwipeable({
     onSwiped: (eventData) => console.log("User Swiped!", eventData),
     onSwipedLeft: () => {
@@ -82,9 +82,19 @@ export function CalendarDisplay({
       console.log("Swiped right - going to previous month");
       goToPreviousMonth();
     },
+    onTouchStartOrOnMouseDown: (eventData) => {
+      // Prevent swipe if touch starts on a button or interactive element
+      const target = eventData.event.target as Element;
+      if (target.closest('button') || target.closest('[role="button"]')) {
+        console.log("Touch started on button - preventing swipe");
+        return false; // This prevents the swipe from starting
+      }
+    },
+    delta: 60, // Minimum swipe distance to trigger - higher threshold for mobile
     preventScrollOnSwipe: true,
     trackMouse: true,  // Enable mouse tracking for desktop testing
-    trackTouch: true   // Enable touch tracking for mobile
+    trackTouch: true,  // Enable touch tracking for mobile
+    touchEventOptions: { passive: false } // Allow preventDefault when needed
   })
 
   const handleDownload = async () => {
