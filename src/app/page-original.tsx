@@ -371,13 +371,20 @@ export default function Home() {
     }
   }
 
-  // Swipe gestures for mobile with react-swipeable
+  // Swipe gestures with react-swipeable
   const handlers = useSwipeable({
-    onSwipedLeft: goToNextMonth,
-    onSwipedRight: goToPreviousMonth,
+    onSwiped: (eventData) => console.log("User Swiped!", eventData),
+    onSwipedLeft: () => {
+      console.log("Swiped left - going to next month");
+      goToNextMonth();
+    },
+    onSwipedRight: () => {
+      console.log("Swiped right - going to previous month");
+      goToPreviousMonth();
+    },
     preventScrollOnSwipe: true,
-    trackMouse: false, // Disable mouse tracking to avoid desktop conflicts
-    trackTouch: true   // Only track touch events
+    trackMouse: true,  // Enable mouse tracking for desktop testing
+    trackTouch: true   // Enable touch tracking for mobile
   })
 
   const handleUsePNGInstead = async () => {
@@ -637,7 +644,7 @@ export default function Home() {
                     <div className="w-8 h-1 bg-gray-300 rounded-full opacity-50"></div>
                   </div>
                 )}
-                <div {...(isMobileView === true ? handlers : {})}>
+                <div {...handlers}>
                   <ScheduleList 
                     calendar={isMobileView === true && yearCalendar.length > 0 ? [yearCalendar[currentMonthIndex]] : yearCalendar} 
                     className={isMobileView === true ? "h-auto" : ""}
