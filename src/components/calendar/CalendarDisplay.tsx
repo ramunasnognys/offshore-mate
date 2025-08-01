@@ -156,13 +156,7 @@ export function CalendarDisplay({
 
       {/* Calendar Display */}
       <div>
-        <div className={isMobileView === true ? "relative" : ""}>
-          {/* Swipe indicator for mobile */}
-          {isMobileView === true && yearCalendar.length > 1 && (
-            <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 flex gap-1 z-10">
-              <div className="w-8 h-1 bg-gray-300 rounded-full opacity-50"></div>
-            </div>
-          )}
+        <div className={isMobileView === true ? "relative mb-20" : ""}>
           <ScheduleList 
             calendar={isMobileView === true && yearCalendar.length > 0 
               ? [yearCalendar[currentMonthIndex]] 
@@ -180,25 +174,6 @@ export function CalendarDisplay({
           />
         </div>
         
-        {/* Progress Dots - Mobile Only */}
-        {isMobileView === true && yearCalendar.length > 0 && (
-          <div className="flex justify-center gap-1.5 mt-4 mb-20">
-            {yearCalendar.map((_, index) => (
-              <button
-                key={index}
-                onClick={() => setCurrentMonthIndex(index)}
-                className={`
-                  transition-all duration-200 rounded-full
-                  ${index === currentMonthIndex 
-                    ? 'w-8 h-2 bg-orange-500' 
-                    : 'w-2 h-2 bg-gray-400/50 hover:bg-gray-400'
-                  }
-                `}
-                aria-label={`Go to ${yearCalendar[index]?.month} ${yearCalendar[index]?.year}`}
-              />
-            ))}
-          </div>
-        )}
         
         {/* Floating Action Menu - Desktop only */}
         {isMobileView === false && (
