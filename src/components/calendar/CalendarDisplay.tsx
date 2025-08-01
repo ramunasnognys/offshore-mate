@@ -85,12 +85,12 @@ export function CalendarDisplay({
     onTouchStartOrOnMouseDown: (eventData) => {
       // Prevent swipe if touch starts on a button or interactive element
       const target = eventData.event.target as Element;
-      if (target.closest('button') || target.closest('[role="button"]')) {
-        console.log("Touch started on button - preventing swipe");
+      if (target.closest('button') || target.closest('[role="button"]') || target.closest('.navigation-header')) {
+        console.log("Touch started on button or navigation - preventing swipe");
         return false; // This prevents the swipe from starting
       }
     },
-    delta: 60, // Minimum swipe distance to trigger - higher threshold for mobile
+    delta: 80, // Increased swipe distance threshold for better button/swipe differentiation
     preventScrollOnSwipe: true,
     trackMouse: true,  // Enable mouse tracking for desktop testing
     trackTouch: true,  // Enable touch tracking for mobile
@@ -163,22 +163,21 @@ export function CalendarDisplay({
               <div className="w-8 h-1 bg-gray-300 rounded-full opacity-50"></div>
             </div>
           )}
-          <div {...handlers}>
-            <ScheduleList 
-              calendar={isMobileView === true && yearCalendar.length > 0 
-                ? [yearCalendar[currentMonthIndex]] 
-                : yearCalendar
-              } 
-              className={isMobileView === true ? "h-auto" : ""}
-              isMobile={isMobileView === true}
-              currentMonthIndex={currentMonthIndex}
-              onNavigate={(direction) => {
-                if (direction === 'prev') goToPreviousMonth()
-                else goToNextMonth()
-              }}
-              totalMonths={yearCalendar.length}
-            />
-          </div>
+          <ScheduleList 
+            calendar={isMobileView === true && yearCalendar.length > 0 
+              ? [yearCalendar[currentMonthIndex]] 
+              : yearCalendar
+            } 
+            className={isMobileView === true ? "h-auto" : ""}
+            isMobile={isMobileView === true}
+            currentMonthIndex={currentMonthIndex}
+            onNavigate={(direction) => {
+              if (direction === 'prev') goToPreviousMonth()
+              else goToNextMonth()
+            }}
+            totalMonths={yearCalendar.length}
+            swipeHandlers={isMobileView === true ? handlers : undefined}
+          />
         </div>
         
         {/* Progress Dots - Mobile Only */}

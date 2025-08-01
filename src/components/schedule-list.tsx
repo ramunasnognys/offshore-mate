@@ -3,6 +3,7 @@ import React from 'react';
 import { MonthData, CalendarDay } from '@/types/rotation';
 import { format } from 'date-fns';
 import { Plane, Wrench, Waves, ChevronLeft, ChevronRight } from 'lucide-react';
+import { SwipeableHandlers } from 'react-swipeable';
 
 // Type definitions
 type DayType = 'work' | 'off' | 'transition' | 'inactive';
@@ -14,6 +15,7 @@ interface ScheduleListProps {
   currentMonthIndex?: number;
   onNavigate?: (direction: 'prev' | 'next') => void;
   totalMonths?: number;
+  swipeHandlers?: SwipeableHandlers;
 }
 
 interface DayCellProps {
@@ -26,13 +28,9 @@ interface CalendarMonthProps {
   isFirst?: boolean;
   isLast?: boolean;
   onNavigate?: (direction: 'prev' | 'next') => void;
+  swipeHandlers?: SwipeableHandlers;
 }
 
-interface LegendItemProps {
-  label: string;
-  className: string;
-  icon?: React.ReactNode;
-}
 
 // Constants
 const WEEKDAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'] as const;
@@ -117,7 +115,7 @@ function DayCell({ day }: DayCellProps) {
   return (
     <div
       className={`
-        aspect-square p-0.5 md:p-1.5 rounded-lg transition-all duration-200 hover:shadow-md 
+        aspect-square p-1.5 rounded-lg transition-all duration-200 hover:shadow-md 
         ${isCurrentDate ? 'today-cell border-2 border-white shadow-xl' : DAY_STYLES[dayType]} 
         relative overflow-hidden
       `}
@@ -156,7 +154,7 @@ function CalendarGrid({ month }: CalendarMonthProps) {
   
   return (
     <div 
-      className="flex-grow grid grid-cols-7 gap-0.5 md:gap-2 content-start"
+      className="flex-grow grid grid-cols-7 gap-2 content-start"
       role="grid"
       aria-label={`Calendar for ${month.month} ${month.year}`}
     >
@@ -173,16 +171,6 @@ function CalendarGrid({ month }: CalendarMonthProps) {
   );
 }
 
-function LegendItem({ label, className, icon }: LegendItemProps) {
-  return (
-    <div className="flex items-center gap-1.5 md:gap-2">
-      <div className={`w-3 h-3 md:w-4 md:h-4 rounded ${className} ${icon ? 'flex items-center justify-center' : ''}`}>
-        {icon}
-      </div>
-      <span className="py-0.5 md:py-1">{label}</span>
-    </div>
-  );
-}
 
 function CalendarLegend() {
   return (
@@ -201,7 +189,7 @@ function CalendarLegend() {
   );
 }
 
-function CalendarMonth({ month, isMobile, isFirst, isLast, onNavigate }: CalendarMonthProps) {
+function CalendarMonth({ month, isMobile, isFirst, isLast, onNavigate, swipeHandlers }: CalendarMonthProps) {
   return (
     <div 
       className="backdrop-blur-xl bg-white rounded-3xl border border-white/20 shadow-lg p-3 md:p-6 pb-3 md:pb-6"
@@ -211,7 +199,7 @@ function CalendarMonth({ month, isMobile, isFirst, isLast, onNavigate }: Calenda
       <div className="h-full flex flex-col">
         {isMobile && onNavigate ? (
           // Mobile header with integrated navigation
-          <div className="flex items-center justify-between mb-3">
+          <div className="navigation-header flex items-center justify-between mb-3 relative z-20">
             <button
               onClick={(e) => {
                 e.stopPropagation();
@@ -224,10 +212,11 @@ function CalendarMonth({ month, isMobile, isFirst, isLast, onNavigate }: Calenda
               }}
               onTouchEnd={(e) => {
                 e.stopPropagation();
+                e.preventDefault();
                 console.log('Button touch end - prev');
               }}
               disabled={isFirst}
-              className={`p-3 min-w-[44px] min-h-[44px] rounded-full transition-all duration-200 bg-gray-100/50 touch-manipulation ${
+              className={`p-4 min-w-[48px] min-h-[48px] rounded-full transition-all duration-200 bg-gray-100/50 touch-manipulation pointer-events-auto relative z-30 ${
                 isFirst 
                   ? 'opacity-30 cursor-not-allowed' 
                   : 'hover:bg-gray-200/50 active:scale-95 active:bg-gray-300/60'
@@ -257,10 +246,11 @@ function CalendarMonth({ month, isMobile, isFirst, isLast, onNavigate }: Calenda
               }}
               onTouchEnd={(e) => {
                 e.stopPropagation();
+                e.preventDefault();
                 console.log('Button touch end - next');
               }}
               disabled={isLast}
-              className={`p-3 min-w-[44px] min-h-[44px] rounded-full transition-all duration-200 bg-gray-100/50 touch-manipulation ${
+              className={`p-4 min-w-[48px] min-h-[48px] rounded-full transition-all duration-200 bg-gray-100/50 touch-manipulation pointer-events-auto relative z-30 ${
                 isLast
                   ? 'opacity-30 cursor-not-allowed' 
                   : 'hover:bg-gray-200/50 active:scale-95 active:bg-gray-300/60'
@@ -281,8 +271,10 @@ function CalendarMonth({ month, isMobile, isFirst, isLast, onNavigate }: Calenda
           </h3>
         )}
         
-        <CalendarGrid month={month} />
-        <CalendarLegend />
+        <div {...(swipeHandlers || {})}>
+          <CalendarGrid month={month} />
+          <CalendarLegend />
+        </div>
       </div>
     </div>
   );
@@ -295,7 +287,8 @@ export function ScheduleList({
   isMobile, 
   currentMonthIndex, 
   onNavigate, 
-  totalMonths 
+  totalMonths,
+  swipeHandlers 
 }: ScheduleListProps) {
   return (
     <div 
@@ -304,7 +297,7 @@ export function ScheduleList({
       role="main"
       aria-label="Work rotation schedule"
     >
-      {calendar.map((month, index) => (
+      {calendar.map((month) => (
         <CalendarMonth 
           key={`${month.month}-${month.year}`}
           month={month}
@@ -312,6 +305,7 @@ export function ScheduleList({
           isFirst={currentMonthIndex === 0}
           isLast={currentMonthIndex === (totalMonths ?? calendar.length) - 1}
           onNavigate={onNavigate}
+          swipeHandlers={swipeHandlers}
         />
       ))}
     </div>

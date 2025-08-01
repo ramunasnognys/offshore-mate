@@ -84,7 +84,7 @@ function HomeContent() {
   }
 
   return (
-    <main className="min-h-screen bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-blue-100 via-white to-pink-100 flex items-center justify-center p-4 md:p-8 bg-fixed">
+    <main className={`min-h-screen bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-blue-100 via-white to-pink-100 flex ${isCalendarGenerated && isMobileView === true ? 'items-start pt-4' : 'items-center'} justify-center p-4 md:p-8 bg-fixed`}>
       {/* Notifications */}
       <NotificationManager
         saveNotification={saveNotification}
@@ -104,7 +104,7 @@ function HomeContent() {
               ? 'text-3xl mb-1' 
               : 'text-4xl md:text-5xl lg:text-5xl mb-2'
           }`}>
-            Offshore Mate 2
+            Offshore Mate
           </h1>
           <p className={`text-center text-orange-500 tracking-wide uppercase font-light ${
             isCalendarGenerated && isMobileView === true 
