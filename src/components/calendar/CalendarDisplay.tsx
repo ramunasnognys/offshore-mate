@@ -97,8 +97,7 @@ export function CalendarDisplay({
     trackMouse: false, // Disable mouse tracking for mobile-only swipes
     trackTouch: true, // Enable touch tracking for mobile
     touchEventOptions: { passive: false }, // Allow preventDefault when needed
-    swipeDuration: 500, // Maximum time for swipe
-    preventDefaultTouchmoveEvent: false // Allow normal touch behavior
+    swipeDuration: 500 // Maximum time for swipe
   })
 
   const handleDownload = async () => {
