@@ -3,7 +3,6 @@ import React from 'react';
 import { MonthData, CalendarDay } from '@/types/rotation';
 import { format } from 'date-fns';
 import { Plane, Wrench, Waves, ChevronLeft, ChevronRight } from 'lucide-react';
-import { SwipeableHandlers } from 'react-swipeable';
 
 // Type definitions
 type DayType = 'work' | 'off' | 'transition' | 'inactive';
@@ -15,7 +14,6 @@ interface ScheduleListProps {
   currentMonthIndex?: number;
   onNavigate?: (direction: 'prev' | 'next') => void;
   totalMonths?: number;
-  swipeHandlers?: SwipeableHandlers;
 }
 
 interface DayCellProps {
@@ -28,7 +26,6 @@ interface CalendarMonthProps {
   isFirst?: boolean;
   isLast?: boolean;
   onNavigate?: (direction: 'prev' | 'next') => void;
-  swipeHandlers?: SwipeableHandlers;
 }
 
 
@@ -115,7 +112,7 @@ function DayCell({ day }: DayCellProps) {
   return (
     <div
       className={`
-        aspect-square p-1.5 rounded-lg transition-all duration-200 hover:shadow-md 
+        aspect-square p-0.5 md:p-1.5 rounded-lg transition-all duration-200 hover:shadow-md 
         ${isCurrentDate ? 'today-cell border-2 border-white shadow-xl' : DAY_STYLES[dayType]} 
         relative overflow-hidden
       `}
@@ -154,7 +151,7 @@ function CalendarGrid({ month }: CalendarMonthProps) {
   
   return (
     <div 
-      className="flex-grow grid grid-cols-7 gap-2 content-start"
+      className="flex-grow grid grid-cols-7 gap-0.5 md:gap-2 content-start"
       role="grid"
       aria-label={`Calendar for ${month.month} ${month.year}`}
     >
@@ -189,7 +186,7 @@ function CalendarLegend() {
   );
 }
 
-function CalendarMonth({ month, isMobile, isFirst, isLast, onNavigate, swipeHandlers }: CalendarMonthProps) {
+function CalendarMonth({ month, isMobile, isFirst, isLast, onNavigate }: CalendarMonthProps) {
   return (
     <div 
       className="backdrop-blur-xl bg-white rounded-3xl border border-white/20 shadow-lg p-3 md:p-6 pb-3 md:pb-6"
@@ -199,29 +196,21 @@ function CalendarMonth({ month, isMobile, isFirst, isLast, onNavigate, swipeHand
       <div className="h-full flex flex-col">
         {isMobile && onNavigate ? (
           // Mobile header with integrated navigation
-          <div className="navigation-header flex items-center justify-between mb-3 relative z-20">
+          <div className="navigation-buttons flex items-center justify-between mb-3">
             <button
+              onPointerDown={(e) => e.stopPropagation()}
               onClick={(e) => {
-                e.stopPropagation();
                 e.preventDefault();
+                e.stopPropagation();
                 onNavigate('prev');
               }}
-              onTouchStart={(e) => {
-                e.stopPropagation();
-                console.log('Button touch start - prev');
-              }}
-              onTouchEnd={(e) => {
-                e.stopPropagation();
-                e.preventDefault();
-                console.log('Button touch end - prev');
-              }}
               disabled={isFirst}
-              className={`p-4 min-w-[48px] min-h-[48px] rounded-full transition-all duration-200 bg-gray-100/50 touch-manipulation pointer-events-auto relative z-30 ${
+              className={`p-2 rounded-full transition-all duration-200 bg-gray-100/50 touch-manipulation ${
                 isFirst 
                   ? 'opacity-30 cursor-not-allowed' 
-                  : 'hover:bg-gray-200/50 active:scale-95 active:bg-gray-300/60'
+                  : 'hover:bg-gray-200/50 active:scale-95'
               }`}
-              style={{ touchAction: 'manipulation' }}
+              style={{ touchAction: 'manipulation', WebkitTouchCallout: 'none', WebkitUserSelect: 'none' }}
               aria-label="Previous month"
             >
               <ChevronLeft className="w-5 h-5 text-gray-700" />
@@ -229,33 +218,25 @@ function CalendarMonth({ month, isMobile, isFirst, isLast, onNavigate, swipeHand
             
             <h3 
               id={`month-${month.month}-${month.year}`}
-              className="text-lg md:text-xl font-bold text-gray-800 px-4"
+              className="text-lg md:text-xl font-bold text-gray-800 px-4 select-none"
             >
               {month.month} {month.year}
             </h3>
             
             <button
+              onPointerDown={(e) => e.stopPropagation()}
               onClick={(e) => {
-                e.stopPropagation();
                 e.preventDefault();
+                e.stopPropagation();
                 onNavigate('next');
               }}
-              onTouchStart={(e) => {
-                e.stopPropagation();
-                console.log('Button touch start - next');
-              }}
-              onTouchEnd={(e) => {
-                e.stopPropagation();
-                e.preventDefault();
-                console.log('Button touch end - next');
-              }}
               disabled={isLast}
-              className={`p-4 min-w-[48px] min-h-[48px] rounded-full transition-all duration-200 bg-gray-100/50 touch-manipulation pointer-events-auto relative z-30 ${
+              className={`p-2 rounded-full transition-all duration-200 bg-gray-100/50 touch-manipulation ${
                 isLast
                   ? 'opacity-30 cursor-not-allowed' 
-                  : 'hover:bg-gray-200/50 active:scale-95 active:bg-gray-300/60'
+                  : 'hover:bg-gray-200/50 active:scale-95'
               }`}
-              style={{ touchAction: 'manipulation' }}
+              style={{ touchAction: 'manipulation', WebkitTouchCallout: 'none', WebkitUserSelect: 'none' }}
               aria-label="Next month"
             >
               <ChevronRight className="w-5 h-5 text-gray-700" />
@@ -271,10 +252,8 @@ function CalendarMonth({ month, isMobile, isFirst, isLast, onNavigate, swipeHand
           </h3>
         )}
         
-        <div {...(swipeHandlers || {})}>
-          <CalendarGrid month={month} />
-          <CalendarLegend />
-        </div>
+        <CalendarGrid month={month} />
+        <CalendarLegend />
       </div>
     </div>
   );
@@ -287,8 +266,7 @@ export function ScheduleList({
   isMobile, 
   currentMonthIndex, 
   onNavigate, 
-  totalMonths,
-  swipeHandlers 
+  totalMonths 
 }: ScheduleListProps) {
   return (
     <div 
@@ -305,7 +283,6 @@ export function ScheduleList({
           isFirst={currentMonthIndex === 0}
           isLast={currentMonthIndex === (totalMonths ?? calendar.length) - 1}
           onNavigate={onNavigate}
-          swipeHandlers={swipeHandlers}
         />
       ))}
     </div>
