@@ -13,6 +13,7 @@ import { useMobileDetection } from '@/hooks/useMobileDetection'
 import { useMonthNavigation } from '@/hooks/useMonthNavigation'
 import { useExportCalendar } from '@/hooks/useExportCalendar'
 import { MonthData } from '@/types/rotation'
+import { extractWorkPeriods, formatWorkPatternDisplay } from '@/lib/utils/workPeriods'
 
 interface CalendarDisplayProps {
   onBack: () => void
@@ -86,6 +87,14 @@ export function CalendarDisplay({
     }
   }
 
+  // Get current month's work pattern
+  const currentMonthWorkPattern = React.useMemo(() => {
+    if (!yearCalendar[currentMonthIndex]) return '🏖️ Off this month'
+    
+    const workPeriods = extractWorkPeriods(yearCalendar[currentMonthIndex])
+    return formatWorkPatternDisplay(workPeriods)
+  }, [yearCalendar, currentMonthIndex])
+
   return (
     <div className={`space-y-6 md:space-y-8 ${isMobileView === true ? 'pb-32' : ''}`}>
       {/* Header with Back Button and Today Button */}
@@ -114,16 +123,10 @@ export function CalendarDisplay({
           </button>
         </div>
         
-        {/* Rotation Info Badge */}
+        {/* Work Pattern Badge */}
         <div className="flex justify-center">
-          <div className="inline-flex items-center gap-2 bg-white/80 backdrop-blur-sm rounded-full px-4 py-2 shadow-sm border border-gray-200/50">
-            <span className="text-sm text-gray-600">Rotation:</span>
-            <span className="text-sm font-semibold text-gray-800">{selectedRotation}</span>
-            <span className="text-gray-400">•</span>
-            <span className="text-sm text-gray-600">Started</span>
-            <span className="text-sm font-medium text-gray-800">
-              {new Date(selectedDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
-            </span>
+          <div className="inline-flex items-center bg-white/80 backdrop-blur-sm rounded-full px-4 py-2 shadow-sm border border-gray-200/50">
+            <span className="text-sm font-medium text-gray-800">{currentMonthWorkPattern}</span>
           </div>
         </div>
       </div>
