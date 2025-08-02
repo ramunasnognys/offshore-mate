@@ -189,7 +189,7 @@ function CalendarLegend() {
 function CalendarMonth({ month, isMobile, isFirst, isLast, onNavigate }: CalendarMonthProps) {
   return (
     <div 
-      className="backdrop-blur-xl bg-white rounded-3xl border border-white/20 shadow-lg p-3 md:p-6 pb-3 md:pb-6"
+      className={`backdrop-blur-xl bg-white rounded-3xl border border-white/20 shadow-lg p-3 md:p-6 pb-3 md:pb-6 ${isMobile ? 'mb-6' : ''}`}
       role="region"
       aria-labelledby={`month-${month.month}-${month.year}`}
     >
@@ -198,33 +198,10 @@ function CalendarMonth({ month, isMobile, isFirst, isLast, onNavigate }: Calenda
           // Mobile header with integrated navigation
           <div className="navigation-buttons flex items-center justify-between mb-3 relative z-10">
             <button
-              onClick={(e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                console.log('Previous button clicked');
-                if (!isFirst) {
+              onClick={() => {
+                if (!isFirst && onNavigate) {
                   onNavigate('prev');
                 }
-              }}
-              onTouchStart={(e) => {
-                e.stopPropagation();
-                console.log('Previous button touched');
-                // Add visual feedback
-                e.currentTarget.style.transform = 'scale(0.95)';
-              }}
-              onTouchEnd={(e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                console.log('Previous button touch ended');
-                // Remove visual feedback
-                e.currentTarget.style.transform = 'scale(1)';
-                if (!isFirst) {
-                  onNavigate('prev');
-                }
-              }}
-              onTouchCancel={(e) => {
-                // Remove visual feedback on cancel
-                e.currentTarget.style.transform = 'scale(1)';
               }}
               disabled={isFirst}
               className={`p-3 rounded-full transition-all duration-150 bg-gray-100/50 touch-manipulation relative ${
@@ -233,14 +210,11 @@ function CalendarMonth({ month, isMobile, isFirst, isLast, onNavigate }: Calenda
                   : 'hover:bg-gray-200/50 active:scale-95'
               }`}
               style={{ 
-                touchAction: 'manipulation', 
                 WebkitTouchCallout: 'none', 
-                WebkitUserSelect: 'none',
-                minWidth: '44px',
-                minHeight: '44px',
-                zIndex: 21
+                WebkitUserSelect: 'none'
               }}
-              aria-label="Previous month"
+              aria-label="Go to previous month"
+              aria-disabled={isFirst}
             >
               <ChevronLeft className="w-5 h-5 text-gray-700" />
             </button>
@@ -253,33 +227,10 @@ function CalendarMonth({ month, isMobile, isFirst, isLast, onNavigate }: Calenda
             </h3>
             
             <button
-              onClick={(e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                console.log('Next button clicked');
-                if (!isLast) {
+              onClick={() => {
+                if (!isLast && onNavigate) {
                   onNavigate('next');
                 }
-              }}
-              onTouchStart={(e) => {
-                e.stopPropagation();
-                console.log('Next button touched');
-                // Add visual feedback
-                e.currentTarget.style.transform = 'scale(0.95)';
-              }}
-              onTouchEnd={(e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                console.log('Next button touch ended');
-                // Remove visual feedback
-                e.currentTarget.style.transform = 'scale(1)';
-                if (!isLast) {
-                  onNavigate('next');
-                }
-              }}
-              onTouchCancel={(e) => {
-                // Remove visual feedback on cancel
-                e.currentTarget.style.transform = 'scale(1)';
               }}
               disabled={isLast}
               className={`p-3 rounded-full transition-all duration-150 bg-gray-100/50 touch-manipulation relative ${
@@ -288,14 +239,11 @@ function CalendarMonth({ month, isMobile, isFirst, isLast, onNavigate }: Calenda
                   : 'hover:bg-gray-200/50 active:scale-95'
               }`}
               style={{ 
-                touchAction: 'manipulation', 
                 WebkitTouchCallout: 'none', 
-                WebkitUserSelect: 'none',
-                minWidth: '44px',
-                minHeight: '44px',
-                zIndex: 21
+                WebkitUserSelect: 'none'
               }}
-              aria-label="Next month"
+              aria-label="Go to next month"
+              aria-disabled={isLast}
             >
               <ChevronRight className="w-5 h-5 text-gray-700" />
             </button>

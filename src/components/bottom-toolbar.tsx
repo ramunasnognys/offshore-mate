@@ -39,7 +39,7 @@ export function BottomToolbar({ onExport, onFormatChange, onSettings, selectedFo
           transform transition-all duration-300 ease-out
           ${isExpanded ? 'translate-y-0' : 'translate-y-full'}
         `}>
-          <div className="px-6 py-4">
+          <div className="px-6 py-4" style={{ paddingBottom: 'max(1rem, env(safe-area-inset-bottom))' }}>
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-lg font-semibold text-gray-800">Export Calendar</h3>
               <button
@@ -148,7 +148,7 @@ export function BottomToolbar({ onExport, onFormatChange, onSettings, selectedFo
         
         {/* Main Toolbar */}
         <div className="bg-white/95 backdrop-blur-xl border-t border-gray-200/50">
-          <div className="flex items-center justify-around py-2">
+          <div className="flex items-center justify-around py-2" style={{ paddingBottom: 'max(0.5rem, env(safe-area-inset-bottom))' }}>
             <button
               onClick={() => setIsExpanded(!isExpanded)}
               className="flex flex-col items-center gap-1 p-2 rounded-lg hover:bg-gray-100 transition-colors group"

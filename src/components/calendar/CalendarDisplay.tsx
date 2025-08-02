@@ -87,7 +87,7 @@ export function CalendarDisplay({
   }
 
   return (
-    <div className="space-y-6 md:space-y-8">
+    <div className={`space-y-6 md:space-y-8 ${isMobileView === true ? 'pb-32' : ''}`}>
       {/* Header with Back Button and Today Button */}
       <div className="flex flex-col gap-3">
         <div className="flex justify-between items-center">
@@ -95,6 +95,7 @@ export function CalendarDisplay({
             onClick={onBack}
             className="bg-black text-white rounded-full px-4 md:px-6 py-2 md:py-3 text-sm md:text-base font-medium
               shadow-sm hover:bg-black/90 transition-all duration-200 group inline-flex"
+            aria-label="Go back to rotation selection"
           >
             <span className="flex items-center gap-1.5 md:gap-2">
               <ArrowRight className="w-3.5 h-3.5 md:w-4 md:h-4 rotate-180 group-hover:-translate-x-1 transition-transform" />
@@ -107,7 +108,7 @@ export function CalendarDisplay({
             onClick={handleTodayClick}
             className="bg-white/80 backdrop-blur-sm text-gray-700 rounded-full px-4 md:px-6 py-2 md:py-3 text-sm md:text-base font-medium
               shadow-sm hover:bg-white hover:text-orange-500 transition-all duration-200 border border-gray-200/50 active:scale-95"
-            title="Jump to current month"
+            aria-label="Jump to today's month"
           >
             Today
           </button>

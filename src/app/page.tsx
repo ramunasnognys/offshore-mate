@@ -84,7 +84,7 @@ function HomeContent() {
   }
 
   return (
-    <main className={`min-h-screen bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-blue-100 via-white to-pink-100 flex ${isCalendarGenerated && isMobileView === true ? 'items-start pt-4' : 'items-center'} justify-center p-4 md:p-8 bg-fixed`}>
+    <main className={`min-h-screen bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-blue-100 via-white to-pink-100 flex ${isCalendarGenerated && isMobileView === true ? 'items-start pt-6' : 'items-center'} justify-center p-4 md:p-8 bg-fixed ${isCalendarGenerated && isMobileView === true ? 'pb-28' : ''}`}>
       {/* Notifications */}
       <NotificationManager
         saveNotification={saveNotification}
@@ -132,6 +132,7 @@ function HomeContent() {
                       <button 
                         onClick={() => setShowSavedSchedules(false)}
                         className="text-gray-400 hover:text-gray-600"
+                        aria-label="Close saved schedules"
                       >
                         <XCircle className="w-5 h-5" />
                       </button>

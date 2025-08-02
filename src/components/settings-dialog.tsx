@@ -108,22 +108,24 @@ export function SettingsDialog({
                   <button
                     onClick={() => setIsEditingName(false)}
                     className="text-green-600 hover:text-green-700 p-1 transition-colors"
+                    aria-label="Save schedule name"
                   >
                     <Check className="w-4 h-4" />
                   </button>
                 </div>
               ) : (
-                <div 
+                <button 
                   onClick={() => setIsEditingName(true)}
-                  className="cursor-pointer group"
+                  className="cursor-pointer group text-left w-full"
+                  aria-label="Edit schedule name"
                 >
                   <div className="flex items-center gap-2">
                     <span className="text-gray-800 text-base font-medium">
                       {scheduleName || `${selectedRotation} Rotation`}
                     </span>
-                    <Edit3 className="w-4 h-4 text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity" />
+                    <Edit3 className="w-4 h-4 text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity" aria-hidden="true" />
                   </div>
-                </div>
+                </button>
               )}
               
               {/* Schedule details subtitle */}

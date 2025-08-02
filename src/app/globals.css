@@ -66,13 +66,12 @@
 /* Touch-safe zones for navigation buttons */
 .navigation-buttons {
   position: relative;
-  z-index: 20;
+  z-index: 10;
   pointer-events: auto;
 }
 
 .navigation-buttons button {
   position: relative;
-  z-index: 21;
   pointer-events: auto;
   /* Ensure minimum touch target size */
   min-width: 44px;

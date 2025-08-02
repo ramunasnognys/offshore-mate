@@ -113,6 +113,7 @@ export function SavedSchedules({ onLoadSchedule, className = '' }: SavedSchedule
                   <button 
                     onClick={(e) => handleDeleteSchedule(e, schedule.id)}
                     className="text-gray-400 hover:text-red-500 p-1 transition-colors rounded-full hover:bg-white/50"
+                    aria-label={`Delete ${schedule.name || schedule.rotationPattern + ' schedule'}`}
                   >
                     <Trash className="w-4 h-4" />
                   </button>

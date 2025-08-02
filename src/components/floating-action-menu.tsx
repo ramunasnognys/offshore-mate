@@ -42,6 +42,7 @@ export function FloatingActionMenu({ onExport, isDownloading = false, className 
               // Share functionality to be implemented
               setIsOpen(false);
             }}
+            aria-label="Share calendar"
           >
             <Share2 className="w-5 h-5 text-gray-700 group-hover:text-blue-500 transition-colors" />
             <span className="text-sm font-medium text-gray-700 group-hover:text-blue-500 transition-colors">
@@ -56,6 +57,7 @@ export function FloatingActionMenu({ onExport, isDownloading = false, className 
             onMouseLeave={() => setHoveredFormat(null)}
             onClick={() => handleExport('pdf')}
             disabled={isDownloading}
+            aria-label="Export calendar as PDF document"
           >
             <FileText className="w-5 h-5 text-gray-700 group-hover:text-orange-500 transition-colors" />
             <span className="text-sm font-medium text-gray-700 group-hover:text-orange-500 transition-colors">
@@ -70,6 +72,7 @@ export function FloatingActionMenu({ onExport, isDownloading = false, className 
             onMouseLeave={() => setHoveredFormat(null)}
             onClick={() => handleExport('ics')}
             disabled={isDownloading}
+            aria-label="Add calendar to calendar app (iCal format)"
           >
             <CalendarPlus className="w-5 h-5 text-gray-700 group-hover:text-orange-500 transition-colors" />
             <span className="text-sm font-medium text-gray-700 group-hover:text-orange-500 transition-colors">
@@ -84,6 +87,7 @@ export function FloatingActionMenu({ onExport, isDownloading = false, className 
             onMouseLeave={() => setHoveredFormat(null)}
             onClick={() => handleExport('png')}
             disabled={isDownloading}
+            aria-label="Export calendar as PNG image"
           >
             <FileImage className="w-5 h-5 text-gray-700 group-hover:text-orange-500 transition-colors" />
             <span className="text-sm font-medium text-gray-700 group-hover:text-orange-500 transition-colors">
@@ -102,7 +106,8 @@ export function FloatingActionMenu({ onExport, isDownloading = false, className 
           ${isOpen ? 'rotate-45' : 'rotate-0'}
           ${isDownloading ? 'animate-pulse' : ''}
         `}
-        aria-label={isOpen ? 'Close menu' : 'Open export menu'}
+        aria-label={isOpen ? 'Close export menu' : 'Open export menu'}
+        aria-expanded={isOpen}
       >
         {isOpen ? (
           <X className="w-6 h-6" />
