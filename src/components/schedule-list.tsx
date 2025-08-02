@@ -189,14 +189,14 @@ function CalendarLegend() {
 function CalendarMonth({ month, isMobile, isFirst, isLast, onNavigate }: CalendarMonthProps) {
   return (
     <div 
-      className={`backdrop-blur-xl bg-white rounded-3xl border border-white/20 shadow-lg p-3 md:p-6 pb-3 md:pb-6 ${isMobile ? 'mb-6' : ''}`}
+      className={`backdrop-blur-xl bg-white rounded-3xl border border-white/20 shadow-lg p-3 md:p-6 pb-3 md:pb-6 relative z-[60] ${isMobile ? 'mb-6' : ''}`}
       role="region"
       aria-labelledby={`month-${month.month}-${month.year}`}
     >
       <div className="h-full flex flex-col">
         {isMobile && onNavigate ? (
           // Mobile header with integrated navigation
-          <div className="navigation-buttons flex items-center justify-between mb-3 relative z-10">
+          <div className="navigation-buttons flex items-center justify-between mb-3 relative z-[60]">
             <button
               onClick={() => {
                 if (!isFirst && onNavigate) {
@@ -204,7 +204,7 @@ function CalendarMonth({ month, isMobile, isFirst, isLast, onNavigate }: Calenda
                 }
               }}
               disabled={isFirst}
-              className={`p-3 rounded-full transition-all duration-150 bg-gray-100/50 touch-manipulation relative ${
+              className={`p-3 rounded-full transition-all duration-150 bg-gray-100/50 touch-manipulation relative z-[65] ${
                 isFirst 
                   ? 'opacity-30 cursor-not-allowed' 
                   : 'hover:bg-gray-200/50 active:scale-95'
@@ -233,7 +233,7 @@ function CalendarMonth({ month, isMobile, isFirst, isLast, onNavigate }: Calenda
                 }
               }}
               disabled={isLast}
-              className={`p-3 rounded-full transition-all duration-150 bg-gray-100/50 touch-manipulation relative ${
+              className={`p-3 rounded-full transition-all duration-150 bg-gray-100/50 touch-manipulation relative z-[65] ${
                 isLast
                   ? 'opacity-30 cursor-not-allowed' 
                   : 'hover:bg-gray-200/50 active:scale-95'
@@ -277,7 +277,7 @@ export function ScheduleList({
   return (
     <div 
       id="calendar-container"
-      className={`space-y-4 md:space-y-8 ${className}`}
+      className={`space-y-4 md:space-y-8 relative z-[70] ${className}`}
       role="main"
       aria-label="Work rotation schedule"
     >
