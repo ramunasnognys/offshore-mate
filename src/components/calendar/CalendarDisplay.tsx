@@ -47,7 +47,6 @@ export function CalendarDisplay({
   // Navigation
   const {
     currentMonthIndex,
-    setCurrentMonthIndex,
     goToPreviousMonth,
     goToNextMonth,
     goToToday
