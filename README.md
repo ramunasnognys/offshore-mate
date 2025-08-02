@@ -2,7 +2,7 @@
 
 ![Offshore Mate Banner](public/og-image.png)
 
-Offshore Mate is a modern web application built with Next.js 14 that helps offshore workers manage and visualize their work rotation schedules. Generate beautiful, easy-to-understand calendars for various offshore rotation patterns.
+Offshore Mate is a modern web application built with Next.js 15 that helps offshore workers manage and visualize their work rotation schedules. Generate beautiful, easy-to-understand calendars for various offshore rotation patterns.
 
 ## 🌟 Features
 
@@ -18,11 +18,21 @@ Offshore Mate is a modern web application built with Next.js 14 that helps offsh
   - Month-by-month view for easy planning
   - Color-coded calendar entries
   - Responsive design for all devices
+  - Swipeable navigation on mobile devices
+  - Touch-optimized interface with gesture support
 
 - **Export Capabilities**
   - Download calendars as high-quality PNG images
+  - Export to PDF format for professional documentation
+  - Generate iCal files for calendar app integration
   - Perfect for sharing or printing
   - Optimized for various screen sizes
+
+- **Schedule Management**
+  - Save multiple rotation schedules locally
+  - Quick access to saved schedules
+  - Edit and update existing schedules
+  - Rename schedules for easy organization
 <!-- AUTO-UPDATE:END -->
 
 ## 🚀 Getting Started
@@ -73,7 +83,7 @@ npm run build
 ## 🛠️ Tech Stack
 
 <!-- AUTO-UPDATE:START -->
-- **Framework:** Next.js 14
+- **Framework:** Next.js 15
 - **Language:** TypeScript
 - **Styling:** Tailwind CSS
 - **UI Components:** 
@@ -82,8 +92,13 @@ npm run build
   - Custom components
 - **Date Handling:** date-fns
 - **Calendar Generation:** Custom implementation
-- **Image Export:** html2canvas
+- **Export Features:**
+  - Image Export: html2canvas
+  - PDF Export: jsPDF
+  - iCal Export: ical-generator
+- **Mobile Interactions:** react-swipeable
 - **Icons:** Lucide React
+- **Development:** Turbopack
 <!-- AUTO-UPDATE:END -->
 
 ## 📱 Usage
@@ -100,10 +115,17 @@ npm run build
 3. **Generate Calendar**
    - Click "Generate Calendar" to create your schedule
    - View the full year calendar with color-coded days
+   - Navigate months using arrow buttons or swipe gestures on mobile
 
-4. **Download/Share**
-   - Click the download button to save as PNG
-   - Share with colleagues or family
+4. **Save & Manage Schedules**
+   - Save your generated calendar for quick access
+   - View and manage saved schedules
+   - Edit or delete existing schedules
+
+5. **Export Options**
+   - **PNG** - High-quality image for sharing
+   - **PDF** - Professional document format
+   - **iCal** - Import to calendar apps (Google Calendar, Outlook, etc.)
 
 ## 🎨 Color Coding
 
@@ -135,7 +157,15 @@ This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md
 ## 🔄 Version History
 
 <!-- AUTO-UPDATE:START -->
-- **1.0.1** - Current stable release
+- **1.1.0** - Current stable release
+  - Added swipeable navigation for mobile devices
+  - Multiple export formats (PNG, PDF, iCal)
+  - Schedule management system with local storage
+  - Touch-optimized mobile interface
+  - Fixed navigation button conflicts on mobile
+  - Enhanced calendar padding for better mobile display
+
+- **1.0.1** - Previous release
   - Enhanced download functionality
   - Improved mobile responsiveness
   - Bug fixes and performance improvements

@@ -11,7 +11,6 @@ import { useCalendar } from '@/contexts/CalendarContext'
 import { useUI } from '@/contexts/UIContext'
 import { useMobileDetection } from '@/hooks/useMobileDetection'
 import { useMonthNavigation } from '@/hooks/useMonthNavigation'
-import { useSwipeable } from 'react-swipeable'
 import { useExportCalendar } from '@/hooks/useExportCalendar'
 import { MonthData } from '@/types/rotation'
 
@@ -71,34 +70,6 @@ export function CalendarDisplay({
     }
   })
 
-  // Swipe gestures with react-swipeable - mobile-optimized
-  const handlers = useSwipeable({
-    onSwipedLeft: () => {
-      if (currentMonthIndex < yearCalendar.length - 1) {
-        goToNextMonth();
-      }
-    },
-    onSwipedRight: () => {
-      if (currentMonthIndex > 0) {
-        goToPreviousMonth();
-      }
-    },
-    onTouchStartOrOnMouseDown: (eventData) => {
-      // Prevent swipe if touch starts on a button or interactive element
-      const target = eventData.event.target as Element;
-      if (target.closest('button') || 
-          target.closest('[role="button"]') || 
-          target.closest('.navigation-buttons')) {
-        return false; // This prevents the swipe from starting
-      }
-    },
-    delta: 50, // Minimum distance for a swipe (50px works well for mobile)
-    preventScrollOnSwipe: false, // Allow vertical scrolling
-    trackMouse: false, // Disable mouse tracking for mobile-only swipes
-    trackTouch: true, // Enable touch tracking for mobile
-    touchEventOptions: { passive: false }, // Allow preventDefault when needed
-    swipeDuration: 500 // Maximum time for swipe
-  })
 
   const handleDownload = async () => {
     await handleExport(yearCalendar, scheduleName, selectedRotation, selectedDate)
@@ -159,45 +130,22 @@ export function CalendarDisplay({
 
       {/* Calendar Display */}
       <div>
-        <div className={isMobileView === true ? "relative" : ""}>
-          {/* Swipe wrapper only for mobile */}
-          <div {...(isMobileView === true ? handlers : {})}>
-            <ScheduleList 
-              calendar={isMobileView === true && yearCalendar.length > 0 
-                ? [yearCalendar[currentMonthIndex]] 
-                : yearCalendar
-              } 
-              className={isMobileView === true ? "h-auto" : ""}
-              isMobile={isMobileView === true}
-              currentMonthIndex={currentMonthIndex}
-              onNavigate={(direction) => {
-                if (direction === 'prev') goToPreviousMonth()
-                else goToNextMonth()
-              }}
-              totalMonths={yearCalendar.length}
-            />
-          </div>
-        </div>
+        <ScheduleList 
+          calendar={isMobileView === true && yearCalendar.length > 0 
+            ? [yearCalendar[currentMonthIndex]] 
+            : yearCalendar
+          } 
+          className={isMobileView === true ? "h-auto" : ""}
+          isMobile={isMobileView === true}
+          currentMonthIndex={currentMonthIndex}
+          onNavigate={(direction) => {
+            console.log('Navigation triggered from ScheduleList', direction);
+            if (direction === 'prev') goToPreviousMonth()
+            else goToNextMonth()
+          }}
+          totalMonths={yearCalendar.length}
+        />
         
-        {/* Progress Dots - Mobile Only */}
-        {isMobileView === true && yearCalendar.length > 0 && (
-          <div className="flex justify-center gap-1.5 mt-4 mb-20">
-            {yearCalendar.map((_, index) => (
-              <button
-                key={index}
-                onClick={() => setCurrentMonthIndex(index)}
-                className={`
-                  transition-all duration-200 rounded-full
-                  ${index === currentMonthIndex 
-                    ? 'w-8 h-2 bg-orange-500' 
-                    : 'w-2 h-2 bg-gray-400/50 hover:bg-gray-400'
-                  }
-                `}
-                aria-label={`Go to ${yearCalendar[index]?.month} ${yearCalendar[index]?.year}`}
-              />
-            ))}
-          </div>
-        )}
         
         {/* Floating Action Menu - Desktop only */}
         {isMobileView === false && (

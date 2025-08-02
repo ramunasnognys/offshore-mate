@@ -196,21 +196,50 @@ function CalendarMonth({ month, isMobile, isFirst, isLast, onNavigate }: Calenda
       <div className="h-full flex flex-col">
         {isMobile && onNavigate ? (
           // Mobile header with integrated navigation
-          <div className="navigation-buttons flex items-center justify-between mb-3">
+          <div className="navigation-buttons flex items-center justify-between mb-3 relative z-10">
             <button
-              onPointerDown={(e) => e.stopPropagation()}
               onClick={(e) => {
                 e.preventDefault();
                 e.stopPropagation();
-                onNavigate('prev');
+                console.log('Previous button clicked');
+                if (!isFirst) {
+                  onNavigate('prev');
+                }
+              }}
+              onTouchStart={(e) => {
+                e.stopPropagation();
+                console.log('Previous button touched');
+                // Add visual feedback
+                e.currentTarget.style.transform = 'scale(0.95)';
+              }}
+              onTouchEnd={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                console.log('Previous button touch ended');
+                // Remove visual feedback
+                e.currentTarget.style.transform = 'scale(1)';
+                if (!isFirst) {
+                  onNavigate('prev');
+                }
+              }}
+              onTouchCancel={(e) => {
+                // Remove visual feedback on cancel
+                e.currentTarget.style.transform = 'scale(1)';
               }}
               disabled={isFirst}
-              className={`p-2 rounded-full transition-all duration-200 bg-gray-100/50 touch-manipulation ${
+              className={`p-3 rounded-full transition-all duration-150 bg-gray-100/50 touch-manipulation relative ${
                 isFirst 
                   ? 'opacity-30 cursor-not-allowed' 
                   : 'hover:bg-gray-200/50 active:scale-95'
               }`}
-              style={{ touchAction: 'manipulation', WebkitTouchCallout: 'none', WebkitUserSelect: 'none' }}
+              style={{ 
+                touchAction: 'manipulation', 
+                WebkitTouchCallout: 'none', 
+                WebkitUserSelect: 'none',
+                minWidth: '44px',
+                minHeight: '44px',
+                zIndex: 21
+              }}
               aria-label="Previous month"
             >
               <ChevronLeft className="w-5 h-5 text-gray-700" />
@@ -218,25 +247,54 @@ function CalendarMonth({ month, isMobile, isFirst, isLast, onNavigate }: Calenda
             
             <h3 
               id={`month-${month.month}-${month.year}`}
-              className="text-lg md:text-xl font-bold text-gray-800 px-4 select-none"
+              className="text-lg md:text-xl font-bold text-gray-800 px-4 select-none flex-1 text-center"
             >
               {month.month} {month.year}
             </h3>
             
             <button
-              onPointerDown={(e) => e.stopPropagation()}
               onClick={(e) => {
                 e.preventDefault();
                 e.stopPropagation();
-                onNavigate('next');
+                console.log('Next button clicked');
+                if (!isLast) {
+                  onNavigate('next');
+                }
+              }}
+              onTouchStart={(e) => {
+                e.stopPropagation();
+                console.log('Next button touched');
+                // Add visual feedback
+                e.currentTarget.style.transform = 'scale(0.95)';
+              }}
+              onTouchEnd={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                console.log('Next button touch ended');
+                // Remove visual feedback
+                e.currentTarget.style.transform = 'scale(1)';
+                if (!isLast) {
+                  onNavigate('next');
+                }
+              }}
+              onTouchCancel={(e) => {
+                // Remove visual feedback on cancel
+                e.currentTarget.style.transform = 'scale(1)';
               }}
               disabled={isLast}
-              className={`p-2 rounded-full transition-all duration-200 bg-gray-100/50 touch-manipulation ${
+              className={`p-3 rounded-full transition-all duration-150 bg-gray-100/50 touch-manipulation relative ${
                 isLast
                   ? 'opacity-30 cursor-not-allowed' 
                   : 'hover:bg-gray-200/50 active:scale-95'
               }`}
-              style={{ touchAction: 'manipulation', WebkitTouchCallout: 'none', WebkitUserSelect: 'none' }}
+              style={{ 
+                touchAction: 'manipulation', 
+                WebkitTouchCallout: 'none', 
+                WebkitUserSelect: 'none',
+                minWidth: '44px',
+                minHeight: '44px',
+                zIndex: 21
+              }}
               aria-label="Next month"
             >
               <ChevronRight className="w-5 h-5 text-gray-700" />
