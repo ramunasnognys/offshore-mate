@@ -196,7 +196,7 @@ function CalendarMonth({ month, isMobile, isFirst, isLast, onNavigate }: Calenda
       <div className="h-full flex flex-col">
         {isMobile && onNavigate ? (
           // Mobile header with integrated navigation
-          <div className="navigation-buttons flex items-center justify-between mb-3 relative z-10">
+          <div className="navigation-buttons flex items-center justify-between mb-3 relative z-30">
             <button
               onClick={() => {
                 if (!isFirst && onNavigate) {
