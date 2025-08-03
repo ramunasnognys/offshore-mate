@@ -11,14 +11,20 @@ interface BottomToolbarProps {
   selectedFormat: ExportFormat;
   isDownloading?: boolean;
   className?: string;
+  onExpandedChange?: (expanded: boolean) => void;
 }
 
-export function BottomToolbar({ onExport, onFormatChange, onSettings, selectedFormat, isDownloading = false, className = '' }: BottomToolbarProps) {
+export function BottomToolbar({ onExport, onFormatChange, onSettings, selectedFormat, isDownloading = false, className = '', onExpandedChange }: BottomToolbarProps) {
   const [isExpanded, setIsExpanded] = useState(false);
+
+  const handleExpandedChange = (expanded: boolean) => {
+    setIsExpanded(expanded);
+    onExpandedChange?.(expanded);
+  };
 
   const handleExport = () => {
     onExport();
-    setIsExpanded(false);
+    handleExpandedChange(false);
   };
 
   return (
@@ -27,12 +33,12 @@ export function BottomToolbar({ onExport, onFormatChange, onSettings, selectedFo
       {isExpanded && (
         <div 
           className="fixed inset-0 bg-black/20 z-40"
-          onClick={() => setIsExpanded(false)}
+          onClick={() => handleExpandedChange(false)}
         />
       )}
       
       {/* Bottom Toolbar */}
-      <div className={`fixed bottom-0 left-0 right-0 z-50 shadow-[0_-4px_20px_rgba(0,0,0,0.08)] ${className}`}>
+      <div className={`fixed bottom-0 left-0 right-0 z-50 ${className}`}>
         {/* Expanded Export Options */}
         <div className={`
           bg-white/95 backdrop-blur-xl border-t border-gray-200/50 
@@ -43,7 +49,7 @@ export function BottomToolbar({ onExport, onFormatChange, onSettings, selectedFo
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-lg font-semibold text-gray-800">Export Calendar</h3>
               <button
-                onClick={() => setIsExpanded(false)}
+                onClick={() => handleExpandedChange(false)}
                 className="p-2 rounded-full hover:bg-gray-100 transition-colors"
               >
                 <ChevronUp className="w-5 h-5 text-gray-600" />
@@ -150,7 +156,7 @@ export function BottomToolbar({ onExport, onFormatChange, onSettings, selectedFo
         <div className="bg-white/95 backdrop-blur-xl border-t border-gray-200/50">
           <div className="flex items-center justify-around py-2" style={{ paddingBottom: 'max(0.5rem, env(safe-area-inset-bottom))' }}>
             <button
-              onClick={() => setIsExpanded(!isExpanded)}
+              onClick={() => handleExpandedChange(!isExpanded)}
               className="flex flex-col items-center gap-1 p-2 rounded-lg hover:bg-gray-100 transition-colors group"
             >
               <Download className="w-5 h-5 text-gray-700 group-hover:text-orange-500 transition-colors" />
