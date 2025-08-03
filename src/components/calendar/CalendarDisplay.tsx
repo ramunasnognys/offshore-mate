@@ -4,14 +4,11 @@ import React from 'react'
 import { ArrowRight } from 'lucide-react'
 import { ScheduleList } from '@/components/schedule-list'
 import { DownloadCalendar } from '@/components/download-calendar'
-import { BottomToolbar } from '@/components/bottom-toolbar'
-import { FloatingActionMenu } from '@/components/floating-action-menu'
 import { SettingsDialog } from '@/components/settings-dialog'
 import { useCalendar } from '@/contexts/CalendarContext'
 import { useUI } from '@/contexts/UIContext'
 import { useMobileDetection } from '@/hooks/useMobileDetection'
 import { useMonthNavigation } from '@/hooks/useMonthNavigation'
-import { useExportCalendar } from '@/hooks/useExportCalendar'
 import { MonthData } from '@/types/rotation'
 import { extractWorkPeriods, formatWorkPatternDisplay } from '@/lib/utils/workPeriods'
 
@@ -44,7 +41,6 @@ export function CalendarDisplay({
   } = useUI()
 
   const isMobileView = useMobileDetection()
-  const [isExportPanelExpanded, setIsExportPanelExpanded] = React.useState(false)
 
   // Navigation
   const {
@@ -56,25 +52,6 @@ export function CalendarDisplay({
     yearCalendar, 
     initialMonthIndex: findCurrentMonthIndex(yearCalendar) 
   })
-
-  // Export functionality
-  const {
-    isDownloading,
-    exportFormat,
-    setExportFormat,
-    handleDownload: handleExport
-  } = useExportCalendar({
-    isMobileView,
-    onError: setErrorMessage,
-    onSuccess: (_message) => {
-      // Handle success notification if needed
-    }
-  })
-
-
-  const handleDownload = async () => {
-    await handleExport(yearCalendar, scheduleName, selectedRotation, selectedDate)
-  }
 
   const handleTodayClick = () => {
     goToToday()
@@ -97,7 +74,7 @@ export function CalendarDisplay({
   }, [yearCalendar, currentMonthIndex])
 
   return (
-    <div className={`space-y-6 md:space-y-8 ${isMobileView === true ? (isExportPanelExpanded ? 'pb-96' : 'pb-40') : ''}`}>
+    <div className="space-y-6 md:space-y-8">
       {/* Header with Back Button and Today Button */}
       <div className="flex flex-col gap-3">
         <div className="flex justify-between items-center">
@@ -149,30 +126,6 @@ export function CalendarDisplay({
           }}
           totalMonths={yearCalendar.length}
         />
-        
-        
-        {/* Floating Action Menu - Desktop only */}
-        {isMobileView === false && (
-          <FloatingActionMenu 
-            onExport={(format) => {
-              setExportFormat(format)
-              handleDownload()
-            }}
-            isDownloading={isDownloading}
-          />
-        )}
-        
-        {/* Bottom Toolbar - Mobile only */}
-        {isMobileView === true && (
-          <BottomToolbar 
-            selectedFormat={exportFormat}
-            onFormatChange={setExportFormat}
-            onExport={handleDownload}
-            onSettings={() => setShowSettings(true)}
-            isDownloading={isDownloading}
-            onExpandedChange={setIsExportPanelExpanded}
-          />
-        )}
         
         <DownloadCalendar calendar={yearCalendar} />
       </div>

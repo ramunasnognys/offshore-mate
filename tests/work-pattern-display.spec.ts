@@ -2,7 +2,7 @@ import { test, expect } from '@playwright/test'
 
 test.describe('Work Pattern Display', () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto('http://localhost:3002')
+    await page.goto('http://localhost:3000')
   })
 
   test('should display work pattern badge after generating calendar', async ({ page }) => {

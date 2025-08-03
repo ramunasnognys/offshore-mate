@@ -3,11 +3,12 @@
 import React, { useEffect } from 'react'
 import { XCircle } from 'lucide-react'
 import { CalendarProvider, useCalendar } from '@/contexts/CalendarContext'
-import { UIProvider } from '@/contexts/UIContext'
+import { UIProvider, useUI } from '@/contexts/UIContext'
 import { CalendarGenerator } from '@/components/calendar/CalendarGenerator'
 import { CalendarDisplay } from '@/components/calendar/CalendarDisplay'
 import { NotificationManager } from '@/components/common/NotificationManager'
 import { SavedSchedules } from '@/components/saved-schedules'
+import { BottomToolbar } from '@/components/bottom-toolbar'
 import { useMobileDetection } from '@/hooks/useMobileDetection'
 import { useScheduleManagement } from '@/hooks/useScheduleManagement'
 import { useExportCalendar } from '@/hooks/useExportCalendar'
@@ -16,6 +17,7 @@ import { RotationPattern } from '@/types/rotation'
 function HomeContent() {
   const isMobileView = useMobileDetection()
   const [isClient, setIsClient] = React.useState(false)
+  const [isExportPanelExpanded, setIsExportPanelExpanded] = React.useState(false)
   
   // Get calendar context
   const { 
@@ -34,6 +36,9 @@ function HomeContent() {
     resetCalendar,
     setIsCalendarGenerated
   } = useCalendar()
+
+  // UI context
+  const { setShowSettings } = useUI()
 
   // Schedule management
   const {
@@ -58,11 +63,24 @@ function HomeContent() {
   })
 
   // Export functionality
-  const exportHook = useExportCalendar({
+  const {
+    isDownloading,
+    exportFormat,
+    setExportFormat,
+    handleDownload,
+    showPDFError,
+    pdfErrorMessage,
+    setShowPDFError,
+    handleUsePNGInstead
+  } = useExportCalendar({
     isMobileView,
     onError: (error) => console.error('Export error:', error),
     onSuccess: (message) => setSaveNotification(message)
   })
+
+  const handleExport = async () => {
+    await handleDownload(yearCalendar, scheduleName, selectedRotation, selectedDate)
+  }
 
   // Client-side initialization
   useEffect(() => {
@@ -84,18 +102,20 @@ function HomeContent() {
   }
 
   return (
-    <main className={`min-h-screen bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-blue-100 via-white to-pink-100 flex ${isCalendarGenerated && isMobileView === true ? 'items-start pt-6' : 'items-center'} justify-center p-4 md:p-8 bg-fixed ${isCalendarGenerated && isMobileView === true ? 'pb-36' : ''}`}>
+    <div className="flex flex-col h-screen bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-blue-100 via-white to-pink-100 bg-fixed">
       {/* Notifications */}
       <NotificationManager
         saveNotification={saveNotification}
         onClearSaveNotification={() => setSaveNotification('')}
-        isDownloading={exportHook.isDownloading}
-        exportFormat={exportHook.exportFormat}
-        showPDFError={exportHook.showPDFError}
-        pdfErrorMessage={exportHook.pdfErrorMessage}
-        onClosePDFError={() => exportHook.setShowPDFError(false)}
-        onSwitchToPNG={exportHook.handleUsePNGInstead}
+        isDownloading={isDownloading}
+        exportFormat={exportFormat}
+        showPDFError={showPDFError}
+        pdfErrorMessage={pdfErrorMessage}
+        onClosePDFError={() => setShowPDFError(false)}
+        onSwitchToPNG={handleUsePNGInstead}
       />
+
+      <main className={`flex-1 overflow-y-auto flex ${isCalendarGenerated && isMobileView === true ? 'items-start pt-6' : 'items-center'} justify-center p-4 md:p-8 ${isCalendarGenerated && isMobileView === true && isExportPanelExpanded ? 'pb-96' : ''}`}>
 
       <div className="relative w-full max-w-[500px]">
         <div className={`${isCalendarGenerated && isMobileView === true ? 'mb-4' : 'mb-8 md:mb-12'}`}>
@@ -161,16 +181,29 @@ function HomeContent() {
           </div>
         )}
       </div>
-    </main>
+      </main>
+
+      {/* Bottom Toolbar - Mobile only */}
+      {isCalendarGenerated && isMobileView === true && (
+        <BottomToolbar 
+          selectedFormat={exportFormat}
+          onFormatChange={setExportFormat}
+          onExport={handleExport}
+          onSettings={() => setShowSettings(true)}
+          isDownloading={isDownloading}
+          onExpandedChange={setIsExportPanelExpanded}
+        />
+      )}
+    </div>
   )
 }
 
 export default function Home() {
   return (
-    <CalendarProvider>
-      <UIProvider>
+    <UIProvider>
+      <CalendarProvider>
         <HomeContent />
-      </UIProvider>
-    </CalendarProvider>
+      </CalendarProvider>
+    </UIProvider>
   )
 }

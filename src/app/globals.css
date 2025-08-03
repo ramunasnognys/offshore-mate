@@ -429,4 +429,14 @@
   body {
     @apply bg-background text-foreground;
   }
+
+  /* Safe area padding for main scrollable content */
+  main.overflow-y-auto {
+    padding-bottom: calc(var(--bottom-toolbar-height) + var(--bottom-toolbar-safe-area) + 1rem);
+  }
+
+  /* Mobile browser height fix */
+  .flex-col.h-screen {
+    min-height: -webkit-fill-available;
+  }
 }
