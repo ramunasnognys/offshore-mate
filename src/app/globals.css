@@ -387,6 +387,8 @@
     --ring: 222.2 84% 4.9%;
  
     --radius: 0.5rem;
+    --bottom-toolbar-height: 4rem;
+    --bottom-toolbar-safe-area: env(safe-area-inset-bottom, 0);
   }
  
   .dark {

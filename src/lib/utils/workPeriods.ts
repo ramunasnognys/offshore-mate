@@ -12,24 +12,27 @@ export function extractWorkPeriods(monthData: MonthData): WorkPeriod[] {
 
   monthData.days.forEach((day, index) => {
     const isLastDay = index === monthData.days.length - 1
+    // Ensure date is a Date object
+    const dayDate = day.date instanceof Date ? day.date : new Date(day.date)
 
     if (day.isWorkDay && day.isInRotation) {
       if (!currentPeriodStart) {
-        currentPeriodStart = day.date
+        currentPeriodStart = dayDate
       }
       
       if (isLastDay) {
         workPeriods.push({
           startDate: currentPeriodStart,
-          endDate: day.date
+          endDate: dayDate
         })
       }
     } else {
       if (currentPeriodStart) {
         const previousDay = monthData.days[index - 1]
+        const prevDate = previousDay.date instanceof Date ? previousDay.date : new Date(previousDay.date)
         workPeriods.push({
           startDate: currentPeriodStart,
-          endDate: previousDay.date
+          endDate: prevDate
         })
         currentPeriodStart = null
       }

@@ -189,7 +189,7 @@ function CalendarLegend() {
 function CalendarMonth({ month, isMobile, isFirst, isLast, onNavigate }: CalendarMonthProps) {
   return (
     <div 
-      className={`backdrop-blur-xl bg-white rounded-3xl border border-white/20 shadow-lg p-3 md:p-6 pb-3 md:pb-6 relative z-[60] ${isMobile ? 'mb-6' : ''}`}
+      className={`backdrop-blur-xl bg-white rounded-3xl border border-white/20 shadow-lg p-3 md:p-6 pb-3 md:pb-6 relative z-[60] ${isMobile ? (isLast ? 'mb-12' : 'mb-6') : ''}`}
       role="region"
       aria-labelledby={`month-${month.month}-${month.year}`}
     >

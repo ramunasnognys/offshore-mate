@@ -84,7 +84,7 @@ function HomeContent() {
   }
 
   return (
-    <main className={`min-h-screen bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-blue-100 via-white to-pink-100 flex ${isCalendarGenerated && isMobileView === true ? 'items-start pt-6' : 'items-center'} justify-center p-4 md:p-8 bg-fixed ${isCalendarGenerated && isMobileView === true ? 'pb-28' : ''}`}>
+    <main className={`min-h-screen bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-blue-100 via-white to-pink-100 flex ${isCalendarGenerated && isMobileView === true ? 'items-start pt-6' : 'items-center'} justify-center p-4 md:p-8 bg-fixed ${isCalendarGenerated && isMobileView === true ? 'pb-36' : ''}`}>
       {/* Notifications */}
       <NotificationManager
         saveNotification={saveNotification}
