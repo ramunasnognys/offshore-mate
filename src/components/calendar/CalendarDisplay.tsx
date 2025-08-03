@@ -44,6 +44,7 @@ export function CalendarDisplay({
   } = useUI()
 
   const isMobileView = useMobileDetection()
+  const [isExportPanelExpanded, setIsExportPanelExpanded] = React.useState(false)
 
   // Navigation
   const {
@@ -96,7 +97,7 @@ export function CalendarDisplay({
   }, [yearCalendar, currentMonthIndex])
 
   return (
-    <div className={`space-y-6 md:space-y-8 ${isMobileView === true ? 'pb-40' : ''}`}>
+    <div className={`space-y-6 md:space-y-8 ${isMobileView === true ? (isExportPanelExpanded ? 'pb-96' : 'pb-40') : ''}`}>
       {/* Header with Back Button and Today Button */}
       <div className="flex flex-col gap-3">
         <div className="flex justify-between items-center">
@@ -169,6 +170,7 @@ export function CalendarDisplay({
             onExport={handleDownload}
             onSettings={() => setShowSettings(true)}
             isDownloading={isDownloading}
+            onExpandedChange={setIsExportPanelExpanded}
           />
         )}
         
