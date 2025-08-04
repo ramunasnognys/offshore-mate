@@ -81,12 +81,24 @@
 /* Mobile calendar specific styles */
 @media (max-width: 768px) {
   #calendar-container.with-bottom-toolbar {
-    padding-bottom: calc(var(--bottom-toolbar-total-height) + 2rem);
+    padding-bottom: calc(var(--bottom-toolbar-total-height) + var(--bottom-toolbar-buffer));
   }
   
   /* Ensure last calendar month has enough space */
   #calendar-container.with-bottom-toolbar > div:last-child {
     margin-bottom: calc(var(--bottom-toolbar-total-height) + 1rem);
+  }
+  
+  /* Chrome-specific fix for mobile */
+  @supports (-webkit-appearance: none) and (not (-ms-ime-align: auto)) {
+    #calendar-container.with-bottom-toolbar {
+      padding-bottom: calc(var(--bottom-toolbar-total-height) + var(--bottom-toolbar-buffer) + 1rem);
+    }
+    
+    .mobile-calendar-spacer {
+      height: calc(var(--bottom-toolbar-total-height) + var(--bottom-toolbar-buffer));
+      min-height: calc(var(--bottom-toolbar-total-height) + var(--bottom-toolbar-buffer));
+    }
   }
 }
 
@@ -399,9 +411,10 @@
     --ring: 222.2 84% 4.9%;
  
     --radius: 0.5rem;
-    --bottom-toolbar-height: 4rem;
+    --bottom-toolbar-height: 5rem; /* 80px - actual height with content */
     --bottom-toolbar-safe-area: env(safe-area-inset-bottom, 0);
     --bottom-toolbar-total-height: calc(var(--bottom-toolbar-height) + var(--bottom-toolbar-safe-area));
+    --bottom-toolbar-buffer: 2rem; /* Extra buffer for Chrome */
     
     /* Dynamic viewport height for mobile browsers */
     --viewport-height: 100vh;
@@ -473,7 +486,15 @@
   
   /* Ensure bottom toolbar doesn't overlap content on mobile */
   .has-bottom-toolbar {
-    padding-bottom: var(--bottom-toolbar-total-height);
+    padding-bottom: calc(var(--bottom-toolbar-total-height) + var(--bottom-toolbar-buffer));
+  }
+  
+  /* Fix for Chrome mobile toolbar positioning */
+  .fixed.bottom-0 {
+    position: fixed !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
   }
   
   /* Fix for mobile browsers with dynamic viewport */

@@ -189,7 +189,7 @@ function CalendarLegend() {
 function CalendarMonth({ month, isMobile, isFirst, isLast, onNavigate }: CalendarMonthProps) {
   return (
     <div 
-      className={`backdrop-blur-xl bg-white rounded-3xl border border-white/20 shadow-lg p-3 md:p-6 pb-3 md:pb-6 ${isMobile ? 'mb-6' : ''} ${isMobile && isLast ? 'mb-32' : ''}`}
+      className={`backdrop-blur-xl bg-white rounded-3xl border border-white/20 shadow-lg p-3 md:p-6 pb-3 md:pb-6 ${isMobile ? 'mb-6' : ''}`}
       role="region"
       aria-labelledby={`month-${month.month}-${month.year}`}
     >
@@ -291,6 +291,18 @@ export function ScheduleList({
           onNavigate={onNavigate}
         />
       ))}
+      
+      {/* Spacer for mobile to ensure content is visible above bottom toolbar */}
+      {isMobile && (
+        <div 
+          className="mobile-calendar-spacer" 
+          aria-hidden="true"
+          style={{ 
+            height: 'calc(5rem + env(safe-area-inset-bottom, 0) + 2rem)',
+            minHeight: 'calc(5rem + env(safe-area-inset-bottom, 0) + 2rem)'
+          }}
+        />
+      )}
     </div>
   );
 }
