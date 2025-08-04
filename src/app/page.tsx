@@ -115,7 +115,7 @@ function HomeContent() {
         onSwitchToPNG={handleUsePNGInstead}
       />
 
-      <main className={`flex-1 overflow-y-auto flex ${isCalendarGenerated && isMobileView === true ? 'items-start pt-6' : 'items-center'} justify-center p-4 md:p-8 ${isCalendarGenerated && isMobileView === true ? 'has-bottom-toolbar' : ''} ${isCalendarGenerated && isMobileView === true && isExportPanelExpanded ? 'pb-96' : ''}`} 
+      <main className={`flex-1 overflow-y-auto flex ${isCalendarGenerated ? 'items-start pt-6' : 'items-center'} justify-center p-4 md:p-8 ${isCalendarGenerated && isMobileView === true ? 'has-bottom-toolbar' : ''} ${isCalendarGenerated && isMobileView === true && isExportPanelExpanded ? 'pb-96' : ''}`} 
         style={{
           ...(isCalendarGenerated && isMobileView === true ? { 
             paddingBottom: isExportPanelExpanded ? '24rem' : 'calc(5rem + env(safe-area-inset-bottom, 0) + 2rem)',
