@@ -157,25 +157,25 @@ export function BottomToolbar({ onExport, onFormatChange, onSettings, selectedFo
           <div className="flex items-center justify-around py-2" style={{ paddingBottom: 'max(0.5rem, env(safe-area-inset-bottom))' }}>
             <button
               onClick={() => handleExpandedChange(!isExpanded)}
-              className="flex flex-col items-center gap-1 p-2 rounded-lg hover:bg-gray-100 transition-colors group"
+              className="p-2 rounded-lg hover:bg-gray-100 transition-colors group"
+              aria-label="Export"
             >
               <Download className="w-5 h-5 text-gray-700 group-hover:text-orange-500 transition-colors" />
-              <span className="text-xs text-gray-600 group-hover:text-orange-500 transition-colors">Export</span>
             </button>
             
             <button
-              className="flex flex-col items-center gap-1 p-2 rounded-lg hover:bg-gray-100 transition-colors group"
+              className="p-2 rounded-lg hover:bg-gray-100 transition-colors group"
+              aria-label="Share"
             >
               <Share2 className="w-5 h-5 text-gray-700 group-hover:text-orange-500 transition-colors" />
-              <span className="text-xs text-gray-600 group-hover:text-orange-500 transition-colors">Share</span>
             </button>
             
             <button
               onClick={onSettings}
-              className="flex flex-col items-center gap-1 p-2 rounded-lg hover:bg-gray-100 transition-colors group"
+              className="p-2 rounded-lg hover:bg-gray-100 transition-colors group"
+              aria-label="Settings"
             >
               <Settings className="w-5 h-5 text-gray-700 group-hover:text-orange-500 transition-colors" />
-              <span className="text-xs text-gray-600 group-hover:text-orange-500 transition-colors">Settings</span>
             </button>
           </div>
         </div>
