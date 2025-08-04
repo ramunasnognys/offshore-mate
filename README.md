@@ -157,7 +157,14 @@ This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md
 ## 🔄 Version History
 
 <!-- AUTO-UPDATE:START -->
-- **1.1.0** - Current stable release
+- **1.1.1** - Current stable release
+  - Fixed Chrome mobile calendar bottom cut-off issue
+  - Enhanced mobile navigation button z-index handling
+  - Improved calendar padding when export panel is expanded
+  - Optimized CSS animations for better performance
+  - Added browser-specific fixes for mobile compatibility
+  
+- **1.1.0** - Previous release
   - Added swipeable navigation for mobile devices
   - Multiple export formats (PNG, PDF, iCal)
   - Schedule management system with local storage

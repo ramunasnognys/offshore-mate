@@ -89,3 +89,18 @@ src/
 - **Turbopack** - Used in development for faster builds
 - **Image Optimization** - html2canvas exports are optimized for file size
 - **Bundle Analysis** - Monitor bundle size when adding new dependencies
+
+### Mobile UI Patterns & Fixes
+- **Navigation Button Z-Index** - Ensure navigation buttons have proper z-index (10+) to prevent bottom sheet overlap
+- **Calendar Container Padding** - Dynamic padding-bottom calculation using CSS variables for bottom toolbar accommodation:
+  ```css
+  #calendar-container.with-bottom-toolbar {
+    padding-bottom: calc(var(--bottom-toolbar-total-height) + var(--bottom-toolbar-buffer));
+  }
+  ```
+- **Chrome Mobile Specific Fixes** - Use `@supports` queries for Chrome-specific calendar spacing adjustments
+- **Touch Target Sizing** - Minimum 44px touch targets for mobile accessibility
+- **CSS Animations** - Modern animations with reduced motion support:
+  - `todayGlowModern` - Subtle glow effect for current date
+  - `todayShimmer` - Shimmer effect for enhanced visibility
+  - Performance optimizations with `animation-play-state` control
