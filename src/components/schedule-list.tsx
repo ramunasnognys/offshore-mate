@@ -189,7 +189,7 @@ function CalendarLegend() {
 function CalendarMonth({ month, isMobile, isFirst, isLast, onNavigate }: CalendarMonthProps) {
   return (
     <div 
-      className={`backdrop-blur-xl bg-white rounded-3xl border border-white/20 shadow-lg p-3 md:p-6 pb-3 md:pb-6 ${isMobile ? 'mb-6' : ''}`}
+      className={`backdrop-blur-xl bg-white rounded-3xl border border-white/20 shadow-lg p-3 md:p-6 pb-3 md:pb-6 ${isMobile ? 'mb-6' : ''} ${isMobile && isLast ? 'mb-32' : ''}`}
       role="region"
       aria-labelledby={`month-${month.month}-${month.year}`}
     >
@@ -277,7 +277,7 @@ export function ScheduleList({
   return (
     <div 
       id="calendar-container"
-      className={`space-y-4 md:space-y-8 ${className}`}
+      className={`space-y-4 md:space-y-8 ${className} ${isMobile ? 'with-bottom-toolbar' : ''}`}
       role="main"
       aria-label="Work rotation schedule"
     >

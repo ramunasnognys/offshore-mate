@@ -38,7 +38,7 @@ export function BottomToolbar({ onExport, onFormatChange, onSettings, selectedFo
       )}
       
       {/* Bottom Toolbar */}
-      <div className={`fixed bottom-0 left-0 right-0 z-50 ${className}`}>
+      <div className={`fixed bottom-0 left-0 right-0 z-50 ${className}`} style={{ position: 'fixed', bottom: 0, left: 0, right: 0 }}>
         {/* Expanded Export Options */}
         <div className={`
           bg-white/95 backdrop-blur-xl border-t border-gray-200/50 
@@ -153,7 +153,7 @@ export function BottomToolbar({ onExport, onFormatChange, onSettings, selectedFo
         </div>
         
         {/* Main Toolbar */}
-        <div className="bg-white/95 backdrop-blur-xl border-t border-gray-200/50">
+        <div className="bg-white/95 backdrop-blur-xl border-t border-gray-200/50" style={{ position: 'relative', contain: 'layout' }}>
           <div className="flex items-center justify-around py-2" style={{ paddingBottom: 'max(0.5rem, env(safe-area-inset-bottom))' }}>
             <button
               onClick={() => handleExpandedChange(!isExpanded)}

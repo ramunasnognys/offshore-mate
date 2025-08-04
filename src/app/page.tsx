@@ -115,7 +115,7 @@ function HomeContent() {
         onSwitchToPNG={handleUsePNGInstead}
       />
 
-      <main className={`flex-1 overflow-y-auto flex ${isCalendarGenerated && isMobileView === true ? 'items-start pt-6' : 'items-center'} justify-center p-4 md:p-8 ${isCalendarGenerated && isMobileView === true && isExportPanelExpanded ? 'pb-96' : ''}`}>
+      <main className={`flex-1 overflow-y-auto flex ${isCalendarGenerated && isMobileView === true ? 'items-start pt-6' : 'items-center'} justify-center p-4 md:p-8 ${isCalendarGenerated && isMobileView === true ? 'has-bottom-toolbar' : ''} ${isCalendarGenerated && isMobileView === true && isExportPanelExpanded ? 'pb-96' : ''}`}>
 
       <div className="relative w-full max-w-[500px]">
         <div className={`${isCalendarGenerated && isMobileView === true ? 'mb-4' : 'mb-8 md:mb-12'}`}>

@@ -74,7 +74,7 @@ export function CalendarDisplay({
   }, [yearCalendar, currentMonthIndex])
 
   return (
-    <div className="space-y-6 md:space-y-8">
+    <div className={`space-y-6 md:space-y-8 ${isMobileView === true ? 'mobile-calendar-container' : ''}`}>
       {/* Header with Back Button and Today Button */}
       <div className="flex flex-col gap-3">
         <div className="flex justify-between items-center">

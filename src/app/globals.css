@@ -78,6 +78,18 @@
   min-height: 44px;
 }
 
+/* Mobile calendar specific styles */
+@media (max-width: 768px) {
+  #calendar-container.with-bottom-toolbar {
+    padding-bottom: calc(var(--bottom-toolbar-total-height) + 2rem);
+  }
+  
+  /* Ensure last calendar month has enough space */
+  #calendar-container.with-bottom-toolbar > div:last-child {
+    margin-bottom: calc(var(--bottom-toolbar-total-height) + 1rem);
+  }
+}
+
 /* Progress dots touch improvements */
 .progress-dots {
   position: relative;
@@ -389,6 +401,16 @@
     --radius: 0.5rem;
     --bottom-toolbar-height: 4rem;
     --bottom-toolbar-safe-area: env(safe-area-inset-bottom, 0);
+    --bottom-toolbar-total-height: calc(var(--bottom-toolbar-height) + var(--bottom-toolbar-safe-area));
+    
+    /* Dynamic viewport height for mobile browsers */
+    --viewport-height: 100vh;
+    --viewport-height-dynamic: 100dvh;
+    
+    /* Fallback for browsers that don't support dvh */
+    @supports (height: 100dvh) {
+      --viewport-height: 100dvh;
+    }
   }
  
   .dark {
@@ -435,8 +457,29 @@
     padding-bottom: calc(var(--bottom-toolbar-height) + var(--bottom-toolbar-safe-area) + 1rem);
   }
 
-  /* Mobile browser height fix */
+  /* Mobile browser height fix with modern viewport units */
   .flex-col.h-screen {
+    height: 100vh;
+    height: var(--viewport-height-dynamic, 100vh);
     min-height: -webkit-fill-available;
+  }
+  
+  /* Mobile calendar container specific fixes */
+  @supports (height: 100dvh) {
+    .mobile-calendar-container {
+      padding-bottom: calc(var(--bottom-toolbar-total-height) + 1rem);
+    }
+  }
+  
+  /* Ensure bottom toolbar doesn't overlap content on mobile */
+  .has-bottom-toolbar {
+    padding-bottom: var(--bottom-toolbar-total-height);
+  }
+  
+  /* Fix for mobile browsers with dynamic viewport */
+  @media (max-width: 768px) {
+    .mobile-safe-area {
+      padding-bottom: calc(var(--bottom-toolbar-total-height) + env(safe-area-inset-bottom, 0));
+    }
   }
 }
