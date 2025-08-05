@@ -9,6 +9,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
+  DialogDescription,
 } from "@/components/ui/dialog"
 
 interface DatePickerProps {
@@ -61,6 +62,9 @@ export function DatePicker({ date, onSelect }: DatePickerProps) {
                 })}
               </p>
             </DialogTitle>
+            <DialogDescription className="sr-only">
+              Select a start date for your offshore rotation schedule
+            </DialogDescription>
           </DialogHeader>
           
           <div className="w-full py-3 sm:py-4 flex items-center justify-center">

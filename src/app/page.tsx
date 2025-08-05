@@ -9,6 +9,7 @@ import { CalendarDisplay } from '@/components/calendar/CalendarDisplay'
 import { NotificationManager } from '@/components/common/NotificationManager'
 import { SavedSchedules } from '@/components/saved-schedules'
 import { BottomToolbar } from '@/components/bottom-toolbar'
+import { SettingsBottomSheet } from '@/components/settings-bottom-sheet'
 import { useMobileDetection } from '@/hooks/useMobileDetection'
 import { useScheduleManagement } from '@/hooks/useScheduleManagement'
 import { useExportCalendar } from '@/hooks/useExportCalendar'
@@ -18,6 +19,7 @@ function HomeContent() {
   const isMobileView = useMobileDetection()
   const [isClient, setIsClient] = React.useState(false)
   const [isExportPanelExpanded, setIsExportPanelExpanded] = React.useState(false)
+  const [expandedPanel, setExpandedPanel] = React.useState<'export' | 'settings' | null>(null)
   
   // Get calendar context
   const { 
@@ -38,7 +40,12 @@ function HomeContent() {
   } = useCalendar()
 
   // UI context
-  const { setShowSettings } = useUI()
+  const { 
+    setShowSettings,
+    isEditingName,
+    setIsEditingName,
+    isSaving
+  } = useUI()
 
   // Schedule management
   const {
@@ -191,14 +198,32 @@ function HomeContent() {
 
       {/* Bottom Toolbar - Mobile only */}
       {isCalendarGenerated && isMobileView === true && (
-        <BottomToolbar 
-          selectedFormat={exportFormat}
-          onFormatChange={setExportFormat}
-          onExport={handleExport}
-          onSettings={() => setShowSettings(true)}
-          isDownloading={isDownloading}
-          onExpandedChange={setIsExportPanelExpanded}
-        />
+        <>
+          <BottomToolbar 
+            selectedFormat={exportFormat}
+            onFormatChange={setExportFormat}
+            onExport={handleExport}
+            onSettings={() => setShowSettings(true)}
+            isDownloading={isDownloading}
+            onExpandedChange={setIsExportPanelExpanded}
+            expandedPanel={expandedPanel}
+            onExpandedPanelChange={setExpandedPanel}
+          />
+          <SettingsBottomSheet
+            scheduleName={scheduleName}
+            setScheduleName={setScheduleName}
+            isEditingName={isEditingName}
+            setIsEditingName={setIsEditingName}
+            isSaving={isSaving}
+            isSaved={currentScheduleId !== null}
+            onSave={() => saveSchedule(scheduleName)}
+            selectedRotation={selectedRotation}
+            selectedDate={selectedDate}
+            isStorageAvailable={isClient && isStorageSupported}
+            isOpen={expandedPanel === 'settings'}
+            onClose={() => setExpandedPanel(null)}
+          />
+        </>
       )}
     </div>
   )

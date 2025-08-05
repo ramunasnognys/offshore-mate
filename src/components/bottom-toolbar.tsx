@@ -12,9 +12,11 @@ interface BottomToolbarProps {
   isDownloading?: boolean;
   className?: string;
   onExpandedChange?: (expanded: boolean) => void;
+  expandedPanel?: 'export' | 'settings' | null;
+  onExpandedPanelChange?: (panel: 'export' | 'settings' | null) => void;
 }
 
-export function BottomToolbar({ onExport, onFormatChange, onSettings, selectedFormat, isDownloading = false, className = '', onExpandedChange }: BottomToolbarProps) {
+export function BottomToolbar({ onExport, onFormatChange, onSettings, selectedFormat, isDownloading = false, className = '', onExpandedChange, expandedPanel, onExpandedPanelChange }: BottomToolbarProps) {
   const [isExpanded, setIsExpanded] = useState(false);
 
   const handleExpandedChange = (expanded: boolean) => {
@@ -25,6 +27,13 @@ export function BottomToolbar({ onExport, onFormatChange, onSettings, selectedFo
   const handleExport = () => {
     onExport();
     handleExpandedChange(false);
+  };
+
+  const handlePanelChange = (panel: 'export' | 'settings' | null) => {
+    if (panel === 'export') {
+      handleExpandedChange(panel !== null);
+    }
+    onExpandedPanelChange?.(panel);
   };
 
   return (
@@ -156,7 +165,7 @@ export function BottomToolbar({ onExport, onFormatChange, onSettings, selectedFo
         <div className="bg-white/95 backdrop-blur-xl border-t border-gray-200/50" style={{ position: 'relative', contain: 'layout' }}>
           <div className="flex items-center justify-around py-2" style={{ paddingBottom: 'max(0.5rem, env(safe-area-inset-bottom))' }}>
             <button
-              onClick={() => handleExpandedChange(!isExpanded)}
+              onClick={() => handlePanelChange(expandedPanel === 'export' ? null : 'export')}
               className="p-2 rounded-lg hover:bg-gray-100 transition-colors group"
               aria-label="Export"
             >
@@ -171,7 +180,12 @@ export function BottomToolbar({ onExport, onFormatChange, onSettings, selectedFo
             </button>
             
             <button
-              onClick={onSettings}
+              onClick={() => {
+                handlePanelChange(expandedPanel === 'settings' ? null : 'settings');
+                if (expandedPanel !== 'settings') {
+                  onSettings();
+                }
+              }}
               className="p-2 rounded-lg hover:bg-gray-100 transition-colors group"
               aria-label="Settings"
             >

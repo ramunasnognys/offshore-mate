@@ -1,0 +1,89 @@
+# Page snapshot
+
+```yaml
+- main:
+  - heading "Offshore Mate" [level=1]
+  - paragraph: Navigate your offshore schedule with precision
+  - button "Go back to rotation selection":
+    - img
+    - text: Back
+  - button "Jump to today's month": Today
+  - text: 🛠️ Aug 6 -> 19
+  - main "Work rotation schedule":
+    - region "August 2025":
+      - button "Go to previous month" [disabled]:
+        - img
+      - heading "August 2025" [level=3]
+      - button "Go to next month":
+        - img
+      - grid "Calendar for August 2025":
+        - columnheader "Mon"
+        - columnheader "Tue"
+        - columnheader "Wed"
+        - columnheader "Thu"
+        - columnheader "Fri"
+        - columnheader "Sat"
+        - columnheader "Sun"
+        - gridcell "1 inactive": "1"
+        - gridcell "2 inactive": "2"
+        - gridcell "3 inactive": "3"
+        - gridcell "4 inactive": "4"
+        - gridcell "5 transition day - Today": TODAY 5
+        - gridcell "6 work day": "6"
+        - gridcell "7 work day": "7"
+        - gridcell "8 work day": "8"
+        - gridcell "9 work day": "9"
+        - gridcell "10 work day": "10"
+        - gridcell "11 work day": "11"
+        - gridcell "12 work day": "12"
+        - gridcell "13 work day": "13"
+        - gridcell "14 work day": "14"
+        - gridcell "15 work day": "15"
+        - gridcell "16 work day": "16"
+        - gridcell "17 work day": "17"
+        - gridcell "18 work day": "18"
+        - gridcell "19 transition day": "19"
+        - gridcell "20 off day": "20"
+        - gridcell "21 off day": "21"
+        - gridcell "22 off day": "22"
+        - gridcell "23 off day": "23"
+        - gridcell "24 off day": "24"
+        - gridcell "25 off day": "25"
+        - gridcell "26 off day": "26"
+        - gridcell "27 off day": "27"
+        - gridcell "28 off day": "28"
+        - gridcell "29 off day": "29"
+        - gridcell "30 off day": "30"
+        - gridcell "31 off day": "31"
+      - img
+      - text: Work Days
+      - img
+      - text: Off Days
+      - img
+      - text: Transition Days
+- heading "Export Calendar" [level=3]
+- button:
+  - img
+- radio "🖼️ PNG Image High quality image file" [checked]
+- text: 🖼️ PNG Image High quality image file
+- radio "📄 PDF Document Printable document format"
+- text: 📄 PDF Document Printable document format
+- radio "Add to Calendar Import to calendar app"
+- img
+- text: Add to Calendar Import to calendar app
+- button "Export Calendar":
+  - img
+  - text: Export Calendar
+- button "Export":
+  - img
+- button "Share":
+  - img
+- button "Settings":
+  - img
+- status:
+  - img
+  - text: Static route
+  - button "Hide static indicator":
+    - img
+- alert
+```

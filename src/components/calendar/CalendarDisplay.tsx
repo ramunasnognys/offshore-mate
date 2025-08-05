@@ -36,8 +36,7 @@ export function CalendarDisplay({
     showSettings,
     setShowSettings,
     isEditingName,
-    setIsEditingName,
-    setErrorMessage
+    setIsEditingName
   } = useUI()
 
   const isMobileView = useMobileDetection()
@@ -130,21 +129,23 @@ export function CalendarDisplay({
         <DownloadCalendar calendar={yearCalendar} />
       </div>
       
-      {/* Settings Dialog */}
-      <SettingsDialog
-        scheduleName={scheduleName}
-        setScheduleName={setScheduleName}
-        isEditingName={isEditingName}
-        setIsEditingName={setIsEditingName}
-        isSaving={false}
-        isSaved={isSaved}
-        onSave={onSave}
-        selectedRotation={selectedRotation}
-        selectedDate={selectedDate}
-        isStorageAvailable={isStorageAvailable}
-        onOpenChange={setShowSettings}
-        open={showSettings}
-      />
+      {/* Settings Dialog - Only show on desktop */}
+      {isMobileView === false && (
+        <SettingsDialog
+          scheduleName={scheduleName}
+          setScheduleName={setScheduleName}
+          isEditingName={isEditingName}
+          setIsEditingName={setIsEditingName}
+          isSaving={false}
+          isSaved={isSaved}
+          onSave={onSave}
+          selectedRotation={selectedRotation}
+          selectedDate={selectedDate}
+          isStorageAvailable={isStorageAvailable}
+          onOpenChange={setShowSettings}
+          open={showSettings}
+        />
+      )}
     </div>
   )
 }
