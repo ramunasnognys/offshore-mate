@@ -117,7 +117,7 @@ export function useExportCalendar({
           error,
           browserInfo: navigator.userAgent,
           canvasSupport: !!document.createElement('canvas').getContext,
-          memoryInfo: (performance as any).memory || 'Not available'
+          memoryInfo: (performance as unknown as { memory?: unknown }).memory || 'Not available'
         })
         setPdfErrorMessage(message)
         setShowPDFError(true)

@@ -283,7 +283,7 @@ export default function Home() {
           error,
           browserInfo: navigator.userAgent,
           canvasSupport: !!document.createElement('canvas').getContext,
-          memoryInfo: (performance as any).memory || 'Not available'
+          memoryInfo: (performance as unknown as { memory?: unknown }).memory || 'Not available'
         });
         setPdfErrorMessage(message);
         setShowPDFError(true);
@@ -341,7 +341,7 @@ export default function Home() {
 
 
   // Get current period status for smart header
-  const getCurrentPeriodStatus = () => {
+  const _getCurrentPeriodStatus = () => {
     if (!yearCalendar.length) return null
     
     const today = new Date()

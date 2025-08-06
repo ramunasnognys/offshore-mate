@@ -71,7 +71,7 @@ export async function downloadCalendarAsImage(elementId: string, filename: strin
     
     // Show user feedback (optional - you might want to show a toast notification)
     if (typeof window !== 'undefined' && 'showNotification' in window) {
-      (window as any).showNotification?.(`Calendar downloaded as ${filename}`);
+      (window as unknown as { showNotification?: (message: string) => void }).showNotification?.(`Calendar downloaded as ${filename}`);
     }
   } catch (error) {
     console.error('Error downloading calendar:', error);

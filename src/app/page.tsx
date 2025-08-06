@@ -216,7 +216,7 @@ function HomeContent() {
             setIsEditingName={setIsEditingName}
             isSaving={isSaving}
             isSaved={currentScheduleId !== null}
-            onSave={() => saveSchedule(scheduleName)}
+            onSave={() => saveSchedule(yearCalendar, scheduleName, selectedRotation, selectedDate || '', currentScheduleId)}
             selectedRotation={selectedRotation}
             selectedDate={selectedDate}
             isStorageAvailable={isClient && isStorageSupported}

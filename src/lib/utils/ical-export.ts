@@ -151,7 +151,7 @@ function extractWorkPeriodsWithConfig(calendar: MonthData[], config: { workDays:
   
   // Calculate work periods starting from normalized start date
   let periodStart = new Date(normalizedStartDate);
-  let periodIndex = 0;
+  let _periodIndex = 0;
   
   while (periodStart <= lastDay) {
     // Calculate end of current work period (inclusive)
@@ -196,7 +196,7 @@ function extractWorkPeriodsWithConfig(calendar: MonthData[], config: { workDays:
     
     // Move to next period start (same calculation as rotation.ts)
     periodStart = addDays(periodEnd, config.offDays + 1);
-    periodIndex++;
+    _periodIndex++;
   }
   
   return periods;
