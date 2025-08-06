@@ -497,6 +497,11 @@
     right: 0 !important;
   }
   
+  /* Fix for dev tools blue overlay issue */
+  div.fixed.bottom-0.left-0.right-0.z-50 {
+    pointer-events: none;
+  }
+  
   /* Fix for mobile browsers with dynamic viewport */
   @media (max-width: 768px) {
     .mobile-safe-area {
