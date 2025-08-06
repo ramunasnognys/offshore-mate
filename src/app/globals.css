@@ -502,6 +502,14 @@
     pointer-events: none;
   }
   
+  /* Ensure interactive elements within toolbar remain functional */
+  div.fixed.bottom-0.left-0.right-0.z-50 button,
+  div.fixed.bottom-0.left-0.right-0.z-50 a,
+  div.fixed.bottom-0.left-0.right-0.z-50 input[type="button"],
+  div.fixed.bottom-0.left-0.right-0.z-50 input[type="submit"] {
+    pointer-events: auto;
+  }
+  
   /* Fix for mobile browsers with dynamic viewport */
   @media (max-width: 768px) {
     .mobile-safe-area {
