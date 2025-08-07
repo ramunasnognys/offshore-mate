@@ -166,6 +166,7 @@ export function BottomToolbar({ onExport, onFormatChange, onSettings, selectedFo
           <div className="flex items-center justify-around py-2" style={{ paddingBottom: 'max(0.5rem, env(safe-area-inset-bottom))' }}>
             <button
               onClick={() => handlePanelChange(expandedPanel === 'export' ? null : 'export')}
+              onMouseDown={(e) => e.preventDefault()}
               className="p-2 rounded-lg hover:bg-gray-100 transition-colors group"
               aria-label="Export"
             >
