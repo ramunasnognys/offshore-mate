@@ -18,6 +18,7 @@ interface BottomToolbarProps {
 
 export function BottomToolbar({ onExport, onFormatChange, onSettings, selectedFormat, isDownloading = false, className = '', onExpandedChange, expandedPanel, onExpandedPanelChange }: BottomToolbarProps) {
   const [isExpanded, setIsExpanded] = useState(false);
+  const exportButtonRef = React.useRef<HTMLButtonElement>(null);
 
   const handleExpandedChange = (expanded: boolean) => {
     setIsExpanded(expanded);
@@ -165,9 +166,22 @@ export function BottomToolbar({ onExport, onFormatChange, onSettings, selectedFo
         <div className="bg-white/95 backdrop-blur-xl border-t border-gray-200/50" style={{ position: 'relative', contain: 'layout' }}>
           <div className="flex items-center justify-around py-2" style={{ paddingBottom: 'max(0.5rem, env(safe-area-inset-bottom))' }}>
             <button
-              onClick={() => handlePanelChange(expandedPanel === 'export' ? null : 'export')}
-              className="p-2 rounded-lg hover:bg-gray-100 transition-colors group"
+              ref={exportButtonRef}
+              onClick={(e) => {
+                e.stopPropagation();
+                handlePanelChange(expandedPanel === 'export' ? null : 'export');
+              }}
+              onMouseDown={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+              }}
+              onTouchStart={(e) => {
+                e.stopPropagation();
+              }}
+              className="p-2 rounded-lg hover:bg-gray-100 transition-colors group touch-manipulation"
               aria-label="Export"
+              type="button"
+              style={{ WebkitTapHighlightColor: 'transparent' }}
             >
               <Download className="w-5 h-5 text-gray-700 group-hover:text-orange-500 transition-colors" />
             </button>
