@@ -63,12 +63,12 @@ export function SettingsBottomSheet({
         />
       )}
       
-      {/* Settings Bottom Sheet */}
+      {/* Settings Bottom Sheet (outer wrapper pointer-events guarded for Chrome) */}
       <div className={`
-        fixed bottom-0 left-0 right-0 z-50
+        fixed bottom-0 left-0 right-0 z-50 pointer-events-none
         bg-white/95 backdrop-blur-xl border-t border-gray-200/50 
         transform transition-all duration-300 ease-out
-        ${isOpen ? 'translate-y-0' : 'translate-y-full'}
+        ${isOpen ? 'translate-y-0 pointer-events-auto' : 'translate-y-full pointer-events-none'}
       `}>
         <div className="px-6 py-4" style={{ paddingBottom: 'max(1rem, env(safe-area-inset-bottom))' }}>
           {/* Header */}
