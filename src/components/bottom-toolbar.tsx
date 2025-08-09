@@ -51,7 +51,8 @@ export function BottomToolbar({ onExport, onFormatChange, onSettings, selectedFo
       <div className={`fixed bottom-0 left-0 right-0 z-50 pointer-events-none ${className}`} style={{ position: 'fixed', bottom: 0, left: 0, right: 0 }}>
         {/* Expanded Export Options */}
         <div className={`
-          bg-white/95 backdrop-blur-xl border-t border-gray-200/50 
+          bg-gradient-to-t from-white/98 via-white/95 to-white/90 backdrop-blur-2xl 
+          border-t border-white/60 shadow-2xl shadow-black/10
           transform transition-all duration-300 ease-out
           ${isExpanded ? 'translate-y-0 z-50 relative pointer-events-auto' : 'translate-y-full relative pointer-events-none'}
         `}>
@@ -60,9 +61,14 @@ export function BottomToolbar({ onExport, onFormatChange, onSettings, selectedFo
               <h3 className="text-lg font-semibold text-gray-800">Export Calendar</h3>
               <button
                 onClick={() => handleExpandedChange(false)}
-                className="p-2 rounded-full hover:bg-gray-100 transition-colors"
+                className="p-2 rounded-full hover:bg-white/60 hover:shadow-md hover:scale-105 
+                  active:scale-95 transition-all duration-200 ease-out group
+                  focus:outline-none focus:ring-2 focus:ring-orange-500/50 focus:ring-offset-2"
+                aria-label="Close export options"
+                title="Close export panel"
               >
-                <ChevronUp className="w-5 h-5 text-gray-600" />
+                <ChevronUp className="w-5 h-5 text-gray-600 group-hover:text-orange-500 group-hover:scale-110 
+                  transition-all duration-200 ease-out" />
               </button>
             </div>
             
@@ -154,17 +160,24 @@ export function BottomToolbar({ onExport, onFormatChange, onSettings, selectedFo
             <button
               onClick={handleExport}
               disabled={isDownloading}
-              className="w-full bg-black text-white rounded-xl py-3 font-medium flex items-center justify-center gap-2 hover:bg-gray-900 transition-colors disabled:opacity-50"
+              className="w-full bg-black text-white rounded-xl py-3 font-medium flex items-center justify-center gap-2 
+                hover:bg-gray-900 hover:shadow-lg hover:shadow-black/20 hover:scale-[1.02] 
+                active:scale-[0.98] transition-all duration-200 ease-out disabled:opacity-50 disabled:hover:scale-100
+                focus:outline-none focus:ring-2 focus:ring-orange-500/50 focus:ring-offset-2"
             >
-              <Download className={`w-5 h-5 ${isDownloading ? 'animate-bounce' : ''}`} />
+              <Download className={`w-5 h-5 ${isDownloading ? 'animate-bounce' : 'transition-transform duration-200'}`} />
               {isDownloading ? (selectedFormat === 'ics' ? 'Creating...' : 'Exporting...') : 'Export Calendar'}
             </button>
           </div>
         </div>
         
         {/* Main Toolbar */}
-        <div className={`bg-white/95 backdrop-blur-xl border-t border-gray-200/50 ${isExpanded ? 'pointer-events-none z-40' : 'z-40'} relative pointer-events-auto`} style={{ position: 'relative', contain: 'layout' }}>
-          <div className="flex items-center justify-around py-2" style={{ paddingBottom: 'max(0.5rem, env(safe-area-inset-bottom))' }}>
+        <div className={`bg-gradient-to-t from-white/98 via-white/95 to-white/90 backdrop-blur-2xl 
+          border-t border-white/60 shadow-2xl shadow-black/5
+          ${isExpanded ? 'pointer-events-none z-40' : 'z-40'} relative pointer-events-auto`} 
+          style={{ position: 'relative', contain: 'layout' }}>
+          <div className="flex items-center justify-center py-3 px-4" style={{ paddingBottom: 'max(0.75rem, env(safe-area-inset-bottom))' }}>
+            {/* Export Button */}
             <button
               ref={exportButtonRef}
               onPointerDown={(e) => {
@@ -177,21 +190,39 @@ export function BottomToolbar({ onExport, onFormatChange, onSettings, selectedFo
                 e.stopPropagation();
                 handlePanelChange(expandedPanel === 'export' ? null : 'export');
               }}
-              className="p-2 rounded-lg hover:bg-gray-100 transition-colors group touch-manipulation"
-              aria-label="Export"
+              className="p-3 rounded-xl hover:bg-white/60 hover:shadow-lg hover:shadow-orange-500/10 
+                hover:scale-105 active:scale-95 transition-all duration-200 ease-out group touch-manipulation
+                focus:outline-none focus:ring-2 focus:ring-orange-500/50 focus:ring-offset-2 focus:ring-offset-white/80
+                flex-1"
+              aria-label="Export calendar - Open export options"
+              title="Export calendar in different formats"
               type="button"
               style={{ WebkitTapHighlightColor: 'transparent' }}
             >
-              <Download className="w-5 h-5 text-gray-700 group-hover:text-orange-500 transition-colors" />
+              <Download className="w-5 h-5 text-gray-700 group-hover:text-orange-500 group-hover:scale-110 
+                transition-all duration-200 ease-out mx-auto" />
             </button>
             
+            {/* First Divider */}
+            <div className="h-6 w-px bg-gradient-to-b from-transparent via-gray-300/60 to-transparent mx-4"></div>
+            
+            {/* Share Button */}
             <button
-              className="p-2 rounded-lg hover:bg-gray-100 transition-colors group"
-              aria-label="Share"
+              className="p-3 rounded-xl hover:bg-white/60 hover:shadow-lg hover:shadow-orange-500/10 
+                hover:scale-105 active:scale-95 transition-all duration-200 ease-out group
+                focus:outline-none focus:ring-2 focus:ring-orange-500/50 focus:ring-offset-2 focus:ring-offset-white/80
+                flex-1"
+              aria-label="Share calendar - Share your rotation schedule"
+              title="Share your rotation schedule with others"
             >
-              <Share2 className="w-5 h-5 text-gray-700 group-hover:text-orange-500 transition-colors" />
+              <Share2 className="w-5 h-5 text-gray-700 group-hover:text-orange-500 group-hover:scale-110 
+                transition-all duration-200 ease-out mx-auto" />
             </button>
             
+            {/* Second Divider */}
+            <div className="h-6 w-px bg-gradient-to-b from-transparent via-gray-300/60 to-transparent mx-4"></div>
+            
+            {/* Settings Button */}
             <button
               onClick={() => {
                 handlePanelChange(expandedPanel === 'settings' ? null : 'settings');
@@ -199,10 +230,15 @@ export function BottomToolbar({ onExport, onFormatChange, onSettings, selectedFo
                   onSettings();
                 }
               }}
-              className="p-2 rounded-lg hover:bg-gray-100 transition-colors group"
-              aria-label="Settings"
+              className="p-3 rounded-xl hover:bg-white/60 hover:shadow-lg hover:shadow-orange-500/10 
+                hover:scale-105 active:scale-95 transition-all duration-200 ease-out group
+                focus:outline-none focus:ring-2 focus:ring-orange-500/50 focus:ring-offset-2 focus:ring-offset-white/80
+                flex-1"
+              aria-label="Settings - Manage your schedule preferences"
+              title="Manage your schedule settings and preferences"
             >
-              <Settings className="w-5 h-5 text-gray-700 group-hover:text-orange-500 transition-colors" />
+              <Settings className="w-5 h-5 text-gray-700 group-hover:text-orange-500 group-hover:scale-110 
+                transition-all duration-200 ease-out mx-auto" />
             </button>
           </div>
         </div>
