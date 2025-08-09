@@ -53,7 +53,7 @@ export function BottomToolbar({ onExport, onFormatChange, onSettings, selectedFo
         <div className={`
           bg-white/95 backdrop-blur-xl border-t border-gray-200/50 
           transform transition-all duration-300 ease-out
-          ${isExpanded ? 'translate-y-0' : 'translate-y-full'}
+          ${isExpanded ? 'translate-y-0 z-50 relative' : 'translate-y-full relative'}
         `}>
           <div className="px-6 py-4" style={{ paddingBottom: 'max(1rem, env(safe-area-inset-bottom))' }}>
             <div className="flex items-center justify-between mb-4">
@@ -163,7 +163,7 @@ export function BottomToolbar({ onExport, onFormatChange, onSettings, selectedFo
         </div>
         
         {/* Main Toolbar */}
-        <div className="bg-white/95 backdrop-blur-xl border-t border-gray-200/50" style={{ position: 'relative', contain: 'layout' }}>
+        <div className={`bg-white/95 backdrop-blur-xl border-t border-gray-200/50 ${isExpanded ? 'pointer-events-none z-40' : 'z-40'} relative`} style={{ position: 'relative', contain: 'layout' }}>
           <div className="flex items-center justify-around py-2" style={{ paddingBottom: 'max(0.5rem, env(safe-area-inset-bottom))' }}>
             <button
               ref={exportButtonRef}
