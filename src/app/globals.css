@@ -80,24 +80,20 @@
 
 /* Mobile calendar specific styles */
 @media (max-width: 768px) {
-  #calendar-container.with-bottom-toolbar {
+  #calendar-container {
+    /* Always reserve space so the fixed toolbar never overlaps */
     padding-bottom: calc(var(--bottom-toolbar-total-height) + var(--bottom-toolbar-buffer));
   }
   
   /* Ensure last calendar month has enough space */
-  #calendar-container.with-bottom-toolbar > div:last-child {
+  #calendar-container > div:last-child {
     margin-bottom: calc(var(--bottom-toolbar-total-height) + 1rem);
   }
   
   /* Chrome-specific fix for mobile */
   @supports (-webkit-appearance: none) and (not (-ms-ime-align: auto)) {
-    #calendar-container.with-bottom-toolbar {
+    #calendar-container {
       padding-bottom: calc(var(--bottom-toolbar-total-height) + var(--bottom-toolbar-buffer) + 1rem);
-    }
-    
-    .mobile-calendar-spacer {
-      height: calc(var(--bottom-toolbar-total-height) + var(--bottom-toolbar-buffer));
-      min-height: calc(var(--bottom-toolbar-total-height) + var(--bottom-toolbar-buffer));
     }
   }
 }

@@ -277,7 +277,7 @@ export function ScheduleList({
   return (
     <div 
       id="calendar-container"
-      className={`space-y-4 md:space-y-8 ${className} ${isMobile ? 'with-bottom-toolbar' : ''}`}
+      className={`space-y-4 md:space-y-8 ${className}`}
       role="main"
       aria-label="Work rotation schedule"
     >
@@ -292,17 +292,6 @@ export function ScheduleList({
         />
       ))}
       
-      {/* Spacer for mobile to ensure content is visible above bottom toolbar */}
-      {isMobile && (
-        <div 
-          className="mobile-calendar-spacer" 
-          aria-hidden="true"
-          style={{ 
-            height: 'calc(5rem + env(safe-area-inset-bottom, 0) + 2rem)',
-            minHeight: 'calc(5rem + env(safe-area-inset-bottom, 0) + 2rem)'
-          }}
-        />
-      )}
     </div>
   );
 }
