@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
-import { Check, Save } from 'lucide-react'
+import { Save } from 'lucide-react'
 import { format } from 'date-fns'
 import { Button } from '@/components/ui/button'
 import { MonthData } from '@/types/rotation'
@@ -31,8 +31,7 @@ export function ContextualSaveBar({
 }: ContextualSaveBarProps) {
   const [isVisible, setIsVisible] = useState(false)
   const [localName, setLocalName] = useState('')
-  const [showSavedState, setShowSavedState] = useState(false)
-  const [hasChanges, setHasChanges] = useState(false)
+  const [dismissed, setDismissed] = useState(false)
 
   // Generate default name based on rotation and date
   const defaultName = React.useMemo(() => {
@@ -55,63 +54,39 @@ export function ContextualSaveBar({
 
   // Show/hide the bar based on conditions
   useEffect(() => {
-    const shouldShow = yearCalendar && yearCalendar.length > 0 && !currentScheduleId
+    const hasCalendar = yearCalendar && yearCalendar.length > 0
+    const shouldShow = hasCalendar && !currentScheduleId && !dismissed
     setIsVisible(shouldShow)
-  }, [yearCalendar, currentScheduleId])
+  }, [yearCalendar, currentScheduleId, dismissed])
 
   // Handle saved state display
   useEffect(() => {
-    if (isSaved && !showSavedState) {
-      setShowSavedState(true)
-      const timer = setTimeout(() => {
-        setShowSavedState(false)
-        setHasChanges(false)
-      }, 2500)
-      return () => clearTimeout(timer)
+    if (isSaved) {
+      setIsVisible(false)
     }
-  }, [isSaved, showSavedState])
+  }, [isSaved])
 
-  // Track changes after saving
-  useEffect(() => {
-    if (showSavedState && localName !== scheduleName) {
-      setHasChanges(true)
-      setShowSavedState(false)
-    }
-  }, [localName, scheduleName, showSavedState])
+  // no-op change tracking (immediate dismiss UX)
 
-  // Auto-hide bar after successful save
-  useEffect(() => {
-    if (isSaved && !hasChanges) {
-      const timer = setTimeout(() => {
-        setIsVisible(false)
-      }, 3000)
-      return () => clearTimeout(timer)
-    }
-  }, [isSaved, hasChanges])
+  // no delayed auto-hide (immediate dismiss UX)
 
   const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newName = e.target.value
     setLocalName(newName)
     onNameChange(newName)
-    
-    // If we were showing saved state and name changes, show update button
-    if (showSavedState) {
-      setHasChanges(true)
-      setShowSavedState(false)
-    }
   }
 
   const handleSave = () => {
     if (localName.trim()) {
       onSave()
+      setIsVisible(false)
+      setDismissed(true)
     }
   }
 
-  const handleUpdate = () => {
-    if (localName.trim()) {
-      onUpdate()
-      setHasChanges(false)
-    }
+  const handleCancel = () => {
+    setDismissed(true)
+    setIsVisible(false)
   }
 
   if (!isVisible) {
@@ -119,71 +94,40 @@ export function ContextualSaveBar({
   }
 
   const isNameValid = localName.trim().length > 0
-  const buttonAction = showSavedState ? 'saved' : hasChanges ? 'update' : 'save'
 
   return (
     <div className="animate-in slide-in-from-top duration-300 ease-out">
-      <div className="backdrop-blur-xl bg-white/40 rounded-xl shadow-lg border border-white/30 p-4 mb-6">
-        <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center">
+      <div className="backdrop-blur-xl bg-white/40 rounded-lg shadow border border-white/30 px-3 py-3 mb-4">
+        <div className="flex items-end gap-3">
           <div className="flex-1">
-            <label htmlFor="schedule-name" className="block text-sm font-medium text-gray-700 mb-2">
-              Schedule Name
-            </label>
+            <div className="text-[10px] uppercase tracking-widest text-gray-500 mb-1 select-none">Name this schedule</div>
             <input
               id="schedule-name"
               type="text"
               value={localName}
               onChange={handleNameChange}
-              placeholder="Enter schedule name..."
-              className={`w-full px-3 py-2 rounded-md border bg-white/50 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors ${
-                !isNameValid ? 'border-red-500' : 'border-gray-300'
+              placeholder={defaultName}
+              className={`w-full h-10 px-3 rounded-md border bg-white/60 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors ${
+                !isNameValid ? 'border-destructive' : 'border-gray-300'
               }`}
             />
           </div>
-
-          <div className="flex gap-2">
-            {buttonAction === 'saved' && (
-              <Button
-                variant="default"
-                disabled
-                className="bg-green-600 hover:bg-green-600 text-white"
-              >
-                <Check className="w-4 h-4 mr-2" />
-                Saved ✔
-              </Button>
-            )}
-
-            {buttonAction === 'save' && (
-              <Button
-                variant="default"
-                onClick={handleSave}
-                disabled={!isNameValid}
-                className="bg-blue-600 hover:bg-blue-700 text-white"
-              >
-                <Save className="w-4 h-4 mr-2" />
-                Save
-              </Button>
-            )}
-
-            {buttonAction === 'update' && (
-              <Button
-                variant="default"
-                onClick={handleUpdate}
-                disabled={!isNameValid}
-                className="bg-orange-600 hover:bg-orange-700 text-white"
-              >
-                <Save className="w-4 h-4 mr-2" />
-                Update
-              </Button>
-            )}
+          <div className="flex items-center gap-2">
+            <Button size="default" variant="outline" onClick={handleCancel}>
+              Cancel
+            </Button>
+            <Button
+              size="default"
+              variant="default"
+              onClick={handleSave}
+              disabled={!isNameValid}
+              className="bg-gray-700 hover:bg-gray-800 text-white"
+            >
+              <Save className="w-4 h-4" />
+              <span className="sr-only sm:not-sr-only sm:ml-2">Save</span>
+            </Button>
           </div>
         </div>
-
-        {!isNameValid && (
-          <p className="text-xs text-red-600 mt-1 animate-in fade-in duration-200">
-            Please enter a schedule name
-          </p>
-        )}
       </div>
     </div>
   )

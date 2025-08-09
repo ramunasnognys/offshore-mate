@@ -6,9 +6,10 @@ import {
   saveSchedule as saveScheduleToStorage,
   getSchedule,
   deleteSchedule as deleteScheduleFromStorage,
-  getAllScheduleMetadata,
+  getAllScheduleMetadataSorted,
   generateScheduleId,
-  isStorageAvailable
+  isStorageAvailable,
+  renameSchedule as renameScheduleInStorage
 } from '@/lib/utils/storage'
 
 interface UseScheduleManagementProps {
@@ -34,6 +35,7 @@ interface UseScheduleManagementReturn {
   ) => { success: boolean; id?: string }
   loadSchedule: (scheduleId: string) => void
   deleteSchedule: (scheduleId: string) => boolean
+  renameSchedule: (scheduleId: string, name: string) => { success: boolean; error?: string }
   setShowSavedSchedules: (show: boolean) => void
   setSaveNotification: (message: string) => void
   refreshSchedulesList: () => void
@@ -69,7 +71,7 @@ export function useScheduleManagement({
 
   const refreshSchedulesList = useCallback(() => {
     if (isStorageSupported) {
-      setSavedSchedulesList(getAllScheduleMetadata())
+      setSavedSchedulesList(getAllScheduleMetadataSorted())
     }
   }, [isStorageSupported])
 
@@ -160,6 +162,25 @@ export function useScheduleManagement({
     }
   }, [onError, refreshSchedulesList])
 
+  const renameSchedule = useCallback((scheduleId: string, name: string): { success: boolean; error?: string } => {
+    try {
+      const result = renameScheduleInStorage(scheduleId, name)
+      if (result.success) {
+        refreshSchedulesList()
+        setSaveNotification('Schedule renamed successfully')
+        return { success: true }
+      }
+      const message = result.error || 'Unable to rename the schedule'
+      onError?.(message)
+      return { success: false, error: message }
+    } catch (error) {
+      console.error('Error renaming schedule:', error)
+      const message = 'Unexpected error while renaming schedule'
+      onError?.(message)
+      return { success: false, error: message }
+    }
+  }, [onError, refreshSchedulesList])
+
   // Refresh schedules list when showing saved schedules
   useEffect(() => {
     if (showSavedSchedules) {
@@ -176,6 +197,7 @@ export function useScheduleManagement({
     saveSchedule,
     loadSchedule,
     deleteSchedule,
+    renameSchedule,
     setShowSavedSchedules,
     setSaveNotification,
     refreshSchedulesList

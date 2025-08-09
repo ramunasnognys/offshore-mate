@@ -202,3 +202,52 @@ export const deleteAllSchedules = (): boolean => {
     return false;
   }
 };
+
+// Rename a schedule and update its updatedAt timestamp
+export const renameSchedule = (
+  id: string,
+  newName: string
+): { success: boolean; error?: string; metadata?: ScheduleMetadata } => {
+  if (!isStorageAvailable()) return { success: false, error: 'Storage not available' };
+
+  const trimmed = newName.trim();
+  if (trimmed.length === 0) {
+    return { success: false, error: 'Name cannot be empty' };
+  }
+
+  try {
+    const existing = getSchedule(id);
+    if (!existing) {
+      return { success: false, error: 'Schedule not found' };
+    }
+
+    const updated: SavedSchedule = {
+      ...existing,
+      metadata: {
+        ...existing.metadata,
+        name: trimmed,
+        updatedAt: new Date().toISOString(),
+      },
+    };
+
+    const ok = saveSchedule(updated);
+    if (!ok) {
+      return { success: false, error: 'Failed to save updated schedule' };
+    }
+
+    return { success: true, metadata: updated.metadata };
+  } catch (e) {
+    console.error('Error renaming schedule:', e);
+    return { success: false, error: 'Unexpected error while renaming schedule' };
+  }
+};
+
+// Return schedule metadata sorted by latest update time (desc)
+export const getAllScheduleMetadataSorted = (): ScheduleMetadata[] => {
+  const meta = getAllScheduleMetadata();
+  return meta.sort((a, b) => {
+    const aTime = new Date(a.updatedAt).getTime();
+    const bTime = new Date(b.updatedAt).getTime();
+    return bTime - aTime;
+  });
+};

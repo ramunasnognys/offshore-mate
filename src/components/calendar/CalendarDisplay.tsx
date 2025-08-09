@@ -11,6 +11,7 @@ import { useMobileDetection } from '@/hooks/useMobileDetection'
 import { useMonthNavigation } from '@/hooks/useMonthNavigation'
 import { MonthData } from '@/types/rotation'
 import { extractWorkPeriods, formatWorkPatternDisplay } from '@/lib/utils/workPeriods'
+import { ContextualSaveBar } from '@/components/ContextualSaveBar'
 
 interface CalendarDisplayProps {
   onBack: () => void
@@ -29,7 +30,8 @@ export function CalendarDisplay({
     setScheduleName,
     selectedRotation,
     selectedDate,
-    isSaved
+    isSaved,
+    currentScheduleId
   } = useCalendar()
 
   const {
@@ -107,6 +109,19 @@ export function CalendarDisplay({
           </div>
         </div>
       </div>
+
+      {/* Contextual Save Bar - appears for new unsaved schedules */}
+      <ContextualSaveBar
+        yearCalendar={yearCalendar}
+        scheduleName={scheduleName}
+        selectedRotation={String(selectedRotation)}
+        selectedDate={selectedDate}
+        currentScheduleId={currentScheduleId}
+        isSaved={isSaved}
+        onNameChange={setScheduleName}
+        onSave={onSave}
+        onUpdate={onSave}
+      />
 
       {/* Calendar Display */}
       <div>

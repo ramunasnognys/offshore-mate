@@ -1,6 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { Trash, Clock, Calendar, Info, ArrowRight } from 'lucide-react';
-import { ScheduleMetadata, getAllScheduleMetadata, deleteSchedule } from '@/lib/utils/storage';
+import { Trash, Clock, Calendar, Info, ArrowRight, PencilLine, X, Check } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
+import { useUI } from '@/contexts/UIContext';
+import { ScheduleMetadata, getAllScheduleMetadataSorted, deleteSchedule } from '@/lib/utils/storage';
+import { useScheduleManagement } from '@/hooks/useScheduleManagement';
 // import { RotationPattern } from '@/types/rotation';
 import { formatDistanceToNow } from 'date-fns';
 
@@ -12,6 +16,11 @@ interface SavedSchedulesProps {
 export function SavedSchedules({ onLoadSchedule, className = '' }: SavedSchedulesProps) {
   const [savedSchedules, setSavedSchedules] = useState<ScheduleMetadata[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [deleteId, setDeleteId] = useState<string | null>(null);
+  const [removingId, setRemovingId] = useState<string | null>(null);
+  const [localEditName, setLocalEditName] = useState<string>('');
+  const { editingScheduleId, setEditingScheduleId, setErrorMessage } = useUI();
+  const { renameSchedule } = useScheduleManagement({ onError: (e) => setErrorMessage(e) });
 
   useEffect(() => {
     // Load saved schedules when component mounts
@@ -21,17 +30,52 @@ export function SavedSchedules({ onLoadSchedule, className = '' }: SavedSchedule
   const loadSavedSchedules = () => {
     setIsLoading(true);
     // Load schedules from localStorage
-    const schedules = getAllScheduleMetadata();
+    const schedules = getAllScheduleMetadataSorted();
     setSavedSchedules(schedules);
     setIsLoading(false);
   };
 
-  const handleDeleteSchedule = (e: React.MouseEvent, scheduleId: string) => {
-    e.stopPropagation(); // Prevent triggering the parent onClick
-    
-    if (window.confirm('Are you sure you want to delete this schedule?')) {
-      deleteSchedule(scheduleId);
-      loadSavedSchedules(); // Refresh the list
+  const openDeleteDialog = (e: React.MouseEvent, scheduleId: string) => {
+    e.stopPropagation();
+    setDeleteId(scheduleId);
+  };
+
+  const confirmDelete = () => {
+    if (!deleteId) return;
+    const id = deleteId;
+    setDeleteId(null);
+    // Animate collapse & fade before removing
+    setRemovingId(id);
+    window.setTimeout(() => {
+      deleteSchedule(id);
+      setRemovingId(null);
+      loadSavedSchedules();
+    }, 300);
+  };
+
+  const cancelDelete = () => setDeleteId(null);
+
+  const startEdit = (e: React.MouseEvent, schedule: ScheduleMetadata) => {
+    e.stopPropagation();
+    setEditingScheduleId(schedule.id);
+    setLocalEditName(schedule.name || `${schedule.rotationPattern} Schedule`);
+  };
+
+  const cancelEdit = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setEditingScheduleId(null);
+    setLocalEditName('');
+  };
+
+  const confirmEdit = async (e: React.MouseEvent, scheduleId: string) => {
+    e.stopPropagation();
+    const name = localEditName.trim();
+    if (!name) return;
+    const res = renameSchedule(scheduleId, name);
+    if (res.success) {
+      setEditingScheduleId(null);
+      setLocalEditName('');
+      loadSavedSchedules();
     }
   };
 
@@ -86,15 +130,47 @@ export function SavedSchedules({ onLoadSchedule, className = '' }: SavedSchedule
           <div 
             key={schedule.id}
             onClick={() => onLoadSchedule(schedule.id)}
-            className="backdrop-blur-xl bg-white/30 rounded-xl shadow-sm border border-white/30 
-              transition-all duration-300 hover:shadow-md hover:bg-white/40 cursor-pointer group"
+            className={`backdrop-blur-xl bg-white/30 rounded-xl shadow-sm border border-white/30 
+              transition-all duration-300 hover:shadow-md hover:bg-white/40 cursor-pointer group overflow-hidden ${
+                removingId === schedule.id ? 'opacity-0 max-h-0' : 'opacity-100'
+              }`}
           >
             <div className="px-4 py-3">
               <div className="flex justify-between items-start">
                 <div>
-                  <h4 className="font-medium text-gray-800 group-hover:text-black transition-colors">
-                    {schedule.name || `${schedule.rotationPattern} Schedule`}
-                  </h4>
+                  {editingScheduleId === schedule.id ? (
+                    <div className="flex items-center gap-2">
+                      <input
+                        value={localEditName}
+                        onChange={(ev) => setLocalEditName(ev.target.value)}
+                        onClick={(ev) => ev.stopPropagation()}
+                        className={`w-full px-3 py-1.5 rounded-md border bg-white/60 focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+                          localEditName.trim() ? 'border-gray-300' : 'border-destructive'
+                        }`}
+                      />
+                      <Button
+                        size="sm"
+                        variant="default"
+                        disabled={!localEditName.trim()}
+                        onClick={(ev) => confirmEdit(ev, schedule.id)}
+                        aria-label="Confirm name"
+                      >
+                        <Check />
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={cancelEdit}
+                        aria-label="Cancel edit"
+                      >
+                        <X />
+                      </Button>
+                    </div>
+                  ) : (
+                    <h4 className="font-medium text-gray-800 group-hover:text-black transition-colors truncate max-w-[240px]">
+                      {schedule.name || `${schedule.rotationPattern} Schedule`}
+                    </h4>
+                  )}
                   
                   <div className="mt-1 space-y-1">
                     <div className="flex items-center text-xs text-gray-500">
@@ -110,8 +186,17 @@ export function SavedSchedules({ onLoadSchedule, className = '' }: SavedSchedule
                 </div>
                 
                 <div className="flex items-center space-x-2">
+                  {editingScheduleId !== schedule.id && (
+                    <button
+                      onClick={(e) => startEdit(e, schedule)}
+                      className="text-gray-400 hover:text-gray-700 p-1 transition-colors rounded-full hover:bg-white/50"
+                      aria-label={`Edit ${schedule.name || schedule.rotationPattern + ' schedule'}`}
+                    >
+                      <PencilLine className="w-4 h-4" />
+                    </button>
+                  )}
                   <button 
-                    onClick={(e) => handleDeleteSchedule(e, schedule.id)}
+                    onClick={(e) => openDeleteDialog(e, schedule.id)}
                     className="text-gray-400 hover:text-red-500 p-1 transition-colors rounded-full hover:bg-white/50"
                     aria-label={`Delete ${schedule.name || schedule.rotationPattern + ' schedule'}`}
                   >
@@ -131,6 +216,20 @@ export function SavedSchedules({ onLoadSchedule, className = '' }: SavedSchedule
           </div>
         ))}
       </div>
+
+      {/* Delete confirmation dialog */}
+      <Dialog open={deleteId !== null} onOpenChange={(open) => !open && setDeleteId(null)}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Delete schedule</DialogTitle>
+          </DialogHeader>
+          <p className="text-sm text-gray-600">This action cannot be undone. This will permanently delete the selected schedule.</p>
+          <DialogFooter>
+            <Button variant="outline" onClick={cancelDelete}>Cancel</Button>
+            <Button variant="destructive" onClick={confirmDelete}>Delete</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

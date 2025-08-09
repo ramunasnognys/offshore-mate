@@ -23,6 +23,10 @@ interface UIContextType {
   setIsDownloading: (downloading: boolean) => void
   isSaving: boolean
   setIsSaving: (saving: boolean) => void
+
+  // Saved schedules editing state
+  editingScheduleId: string | null
+  setEditingScheduleId: (id: string | null) => void
 }
 
 const UIContext = createContext<UIContextType | undefined>(undefined)
@@ -34,6 +38,7 @@ export function UIProvider({ children }: { children: ReactNode }) {
   const [isClient, setIsClient] = useState(false)
   const [isDownloading, setIsDownloading] = useState(false)
   const [isSaving, setIsSaving] = useState(false)
+  const [editingScheduleId, setEditingScheduleId] = useState<string | null>(null)
 
   const clearError = useCallback(() => {
     setErrorMessage('')
@@ -52,7 +57,9 @@ export function UIProvider({ children }: { children: ReactNode }) {
     isDownloading,
     setIsDownloading,
     isSaving,
-    setIsSaving
+    setIsSaving,
+    editingScheduleId,
+    setEditingScheduleId
   }
 
   return (
