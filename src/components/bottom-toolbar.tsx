@@ -167,16 +167,15 @@ export function BottomToolbar({ onExport, onFormatChange, onSettings, selectedFo
           <div className="flex items-center justify-around py-2" style={{ paddingBottom: 'max(0.5rem, env(safe-area-inset-bottom))' }}>
             <button
               ref={exportButtonRef}
-              onClick={(e) => {
+              onPointerDown={(e) => {
+                e.preventDefault();
                 e.stopPropagation();
                 handlePanelChange(expandedPanel === 'export' ? null : 'export');
               }}
-              onMouseDown={(e) => {
-                e.preventDefault();
+              onClick={(e) => {
+                // Keep click for keyboard/mouse accessibility
                 e.stopPropagation();
-              }}
-              onTouchStart={(e) => {
-                e.stopPropagation();
+                handlePanelChange(expandedPanel === 'export' ? null : 'export');
               }}
               className="p-2 rounded-lg hover:bg-gray-100 transition-colors group touch-manipulation"
               aria-label="Export"
