@@ -97,7 +97,7 @@ export function ContextualSaveBar({
 
   return (
     <div className="animate-in slide-in-from-top duration-300 ease-out">
-      <div className="backdrop-blur-xl bg-white/40 rounded-lg shadow border border-white/30 px-3 py-3 mb-4">
+      <div className="backdrop-blur-xl bg-white/40 rounded-lg shadow border border-white/30 px-3 py-2.5 mb-4">
         <div className="flex items-end gap-3">
           <div className="flex-1">
             <div className="text-[10px] uppercase tracking-widest text-gray-500 mb-1 select-none">Name this schedule</div>
@@ -107,24 +107,24 @@ export function ContextualSaveBar({
               value={localName}
               onChange={handleNameChange}
               placeholder={defaultName}
-              className={`w-full h-10 px-3 rounded-md border bg-white/60 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors ${
+              className={`w-full h-9 px-3 rounded-md border bg-white/60 text-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-500/50 transition-colors ${
                 !isNameValid ? 'border-destructive' : 'border-gray-300'
               }`}
             />
           </div>
           <div className="flex items-center gap-2">
-            <Button size="default" variant="outline" onClick={handleCancel}>
+            <Button size="sm" variant="outline" onClick={handleCancel} className="text-sm">
               Cancel
             </Button>
             <Button
-              size="default"
+              size="sm"
               variant="default"
               onClick={handleSave}
               disabled={!isNameValid}
-              className="bg-gray-700 hover:bg-gray-800 text-white"
+              className="bg-gray-700 hover:bg-gray-800 text-white text-sm"
             >
-              <Save className="w-4 h-4" />
-              <span className="sr-only sm:not-sr-only sm:ml-2">Save</span>
+              <Save className="w-3.5 h-3.5" />
+              <span className="sr-only sm:not-sr-only sm:ml-1.5">Save</span>
             </Button>
           </div>
         </div>
