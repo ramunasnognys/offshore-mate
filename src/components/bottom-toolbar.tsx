@@ -172,11 +172,11 @@ export function BottomToolbar({ onExport, onFormatChange, onSettings, selectedFo
         </div>
         
         {/* Main Toolbar */}
-        <div className={`bg-gradient-to-t from-white/98 via-white/95 to-white/90 backdrop-blur-2xl 
-          border-t border-white/60 shadow-2xl shadow-black/5
+        <div className={`bg-white/95 backdrop-blur-xl 
+          border-t border-gray-200/50 
           ${isExpanded ? 'pointer-events-none z-40' : 'z-40'} relative pointer-events-auto`} 
           style={{ position: 'relative', contain: 'layout' }}>
-          <div className="flex items-center justify-center py-3 px-4" style={{ paddingBottom: 'max(0.75rem, env(safe-area-inset-bottom))' }}>
+          <div className="flex items-center justify-center py-1 px-4" style={{ paddingBottom: 'max(0.25rem, env(safe-area-inset-bottom))' }}>
             {/* Export Button */}
             <button
               ref={exportButtonRef}
@@ -190,7 +190,7 @@ export function BottomToolbar({ onExport, onFormatChange, onSettings, selectedFo
                 e.stopPropagation();
                 handlePanelChange(expandedPanel === 'export' ? null : 'export');
               }}
-              className="p-3 rounded-xl hover:bg-white/60 hover:shadow-lg hover:shadow-orange-500/10 
+              className="p-2 rounded-xl hover:bg-white/60 hover:shadow-lg hover:shadow-orange-500/10 
                 hover:scale-105 active:scale-95 transition-all duration-200 ease-out group touch-manipulation
                 focus:outline-none focus:ring-2 focus:ring-orange-500/50 focus:ring-offset-2 focus:ring-offset-white/80
                 flex-1"
@@ -208,7 +208,7 @@ export function BottomToolbar({ onExport, onFormatChange, onSettings, selectedFo
             
             {/* Share Button */}
             <button
-              className="p-3 rounded-xl hover:bg-white/60 hover:shadow-lg hover:shadow-orange-500/10 
+              className="p-2 rounded-xl hover:bg-white/60 hover:shadow-lg hover:shadow-orange-500/10 
                 hover:scale-105 active:scale-95 transition-all duration-200 ease-out group
                 focus:outline-none focus:ring-2 focus:ring-orange-500/50 focus:ring-offset-2 focus:ring-offset-white/80
                 flex-1"
@@ -230,7 +230,7 @@ export function BottomToolbar({ onExport, onFormatChange, onSettings, selectedFo
                   onSettings();
                 }
               }}
-              className="p-3 rounded-xl hover:bg-white/60 hover:shadow-lg hover:shadow-orange-500/10 
+              className="p-2 rounded-xl hover:bg-white/60 hover:shadow-lg hover:shadow-orange-500/10 
                 hover:scale-105 active:scale-95 transition-all duration-200 ease-out group
                 focus:outline-none focus:ring-2 focus:ring-orange-500/50 focus:ring-offset-2 focus:ring-offset-white/80
                 flex-1"
