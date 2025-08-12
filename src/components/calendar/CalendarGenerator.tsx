@@ -2,7 +2,7 @@
 
 import React from 'react'
 import { ArrowRight } from 'lucide-react'
-import { DatePicker } from '@/components/date-picker'
+import { StartDateCard } from '@/components/calendar/StartDateCard'
 import { WorkRotationCard } from '@/components/calendar/WorkRotationCard'
 import { useCalendar } from '@/contexts/CalendarContext'
 import { useUI } from '@/contexts/UIContext'
@@ -54,18 +54,10 @@ export function CalendarGenerator({
 
   return (
     <div className={`${isMobileView ? 'space-y-3' : 'space-y-4 md:space-y-6'}`}>
-      {/* Date Picker Button */}
-      <div className="backdrop-blur-xl bg-white/30 rounded-2xl md:rounded-3xl shadow-card border border-white/30 transition-all duration-300 hover:shadow-card-hover hover:bg-white/40">
-        <div className="px-4 md:px-6 py-3 md:py-4">
-          <span className="text-gray-500 text-xs md:text-sm font-medium mb-0.5 md:mb-1 block">
-            Start Date
-          </span>
-          <DatePicker 
-            date={selectedDate ? new Date(selectedDate) : undefined}
-            onSelect={handleDateSelect}
-          />
-        </div>
-      </div>
+      <StartDateCard
+        selectedDate={selectedDate}
+        onDateSelect={handleDateSelect}
+      />
 
       <WorkRotationCard
         selectedRotation={selectedRotation}
