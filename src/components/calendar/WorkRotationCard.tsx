@@ -2,6 +2,7 @@
 
 import { Clock } from 'lucide-react'
 import { Card, CardContent } from '@/components/ui/card'
+import { RotationPattern } from '@/types/rotation'
 
 interface RotationOption {
   label: string
@@ -101,7 +102,7 @@ function CustomRotationInput({ rotation, onChange, error }: CustomRotationInputP
 
 interface WorkRotationCardProps {
   selectedRotation: string
-  onRotationChange: (rotation: any) => void
+  onRotationChange: (rotation: RotationPattern | '') => void
   customRotation: CustomRotation
   onCustomRotationChange: (rotation: CustomRotation) => void
   options: RotationOption[]
@@ -130,7 +131,7 @@ export function WorkRotationCard({
               key={option.value}
               option={option}
               isSelected={selectedRotation === option.value}
-              onClick={() => onRotationChange(option.value)}
+              onClick={() => onRotationChange(option.value as RotationPattern)}
             />
           ))}
         </div>

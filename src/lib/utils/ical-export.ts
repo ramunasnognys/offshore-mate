@@ -123,7 +123,7 @@ function extractWorkPeriods(calendar: MonthData[], rotationPattern: RotationPatt
   const config = rotationConfigs[rotationPattern];
   
   // Handle custom rotation by defaulting to 14/14 if Other is selected
-  if (rotationPattern === 'Other') {
+  if (rotationPattern === 'Custom') {
     console.warn('Custom rotation not supported for calendar export, using 14/14 pattern');
     const defaultConfig = rotationConfigs['14/14'];
     return extractWorkPeriodsWithConfig(calendar, defaultConfig, startDateStr);

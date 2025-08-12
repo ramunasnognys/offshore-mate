@@ -2,11 +2,10 @@ import { RotationConfig, RotationPattern, MonthData, CalendarDay } from '@/types
 import { addDays, startOfMonth, endOfMonth, format, getDay, differenceInDays, isSameDay, addMonths } from 'date-fns';
 
 export const rotationConfigs: Record<RotationPattern, RotationConfig> = {
-  '14/14': { workDays: 15, offDays: 13, label: '14/14 Rotation', value: '14/14' },
-  '14/21': { workDays: 15, offDays: 20, label: '14/21 Rotation', value: '14/21' },
-  '21/21': { workDays: 22, offDays: 20, label: '21/21 Rotation', value: '21/21' },
-  '28/28': { workDays: 29, offDays: 27, label: '28/28 Rotation', value: '28/28' },
-  'Other': { workDays: 0, offDays: 0, label: 'Custom Rotation', value: 'Other' },
+  '14/14': { workDays: 15, offDays: 13, label: '14/14 Rotation', value: '14/14', description: '14 days on, 14 days off' },
+  '14/21': { workDays: 15, offDays: 20, label: '14/21 Rotation', value: '14/21', description: '14 days on, 21 days off' },
+  '28/28': { workDays: 29, offDays: 27, label: '28/28 Rotation', value: '28/28', description: '28 days on, 28 days off' },
+  'Custom': { workDays: 0, offDays: 0, label: 'Custom Rotation', value: 'Custom', description: 'Set your own rotation' },
 };
 
 export function normalizeToPrecedingTuesday(date: Date): Date {
@@ -42,7 +41,7 @@ export function generateRotationCalendar(
   customRotation?: { workDays: number; offDays: number }
 ): MonthData[] {
   const monthData: MonthData[] = [];
-  const config = pattern === 'Other' && customRotation 
+  const config = pattern === 'Custom' && customRotation 
     ? { ...rotationConfigs[pattern], workDays: customRotation.workDays + 1, offDays: customRotation.offDays - 1 }
     : rotationConfigs[pattern];
   
