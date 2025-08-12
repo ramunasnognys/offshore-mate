@@ -8,7 +8,7 @@ import { CalendarDisplay } from '@/components/calendar/CalendarDisplay'
 import { NotificationManager } from '@/components/common/NotificationManager'
 import { SavedSchedules } from '@/components/saved-schedules'
 import { BottomToolbar } from '@/components/bottom-toolbar'
-import { SettingsBottomSheet } from '@/components/settings-bottom-sheet'
+import { SavedSchedulesSettings } from '@/components/SavedSchedulesSettings'
 import { useMobileDetection } from '@/hooks/useMobileDetection'
 import { useScheduleManagement } from '@/hooks/useScheduleManagement'
 import { useExportCalendar } from '@/hooks/useExportCalendar'
@@ -40,10 +40,7 @@ function HomeContent() {
 
   // UI context
   const { 
-    setShowSettings,
-    isEditingName,
-    setIsEditingName,
-    isSaving
+    setShowSettings
   } = useUI()
 
   // Schedule management
@@ -191,19 +188,10 @@ function HomeContent() {
             expandedPanel={expandedPanel}
             onExpandedPanelChange={setExpandedPanel}
           />
-          <SettingsBottomSheet
-            scheduleName={scheduleName}
-            setScheduleName={setScheduleName}
-            isEditingName={isEditingName}
-            setIsEditingName={setIsEditingName}
-            isSaving={isSaving}
-            isSaved={currentScheduleId !== null}
-            onSave={() => saveSchedule(yearCalendar, scheduleName, selectedRotation, selectedDate || '', currentScheduleId)}
-            selectedRotation={selectedRotation}
-            selectedDate={selectedDate}
-            isStorageAvailable={isClient && isStorageSupported}
+          <SavedSchedulesSettings
+            onLoadSchedule={loadSchedule}
             isOpen={expandedPanel === 'settings'}
-            onClose={() => setExpandedPanel(null)}
+            onOpenChange={(open) => setExpandedPanel(open ? 'settings' : null)}
           />
         </>
       )}

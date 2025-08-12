@@ -4,12 +4,13 @@ import React from 'react'
 import { ArrowRight } from 'lucide-react'
 import { ScheduleList } from '@/components/schedule-list'
 import { DownloadCalendar } from '@/components/download-calendar'
-import { SettingsDialog } from '@/components/settings-dialog'
+import { SavedSchedulesSettings } from '@/components/SavedSchedulesSettings'
 import { useCalendar } from '@/contexts/CalendarContext'
 import { useUI } from '@/contexts/UIContext'
 import { useMobileDetection } from '@/hooks/useMobileDetection'
 import { useMonthNavigation } from '@/hooks/useMonthNavigation'
-import { MonthData } from '@/types/rotation'
+import { useScheduleManagement } from '@/hooks/useScheduleManagement'
+import { MonthData, RotationPattern } from '@/types/rotation'
 import { extractWorkPeriods, formatWorkPatternDisplay } from '@/lib/utils/workPeriods'
 import { ContextualSaveBar } from '@/components/ContextualSaveBar'
 
@@ -22,7 +23,7 @@ interface CalendarDisplayProps {
 export function CalendarDisplay({ 
   onBack, 
   onSave,
-  isStorageAvailable 
+  isStorageAvailable: _isStorageAvailable 
 }: CalendarDisplayProps) {
   const {
     yearCalendar,
@@ -31,17 +32,37 @@ export function CalendarDisplay({
     selectedRotation,
     selectedDate,
     isSaved,
-    currentScheduleId
+    currentScheduleId,
+    setYearCalendar,
+    setCurrentScheduleId,
+    setIsSaved,
+    setSelectedDate,
+    handleRotationSelect,
+    setIsCalendarGenerated
   } = useCalendar()
 
   const {
     showSettings,
     setShowSettings,
-    isEditingName,
-    setIsEditingName
+    setErrorMessage
   } = useUI()
 
   const isMobileView = useMobileDetection()
+
+  // Schedule management for loading schedules
+  const { loadSchedule } = useScheduleManagement({
+    onScheduleLoaded: (schedule) => {
+      // Load the schedule into the calendar context
+      setSelectedDate(schedule.metadata.startDate)
+      handleRotationSelect(schedule.metadata.rotationPattern as RotationPattern)
+      setYearCalendar(schedule.calendar)
+      setScheduleName(schedule.metadata.name)
+      setCurrentScheduleId(schedule.metadata.id)
+      setIsSaved(true)
+      setIsCalendarGenerated(true)
+    },
+    onError: (error) => setErrorMessage(error)
+  })
 
   // Navigation
   const {
@@ -66,8 +87,8 @@ export function CalendarDisplay({
     }
   }
 
-  // Get current month's work pattern
-  const currentMonthWorkPattern = React.useMemo(() => {
+  // Get current month's work pattern (currently unused but kept for future use)
+  const _currentMonthWorkPattern = React.useMemo(() => {
     if (!yearCalendar[currentMonthIndex]) return '🏖️ Off this month'
     
     const workPeriods = extractWorkPeriods(yearCalendar[currentMonthIndex])
@@ -146,19 +167,10 @@ export function CalendarDisplay({
       
       {/* Settings Dialog - Only show on desktop */}
       {isMobileView === false && (
-        <SettingsDialog
-          scheduleName={scheduleName}
-          setScheduleName={setScheduleName}
-          isEditingName={isEditingName}
-          setIsEditingName={setIsEditingName}
-          isSaving={false}
-          isSaved={isSaved}
-          onSave={onSave}
-          selectedRotation={selectedRotation}
-          selectedDate={selectedDate}
-          isStorageAvailable={isStorageAvailable}
+        <SavedSchedulesSettings
+          onLoadSchedule={loadSchedule}
+          isOpen={showSettings}
           onOpenChange={setShowSettings}
-          open={showSettings}
         />
       )}
     </div>

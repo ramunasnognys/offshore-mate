@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState } from 'react';
-import { Download, Share2, Settings, ChevronUp, CalendarPlus } from 'lucide-react';
+import { Download, Share2, BookmarkCheck, ChevronUp, CalendarPlus } from 'lucide-react';
 import { ExportFormat } from './export-format-selector';
 
 interface BottomToolbarProps {
@@ -234,10 +234,10 @@ export function BottomToolbar({ onExport, onFormatChange, onSettings, selectedFo
                 hover:scale-105 active:scale-95 transition-all duration-200 ease-out group
                 focus:outline-none focus:ring-2 focus:ring-orange-500/50 focus:ring-offset-2 focus:ring-offset-white/80
                 flex-1"
-              aria-label="Settings - Manage your schedule preferences"
-              title="Manage your schedule settings and preferences"
+              aria-label="Saved Schedules - View and manage your saved schedules"
+              title="View and manage your saved rotation schedules"
             >
-              <Settings className="w-5 h-5 text-gray-700 group-hover:text-orange-500 group-hover:scale-110 
+              <BookmarkCheck className="w-5 h-5 text-gray-700 group-hover:text-orange-500 group-hover:scale-110 
                 transition-all duration-200 ease-out mx-auto" />
             </button>
           </div>
