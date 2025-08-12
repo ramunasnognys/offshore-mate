@@ -1,10 +1,11 @@
-export type RotationPattern = '14/14' | '14/21' | '21/21' | '28/28' | 'Other';
+export type RotationPattern = '14/14' | '14/21' | '28/28' | 'Custom';
 
 export interface RotationConfig {
   workDays: number;
   offDays: number;
   label: string;
   value: RotationPattern;
+  description: string;
 }
 
 export interface CustomRotation {

@@ -3,7 +3,7 @@
 import React from 'react'
 import { ArrowRight } from 'lucide-react'
 import { DatePicker } from '@/components/date-picker'
-import { RotationButton } from '@/components/rotation-button'
+import { WorkRotationCard } from '@/components/calendar/WorkRotationCard'
 import { useCalendar } from '@/contexts/CalendarContext'
 import { useUI } from '@/contexts/UIContext'
 import { useMobileDetection } from '@/hooks/useMobileDetection'
@@ -21,7 +21,6 @@ export function CalendarGenerator({
   const {
     selectedDate,
     selectedRotation,
-    showCustomInput,
     customWorkDays,
     customOffDays,
     handleDateSelect,
@@ -43,7 +42,7 @@ export function CalendarGenerator({
       return
     }
 
-    const customRotation = selectedRotation === 'Other' 
+    const customRotation = selectedRotation === 'Custom' 
       ? {
           workDays: parseInt(customWorkDays),
           offDays: parseInt(customOffDays)
@@ -68,55 +67,19 @@ export function CalendarGenerator({
         </div>
       </div>
 
-      {/* Work Rotation */}
-      <div className="backdrop-blur-xl bg-white/30 rounded-2xl md:rounded-3xl shadow-card border border-white/30 p-4 md:p-6">
-        <span className="text-gray-600 text-sm md:text-base font-medium mb-3 block">
-          Work Rotation
-        </span>
-        <div className="grid grid-cols-3 gap-2 md:gap-3">
-          {rotationOptions.map((option) => (
-            <RotationButton
-              key={option.value}
-              label={option.label}
-              isSelected={selectedRotation === option.value}
-              onClick={() => handleRotationSelect(option.value as RotationPattern)}
-              className="text-sm md:text-base"
-            />
-          ))}
-        </div>
-        
-        {/* Custom rotation input */}
-        {showCustomInput && (
-          <div className="mt-3 backdrop-blur-xl bg-white/30 border border-white/30 rounded-lg p-4">
-            <div className="grid grid-cols-2 gap-3">
-              <div>
-                <label className="text-xs text-gray-600 mb-1 block">Work days</label>
-                <input
-                  type="number"
-                  value={customWorkDays}
-                  onChange={(e) => setCustomWorkDays(e.target.value)}
-                  className="w-full px-3 py-2 bg-white/50 backdrop-blur-sm border-white/30 rounded-md border text-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-800"
-                  placeholder="e.g. 14"
-                  min="1"
-                  max="365"
-                />
-              </div>
-              <div>
-                <label className="text-xs text-gray-600 mb-1 block">Off days</label>
-                <input
-                  type="number"
-                  value={customOffDays}
-                  onChange={(e) => setCustomOffDays(e.target.value)}
-                  className="w-full px-3 py-2 bg-white/50 backdrop-blur-sm border-white/30 rounded-md border text-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-800"
-                  placeholder="e.g. 14"
-                  min="1"
-                  max="365"
-                />
-              </div>
-            </div>
-          </div>
-        )}
-      </div>
+      <WorkRotationCard
+        selectedRotation={selectedRotation}
+        onRotationChange={handleRotationSelect}
+        customRotation={{
+          work: customWorkDays,
+          rest: customOffDays
+        }}
+        onCustomRotationChange={(rotation) => {
+          setCustomWorkDays(rotation.work)
+          setCustomOffDays(rotation.rest)
+        }}
+        options={rotationOptions}
+      />
 
       {/* Saved Schedules Button */}
       {hasStorageSupport && (

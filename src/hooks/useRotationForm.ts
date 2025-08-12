@@ -6,6 +6,7 @@ interface RotationOption {
   value: string
   workDays: number
   offDays: number
+  description: string
 }
 
 interface UseRotationFormReturn {
@@ -42,9 +43,10 @@ export function useRotationForm(): UseRotationFormReturn {
   const [customOffDays, setCustomOffDays] = useState('')
 
   const rotationOptions: RotationOption[] = [
-    { label: '14/14', value: '14/14', workDays: 14, offDays: 14 },
-    { label: '14/21', value: '14/21', workDays: 14, offDays: 21 },
-    { label: 'Other', value: 'Other', workDays: 0, offDays: 0 }
+    { label: '14/14', value: '14/14', workDays: 14, offDays: 14, description: '14 days on, 14 days off' },
+    { label: '14/21', value: '14/21', workDays: 14, offDays: 21, description: '14 days on, 21 days off' },
+    { label: '28/28', value: '28/28', workDays: 28, offDays: 28, description: '28 days on, 28 days off' },
+    { label: 'Custom', value: 'Custom', workDays: 0, offDays: 0, description: 'Set your own rotation' }
   ]
 
   const handleDateSelect = useCallback((date: Date | undefined) => {
@@ -56,7 +58,7 @@ export function useRotationForm(): UseRotationFormReturn {
 
   const handleRotationSelect = useCallback((rotation: RotationPattern | '') => {
     setSelectedRotation(rotation)
-    if (rotation === 'Other') {
+    if (rotation === 'Custom') {
       setShowCustomInput(true)
     } else {
       setShowCustomInput(false)
@@ -83,12 +85,12 @@ export function useRotationForm(): UseRotationFormReturn {
     if (!selectedRotation) {
       return { 
         isValid: false, 
-        error: 'Please select a work rotation pattern (14/14, 14/21, or Other)' 
+        error: 'Please select a work rotation pattern (14/14, 14/21, 28/28, or Custom)' 
       }
     }
     
     // Validate custom rotation inputs
-    if (selectedRotation === 'Other') {
+    if (selectedRotation === 'Custom') {
       const workDays = parseInt(customWorkDays)
       const offDays = parseInt(customOffDays)
       

@@ -61,7 +61,7 @@ export function useCalendarGeneration(): UseCalendarGenerationReturn {
     setCurrentScheduleId(null)
     
     // Generate a default schedule name
-    const rotationLabel = rotationPattern === 'Other' && customRotation
+    const rotationLabel = rotationPattern === 'Custom' && customRotation
       ? `${customRotation.workDays}/${customRotation.offDays} Rotation` 
       : `${rotationPattern} Rotation`
     const defaultName = `${rotationLabel} (${new Date(startDate).toLocaleDateString('en-US', { 

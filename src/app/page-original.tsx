@@ -62,7 +62,8 @@ export default function Home() {
   const rotationOptions: RotationOption[] = [
     { label: '14/14', value: '14/14', workDays: 14, offDays: 14 },
     { label: '14/21', value: '14/21', workDays: 14, offDays: 21 },
-    { label: 'Other', value: 'Other', workDays: 0, offDays: 0 }
+    { label: '28/28', value: '28/28', workDays: 28, offDays: 28 },
+    { label: 'Custom', value: 'Custom', workDays: 0, offDays: 0 }
   ]
 
   const handleDateSelect = (date: Date | undefined) => {
@@ -101,12 +102,12 @@ export default function Home() {
     }
     
     if (!selectedRotation) {
-      setErrorMessage('Please select a work rotation pattern (14/14, 14/21, or Other)')
+      setErrorMessage('Please select a work rotation pattern (14/14, 14/21, 28/28, or Custom)')
       return
     }
     
     // Validate custom rotation inputs
-    if (selectedRotation === 'Other') {
+    if (selectedRotation === 'Custom') {
       const workDays = parseInt(customWorkDays)
       const offDays = parseInt(customOffDays)
       
@@ -130,7 +131,7 @@ export default function Home() {
       new Date(selectedDate),
       selectedRotation as RotationPattern,
       12,
-      selectedRotation === 'Other' ? {
+      selectedRotation === 'Custom' ? {
         workDays: parseInt(customWorkDays),
         offDays: parseInt(customOffDays)
       } : undefined
@@ -146,7 +147,7 @@ export default function Home() {
     setCurrentMonthIndex(currentMonthIndex)
     
     // Generate a default schedule name with date and rotation
-    const rotationLabel = selectedRotation === 'Other' 
+    const rotationLabel = selectedRotation === 'Custom' 
       ? `${customWorkDays}/${customOffDays} Rotation` 
       : `${selectedRotation} Rotation`
     const defaultName = `${rotationLabel} (${new Date(selectedDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })})`
@@ -456,7 +457,7 @@ export default function Home() {
                     isSelected={selectedRotation === option.value}
                     onClick={() => {
                       setSelectedRotation(option.value as RotationPattern)
-                      if (option.value === 'Other') {
+                      if (option.value === 'Custom') {
                         setShowCustomInput(true)
                       } else {
                         setShowCustomInput(false)
