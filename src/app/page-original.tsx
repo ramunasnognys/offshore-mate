@@ -552,8 +552,7 @@ export default function Home() {
                       </button>
                     </div>
                     <SavedSchedules 
-                      onLoadSchedule={handleLoadSchedule} 
-                      className="mt-2"
+                      onLoadSchedule={handleLoadSchedule}
                     />
                   </div>
                 </div>

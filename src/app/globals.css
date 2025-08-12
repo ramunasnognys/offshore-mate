@@ -412,6 +412,12 @@
     --bottom-toolbar-total-height: calc(var(--bottom-toolbar-height) + var(--bottom-toolbar-safe-area));
     --bottom-toolbar-buffer: 2rem; /* Extra buffer for Chrome */
     
+    /* Safe area insets for all edges */
+    --safe-area-inset-top: env(safe-area-inset-top, 0);
+    --safe-area-inset-right: env(safe-area-inset-right, 0);
+    --safe-area-inset-bottom: env(safe-area-inset-bottom, 0);
+    --safe-area-inset-left: env(safe-area-inset-left, 0);
+    
     /* Dynamic viewport height for mobile browsers */
     --viewport-height: 100vh;
     --viewport-height-dynamic: 100dvh;
@@ -471,6 +477,23 @@
     height: 100vh;
     height: var(--viewport-height-dynamic, 100vh);
     min-height: -webkit-fill-available;
+  }
+  
+  /* Safe area padding utilities */
+  .safe-area-top {
+    padding-top: var(--safe-area-inset-top);
+  }
+  
+  .safe-area-inset-x {
+    padding-left: var(--safe-area-inset-left);
+    padding-right: var(--safe-area-inset-right);
+  }
+  
+  /* Mobile-specific safe area adjustments */
+  @media (max-width: 768px) {
+    .mobile-safe-top {
+      padding-top: max(1rem, var(--safe-area-inset-top));
+    }
   }
   
   /* Mobile calendar container specific fixes */

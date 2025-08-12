@@ -1,7 +1,6 @@
 'use client'
 
 import React, { useEffect } from 'react'
-import { XCircle } from 'lucide-react'
 import { CalendarProvider, useCalendar } from '@/contexts/CalendarContext'
 import { UIProvider, useUI } from '@/contexts/UIContext'
 import { CalendarGenerator } from '@/components/calendar/CalendarGenerator'
@@ -109,7 +108,7 @@ function HomeContent() {
   }
 
   return (
-    <div className="flex flex-col h-screen bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-blue-100 via-white to-pink-100 bg-fixed">
+    <div className="flex flex-col min-h-[100dvh] bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-blue-100 via-white to-pink-100 bg-fixed">
       {/* Notifications */}
       <NotificationManager
         saveNotification={saveNotification}
@@ -122,7 +121,7 @@ function HomeContent() {
         onSwitchToPNG={handleUsePNGInstead}
       />
 
-      <main className={`flex-1 overflow-y-auto flex ${isCalendarGenerated ? 'items-start pt-6' : 'items-center'} justify-center p-4 md:p-8 ${isCalendarGenerated && isMobileView === true ? 'has-bottom-toolbar' : ''} ${isCalendarGenerated && isMobileView === true && isExportPanelExpanded ? 'pb-96' : ''}`} 
+      <main className={`flex-1 overflow-y-auto flex ${isCalendarGenerated ? 'items-start pt-6' : 'items-center'} justify-center p-4 md:p-8 safe-area-inset-x ${isMobileView !== false ? 'mobile-safe-top' : ''} ${isCalendarGenerated && isMobileView === true ? 'has-bottom-toolbar' : ''} ${isCalendarGenerated && isMobileView === true && isExportPanelExpanded ? 'pb-96' : ''}`} 
         style={{
           ...(isCalendarGenerated && isMobileView === true ? { 
             paddingBottom: isExportPanelExpanded ? '24rem' : 'calc(var(--bottom-toolbar-total-height) + var(--bottom-toolbar-buffer))',
@@ -131,7 +130,7 @@ function HomeContent() {
         }}>
 
       <div className="relative w-full max-w-[500px]">
-        <div className={`${isCalendarGenerated && isMobileView === true ? 'mb-4' : 'mb-8 md:mb-12'}`}>
+        <div className={`${isCalendarGenerated && isMobileView === true ? 'mb-4 pt-2' : 'mb-8 md:mb-12'} ${isMobileView !== false ? 'pt-safe' : ''}`}>
           <h1 className={`font-display text-center text-gray-800 ${
             isCalendarGenerated && isMobileView === true 
               ? 'text-3xl mb-1' 
@@ -155,29 +154,12 @@ function HomeContent() {
               hasStorageSupport={isClient && isStorageSupported}
             />
 
-            {/* Saved Schedules Modal */}
-            {showSavedSchedules && (
-              <div className="fixed inset-0 bg-black/25 backdrop-blur-sm z-20 flex items-center justify-center p-4">
-                <div className="bg-white rounded-2xl w-full max-w-md max-h-[80vh] overflow-auto shadow-xl">
-                  <div className="p-5">
-                    <div className="flex justify-between items-center mb-4">
-                      <h3 className="text-xl font-bold">Saved Schedules</h3>
-                      <button 
-                        onClick={() => setShowSavedSchedules(false)}
-                        className="text-gray-400 hover:text-gray-600"
-                        aria-label="Close saved schedules"
-                      >
-                        <XCircle className="w-5 h-5" />
-                      </button>
-                    </div>
-                    <SavedSchedules 
-                      onLoadSchedule={loadSchedule} 
-                      className="mt-2"
-                    />
-                  </div>
-                </div>
-              </div>
-            )}
+            {/* Saved Schedules Dialog */}
+            <SavedSchedules 
+              onLoadSchedule={loadSchedule}
+              isOpen={showSavedSchedules}
+              onOpenChange={setShowSavedSchedules}
+            />
           </>
         ) : (
           <CalendarDisplay

@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Mobile Viewport Test</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --safe-area-inset-top: env(safe-area-inset-top, 0);
+            --safe-area-inset-right: env(safe-area-inset-right, 0);
+            --safe-area-inset-bottom: env(safe-area-inset-bottom, 0);
+            --safe-area-inset-left: env(safe-area-inset-left, 0);
+        }
+        
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            background: linear-gradient(to bottom right, #3b82f6, #8b5cf6);
+            min-height: 100vh;
+            min-height: 100dvh;
+            color: white;
+            padding-top: var(--safe-area-inset-top);
+            padding-left: var(--safe-area-inset-left);
+            padding-right: var(--safe-area-inset-right);
+            padding-bottom: var(--safe-area-inset-bottom);
+        }
+        
+        .container {
+            padding: 1rem;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+        
+        h1 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            text-align: center;
+        }
+        
+        .info {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 1rem 0;
+            backdrop-filter: blur(10px);
+        }
+        
+        .value {
+            font-family: monospace;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 2px 6px;
+            border-radius: 4px;
+            margin-left: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Mobile Viewport Test</h1>
+        <p style="text-align: center; opacity: 0.8;">Testing safe area insets and viewport</p>
+        
+        <div class="info">
+            <h2>Viewport Info</h2>
+            <p>Width: <span class="value" id="vw"></span></p>
+            <p>Height: <span class="value" id="vh"></span></p>
+            <p>DPR: <span class="value" id="dpr"></span></p>
+            <p>Orientation: <span class="value" id="orientation"></span></p>
+        </div>
+        
+        <div class="info">
+            <h2>Safe Area Insets</h2>
+            <p>Top: <span class="value" id="safe-top"></span></p>
+            <p>Right: <span class="value" id="safe-right"></span></p>
+            <p>Bottom: <span class="value" id="safe-bottom"></span></p>
+            <p>Left: <span class="value" id="safe-left"></span></p>
+        </div>
+        
+        <div class="info">
+            <h2>User Agent</h2>
+            <p style="word-break: break-all; font-size: 0.875rem;" id="ua"></p>
+        </div>
+    </div>
+    
+    <script>
+        function updateInfo() {
+            document.getElementById('vw').textContent = window.innerWidth + 'px';
+            document.getElementById('vh').textContent = window.innerHeight + 'px';
+            document.getElementById('dpr').textContent = window.devicePixelRatio;
+            document.getElementById('orientation').textContent = window.orientation !== undefined ? window.orientation + '°' : 'N/A';
+            document.getElementById('ua').textContent = navigator.userAgent;
+            
+            const computedStyle = getComputedStyle(document.documentElement);
+            document.getElementById('safe-top').textContent = computedStyle.getPropertyValue('--safe-area-inset-top') || '0px';
+            document.getElementById('safe-right').textContent = computedStyle.getPropertyValue('--safe-area-inset-right') || '0px';
+            document.getElementById('safe-bottom').textContent = computedStyle.getPropertyValue('--safe-area-inset-bottom') || '0px';
+            document.getElementById('safe-left').textContent = computedStyle.getPropertyValue('--safe-area-inset-left') || '0px';
+        }
+        
+        updateInfo();
+        window.addEventListener('resize', updateInfo);
+        window.addEventListener('orientationchange', updateInfo);
+    </script>
+</body>
+</html>

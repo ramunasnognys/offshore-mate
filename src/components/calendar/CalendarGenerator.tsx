@@ -102,10 +102,11 @@ export function CalendarGenerator({
       {/* Generate Button */}
       <button
         onClick={handleGenerateCalendar}
-        className="w-full text-white rounded-full px-6 py-4 font-semibold text-lg 
-          transition-all duration-300 relative bg-black hover:bg-gray-900 active:scale-[0.98]"
+        className="w-full h-14 text-lg font-semibold bg-slate-800 hover:bg-slate-900 
+          text-white shadow-lg hover:shadow-xl transition-all duration-200 
+          disabled:opacity-50 rounded-2xl"
       >
-        Generate
+        Generate Schedule
       </button>
     </div>
   )

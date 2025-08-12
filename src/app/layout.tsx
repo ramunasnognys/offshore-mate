@@ -1,4 +1,4 @@
-import type { Metadata } from 'next'
+import type { Metadata, Viewport } from 'next'
 import { Inter } from 'next/font/google'
 import localFont from 'next/font/local'
 import './globals.css'
@@ -22,6 +22,15 @@ const delaGothic = localFont({
 export const metadata: Metadata = {
   title: 'Offshore Calendar',
   description: 'Generate offshore work rotation schedules',
+}
+
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 5,
+  userScalable: true,
+  viewportFit: 'cover',
+  themeColor: '#ffffff',
 }
 
 export default function RootLayout({
