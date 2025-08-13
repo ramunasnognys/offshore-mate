@@ -11,8 +11,8 @@ import { useMobileDetection } from '@/hooks/useMobileDetection'
 import { useMonthNavigation } from '@/hooks/useMonthNavigation'
 import { useScheduleManagement } from '@/hooks/useScheduleManagement'
 import { MonthData, RotationPattern } from '@/types/rotation'
-import { extractWorkPeriods, formatWorkPatternDisplay } from '@/lib/utils/workPeriods'
 import { ContextualSaveBar } from '@/components/ContextualSaveBar'
+import { calculateWeekdayAdjustment, rotationConfigs } from '@/lib/utils/rotation'
 
 interface CalendarDisplayProps {
   onBack: () => void
@@ -87,13 +87,32 @@ export function CalendarDisplay({
     }
   }
 
-  // Get current month's work pattern (currently unused but kept for future use)
-  const _currentMonthWorkPattern = React.useMemo(() => {
-    if (!yearCalendar[currentMonthIndex]) return '🏖️ Off this month'
+  // Calculate the actual rotation pattern being displayed (with weekday adjustment)
+  const displayedRotationPattern = React.useMemo(() => {
+    if (selectedRotation === 'Custom') {
+      // For custom rotations, just show the selected values
+      return selectedRotation;
+    }
     
-    const workPeriods = extractWorkPeriods(yearCalendar[currentMonthIndex])
-    return formatWorkPatternDisplay(workPeriods)
-  }, [yearCalendar, currentMonthIndex])
+    const config = rotationConfigs[selectedRotation as RotationPattern];
+    if (!config || !selectedDate) return selectedRotation;
+    
+    // Calculate the adjusted values based on the start date
+    const { adjustedWorkDays, adjustedOffDays } = calculateWeekdayAdjustment(
+      new Date(selectedDate),
+      config.workDays,
+      config.offDays
+    );
+    
+    // Return the display string
+    if (adjustedWorkDays === config.workDays) {
+      // No adjustment needed, show original pattern
+      return selectedRotation;
+    } else {
+      // Show adjusted pattern
+      return `${adjustedWorkDays}/${adjustedOffDays} Rotation`;
+    }
+  }, [selectedRotation, selectedDate])
 
   return (
     <div className={`space-y-6 md:space-y-8 ${isMobileView === true ? 'mobile-calendar-container' : ''}`}>
@@ -123,19 +142,22 @@ export function CalendarDisplay({
           </button>
         </div>
         
-        {/* Work Pattern Badge - Hidden for now */}
-        {/* <div className="flex justify-center">
+        {/* Rotation Info Badge - Shows dynamic rotation pattern */}
+        <div className="flex justify-center">
           <div className="inline-flex items-center bg-white/80 backdrop-blur-sm rounded-full px-4 py-2 shadow-sm border border-gray-200/50">
-            <span className="text-sm font-medium text-gray-800">{currentMonthWorkPattern}</span>
+            <span className="text-sm font-medium text-gray-800">{displayedRotationPattern}</span>
+            {displayedRotationPattern !== selectedRotation && (
+              <span className="ml-2 text-xs text-gray-500">(adjusted for weekday consistency)</span>
+            )}
           </div>
-        </div> */}
+        </div>
       </div>
 
       {/* Contextual Save Bar - appears for new unsaved schedules */}
       <ContextualSaveBar
         yearCalendar={yearCalendar}
         scheduleName={scheduleName}
-        selectedRotation={String(selectedRotation)}
+        selectedRotation={displayedRotationPattern}
         selectedDate={selectedDate}
         currentScheduleId={currentScheduleId}
         isSaved={isSaved}

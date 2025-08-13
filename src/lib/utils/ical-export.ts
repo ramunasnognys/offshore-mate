@@ -2,7 +2,7 @@
 
 import { MonthData, RotationPattern } from '@/types/rotation';
 import { format, addDays } from 'date-fns';
-import { rotationConfigs, normalizeToPrecedingTuesday } from './rotation';
+import { rotationConfigs } from './rotation';
 
 interface ICalExportOptions {
   calendar: MonthData[];
@@ -140,7 +140,8 @@ function extractWorkPeriodsWithConfig(calendar: MonthData[], config: { workDays:
   const startDate = new Date(startDateStr);
   
   // Normalize the start date to the preceding Tuesday (same as rotation calculation)
-  const normalizedStartDate = normalizeToPrecedingTuesday(startDate);
+  // Use the user's selected start date directly
+  const normalizedStartDate = new Date(startDate);
   
   // Flatten all days to find the date range
   const allDays = calendar.flatMap(month => month.days);

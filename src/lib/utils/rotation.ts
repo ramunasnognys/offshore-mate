@@ -2,32 +2,42 @@ import { RotationConfig, RotationPattern, MonthData, CalendarDay } from '@/types
 import { addDays, startOfMonth, endOfMonth, format, getDay, differenceInDays, isSameDay, addMonths } from 'date-fns';
 
 export const rotationConfigs: Record<RotationPattern, RotationConfig> = {
-  '14/14': { workDays: 15, offDays: 13, label: '14/14 Rotation', value: '14/14', description: '14 days on, 14 days off' },
-  '14/21': { workDays: 15, offDays: 20, label: '14/21 Rotation', value: '14/21', description: '14 days on, 21 days off' },
-  '28/28': { workDays: 29, offDays: 27, label: '28/28 Rotation', value: '28/28', description: '28 days on, 28 days off' },
+  '14/14': { workDays: 14, offDays: 14, label: '14/14 Rotation', value: '14/14', description: '14 days on, 14 days off' },
+  '14/21': { workDays: 14, offDays: 21, label: '14/21 Rotation', value: '14/21', description: '14 days on, 21 days off' },
+  '28/28': { workDays: 28, offDays: 28, label: '28/28 Rotation', value: '28/28', description: '28 days on, 28 days off' },
   'Custom': { workDays: 0, offDays: 0, label: 'Custom Rotation', value: 'Custom', description: 'Set your own rotation' },
 };
 
-export function normalizeToPrecedingTuesday(date: Date): Date {
-  const normalizedDate = new Date(date);
-  const dayOfWeek = normalizedDate.getDay(); // 0 = Sunday, 1 = Monday, ..., 6 = Saturday
+/**
+ * Helper function to calculate the dynamic adjustment for weekly-based patterns
+ * Returns the adjusted work and off days to maintain same start/end weekday
+ */
+export function calculateWeekdayAdjustment(
+  startDate: Date,
+  workDays: number,
+  offDays: number
+): { adjustedWorkDays: number; adjustedOffDays: number } {
+  const totalCycleDays = workDays + offDays;
   
-  // Calculate days to subtract to get to the preceding Tuesday
-  // If it's already Tuesday (2), use it. Otherwise, go back to the previous Tuesday
-  let daysToSubtract = 0;
-  
-  if (dayOfWeek === 2) {
-    // It's Tuesday, use it
-    daysToSubtract = 0;
-  } else if (dayOfWeek > 2) {
-    // Wed(3) through Sat(6): go back to Tuesday of this week
-    daysToSubtract = dayOfWeek - 2;
-  } else {
-    // Sun(0) or Mon(1): go back to Tuesday of previous week
-    daysToSubtract = dayOfWeek + 5;
+  // Only apply adjustment for weekly-based cycles
+  if (totalCycleDays % 7 !== 0) {
+    return { adjustedWorkDays: workDays, adjustedOffDays: offDays };
   }
   
-  return addDays(normalizedDate, -daysToSubtract);
+  const startDayOfWeek = getDay(startDate); // 0=Sun, 1=Mon, etc.
+  
+  // Calculate the nominal end date (last day of work period)
+  const nominalEndDate = addDays(startDate, workDays - 1);
+  const nominalEndDayOfWeek = getDay(nominalEndDate);
+  
+  // Calculate adjustment needed to make end day match start day
+  const adjustment = (startDayOfWeek - nominalEndDayOfWeek + 7) % 7;
+  
+  // Adjust work and off days while keeping total cycle constant
+  return {
+    adjustedWorkDays: workDays + adjustment,
+    adjustedOffDays: offDays - adjustment
+  };
 }
 
 function convertToMondayBasedDay(day: number): number {
@@ -42,24 +52,31 @@ export function generateRotationCalendar(
 ): MonthData[] {
   const monthData: MonthData[] = [];
   const config = pattern === 'Custom' && customRotation 
-    ? { ...rotationConfigs[pattern], workDays: customRotation.workDays + 1, offDays: customRotation.offDays - 1 }
+    ? { ...rotationConfigs[pattern], workDays: customRotation.workDays, offDays: customRotation.offDays }
     : rotationConfigs[pattern];
   
-  // Normalize the start date to the preceding Tuesday
-  const normalizedStartDate = normalizeToPrecedingTuesday(startDate);
+  // Use the user's selected start date directly (no normalization)
+  const effectiveStartDate = new Date(startDate);
   
-  let currentDate = new Date(normalizedStartDate);
+  // Apply weekday adjustment for weekly-based patterns
+  const { adjustedWorkDays, adjustedOffDays } = calculateWeekdayAdjustment(
+    effectiveStartDate,
+    config.workDays,
+    config.offDays
+  );
+  
+  let currentDate = new Date(effectiveStartDate);
   // Use addMonths for accurate month calculation
-  const endDate = addMonths(normalizedStartDate, months);
+  const endDate = addMonths(effectiveStartDate, months);
   
   // Calculate all work periods and transition dates
   const workPeriods: { start: Date; end: Date }[] = [];
   const transitionDates: Date[] = [];
-  let periodStart = new Date(normalizedStartDate);
+  let periodStart = new Date(effectiveStartDate);
   
   while (periodStart < endDate) {
-    // Calculate end of current work period (inclusive)
-    const periodEnd = addDays(periodStart, config.workDays - 1);
+    // Calculate end of current work period (inclusive) using adjusted days
+    const periodEnd = addDays(periodStart, adjustedWorkDays - 1);
     
     // Store work period
     workPeriods.push({
@@ -67,12 +84,12 @@ export function generateRotationCalendar(
       end: new Date(periodEnd)
     });
     
-    // Add transition dates
-    transitionDates.push(new Date(periodStart)); // Start transition
-    transitionDates.push(new Date(periodEnd));   // End transition
+    // Add transition dates (first day of work and last day of work)
+    transitionDates.push(new Date(periodStart)); // First day of work period (crew flies out)
+    transitionDates.push(new Date(periodEnd));   // Last day of work period (crew flies home)
     
-    // Move to next period start
-    periodStart = addDays(periodEnd, config.offDays + 1);
+    // Move to next period start using adjusted days
+    periodStart = addDays(periodEnd, adjustedOffDays + 1);
   }
   
   // Track generated months to ensure we don't exceed the limit
@@ -85,7 +102,7 @@ export function generateRotationCalendar(
     
     let dayPointer = monthStart;
     while (dayPointer <= monthEnd) {
-      const daysSinceStart = differenceInDays(dayPointer, normalizedStartDate);
+      const daysSinceStart = differenceInDays(dayPointer, effectiveStartDate);
       
       if (daysSinceStart < 0) {
         days.push({

@@ -15,7 +15,7 @@ interface ContextualSaveBarProps {
   isSaved: boolean
   onNameChange: (name: string) => void
   onSave: () => void
-  onUpdate: () => void
+  onUpdate?: () => void
 }
 
 export function ContextualSaveBar({
