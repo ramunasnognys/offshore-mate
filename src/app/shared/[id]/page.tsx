@@ -190,6 +190,11 @@ function SharedCalendarRenderer({ schedule }: { schedule: SavedSchedule }) {
               </div>
             ))}
             
+            {/* Empty cells for proper weekday alignment */}
+            {Array.from({ length: month.firstDayOfWeek === 0 ? 6 : month.firstDayOfWeek - 1 }).map((_, index) => (
+              <div key={`empty-${index}`} className="aspect-square" />
+            ))}
+            
             {/* Calendar days */}
             {month.days.map((day, dayIndex) => {
               // Safely handle date comparison and extraction

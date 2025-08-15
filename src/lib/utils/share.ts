@@ -24,6 +24,7 @@ export const compressCalendarData = (schedule: SavedSchedule): string => {
       c: schedule.calendar.map(month => ({
         m: month.month,
         y: month.year,
+        f: month.firstDayOfWeek,
         d: month.days.map(day => {
           // Safely handle date conversion
           let dateString: string
@@ -71,10 +72,24 @@ export const decompressCalendarData = (encodedData: string): SavedSchedule => {
     // Reconstruct the full schedule object
     const schedule: SavedSchedule = {
       metadata: compressed.m,
-      calendar: compressed.c.map((month: { m: string; y: number; d: Array<{ dt: string; w: boolean; r: boolean; t?: boolean }> }) => ({
-        month: month.m,
-        year: month.y,
-        days: month.d.map((day: { dt: string; w: boolean; r: boolean; t?: boolean }) => {
+      calendar: compressed.c.map((month: { m: string; y: number; f?: number; d: Array<{ dt: string; w: boolean; r: boolean; t?: boolean }> }) => {
+        // Calculate firstDayOfWeek from the first day if not provided (backward compatibility)
+        let firstDayOfWeek = month.f
+        if (firstDayOfWeek === undefined && month.d.length > 0) {
+          try {
+            const firstDate = new Date(month.d[0].dt)
+            firstDayOfWeek = firstDate.getDay()
+          } catch (error) {
+            console.error('Error calculating firstDayOfWeek from first date:', error)
+            firstDayOfWeek = 1 // Default to Monday
+          }
+        }
+        
+        return {
+          month: month.m,
+          year: month.y,
+          firstDayOfWeek: firstDayOfWeek || 1,
+          days: month.d.map((day: { dt: string; w: boolean; r: boolean; t?: boolean }) => {
           // Ensure we have a valid date string and convert it properly
           let dateObj: Date
           try {
@@ -95,8 +110,9 @@ export const decompressCalendarData = (encodedData: string): SavedSchedule => {
             isInRotation: day.r,
             isTransitionDay: day.t || false
           }
-        })
-      }))
+          })
+        }
+      })
     }
     
     return schedule
