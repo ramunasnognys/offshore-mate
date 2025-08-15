@@ -192,7 +192,19 @@ function SharedCalendarRenderer({ schedule }: { schedule: SavedSchedule }) {
             
             {/* Calendar days */}
             {month.days.map((day, dayIndex) => {
-              const isToday = new Date().toDateString() === day.date.toDateString()
+              // Safely handle date comparison and extraction
+              let isToday = false
+              let dayNumber = ''
+              
+              try {
+                const dayDate = day.date instanceof Date ? day.date : new Date(day.date)
+                isToday = new Date().toDateString() === dayDate.toDateString()
+                dayNumber = dayDate.getDate().toString()
+              } catch (error) {
+                console.error('Error processing date for day:', day, error)
+                dayNumber = '?'
+              }
+              
               return (
                 <div
                   key={dayIndex}
@@ -208,7 +220,7 @@ function SharedCalendarRenderer({ schedule }: { schedule: SavedSchedule }) {
                     ${isToday ? 'ring-2 ring-orange-400 ring-offset-2 ring-offset-white/60' : ''}
                   `}
                 >
-                  <span className="relative z-10">{day.date.getDate()}</span>
+                  <span className="relative z-10">{dayNumber}</span>
                   {day.isTransitionDay && (
                     <div className="absolute inset-0 bg-gradient-to-br from-amber-400 to-orange-500 rounded-lg opacity-40"></div>
                   )}

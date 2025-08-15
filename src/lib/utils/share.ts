@@ -74,12 +74,28 @@ export const decompressCalendarData = (encodedData: string): SavedSchedule => {
       calendar: compressed.c.map((month: { m: string; y: number; d: Array<{ dt: string; w: boolean; r: boolean; t?: boolean }> }) => ({
         month: month.m,
         year: month.y,
-        days: month.d.map((day: { dt: string; w: boolean; r: boolean; t?: boolean }) => ({
-          date: new Date(day.dt),
-          isWorkDay: day.w,
-          isInRotation: day.r,
-          isTransitionDay: day.t || false
-        }))
+        days: month.d.map((day: { dt: string; w: boolean; r: boolean; t?: boolean }) => {
+          // Ensure we have a valid date string and convert it properly
+          let dateObj: Date
+          try {
+            dateObj = new Date(day.dt)
+            // Validate the date is actually valid
+            if (isNaN(dateObj.getTime())) {
+              throw new Error('Invalid date')
+            }
+          } catch (dateError) {
+            console.error('Invalid date in compressed data:', day.dt, dateError)
+            // Use a fallback date
+            dateObj = new Date()
+          }
+          
+          return {
+            date: dateObj,
+            isWorkDay: day.w,
+            isInRotation: day.r,
+            isTransitionDay: day.t || false
+          }
+        })
       }))
     }
     
