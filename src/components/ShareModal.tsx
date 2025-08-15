@@ -47,13 +47,14 @@ export function ShareModal({ isOpen, onClose, scheduleId }: ShareModalProps) {
         setShareUrl(url)
       } catch (error) {
         console.error('Error generating share URL:', error)
-        // Fallback to simple URL without data
-        setShareUrl(shareUtils.generateShareUrl(scheduleId))
+        setErrorMessage('Failed to generate share link. Please try again.')
+        setShareUrl('')
       }
     } else {
-      setShareUrl(shareUtils.generateShareUrl(scheduleId))
+      // No calendar data available - don't generate URL without data
+      setShareUrl('')
     }
-  }, [scheduleId, yearCalendar, selectedDate, selectedRotation])
+  }, [scheduleId, yearCalendar, selectedDate, selectedRotation, setErrorMessage])
   
   // Reset copied state when modal closes
   useEffect(() => {

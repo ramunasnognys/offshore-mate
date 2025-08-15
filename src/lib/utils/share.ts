@@ -3,6 +3,7 @@
  * Implements WhatsApp, email, Web Share API, and clipboard sharing functionality
  */
 
+import pako from 'pako'
 import { SavedSchedule } from './storage'
 
 export interface ShareData {
@@ -13,8 +14,25 @@ export interface ShareData {
   rotationPattern: string
 }
 
+// Helper to convert Uint8Array to URL-safe Base64
+const toUrlSafeBase64 = (arr: Uint8Array): string => {
+  const base64 = btoa(String.fromCharCode.apply(null, Array.from(arr)))
+  return base64.replace(/\+/g, '-').replace(/\//g, '_').replace(/=/g, '')
+}
+
+// Helper to convert URL-safe Base64 to Uint8Array
+const fromUrlSafeBase64 = (str: string): Uint8Array => {
+  // Convert URL-safe back to standard Base64
+  let base64 = str.replace(/-/g, '+').replace(/_/g, '/')
+  // Add padding if needed
+  while (base64.length % 4) {
+    base64 += '='
+  }
+  return new Uint8Array(atob(base64).split('').map(c => c.charCodeAt(0)))
+}
+
 /**
- * Compress calendar data for URL sharing
+ * Compress calendar data using pako (zlib) for dramatically smaller URLs
  */
 export const compressCalendarData = (schedule: SavedSchedule): string => {
   try {
@@ -52,9 +70,10 @@ export const compressCalendarData = (schedule: SavedSchedule): string => {
       }))
     }
     
-    // Convert to JSON and encode
+    // Convert to JSON, compress with pako, and encode as URL-safe Base64
     const jsonString = JSON.stringify(compressed)
-    return btoa(encodeURIComponent(jsonString))
+    const deflated = pako.deflate(jsonString)
+    return toUrlSafeBase64(deflated)
   } catch (error) {
     console.error('Error compressing calendar data:', error)
     throw new Error('Failed to compress calendar data')
@@ -62,17 +81,19 @@ export const compressCalendarData = (schedule: SavedSchedule): string => {
 }
 
 /**
- * Decompress calendar data from URL
+ * Decompress calendar data from URL using pako (zlib) decompression
  */
 export const decompressCalendarData = (encodedData: string): SavedSchedule => {
   try {
-    const jsonString = decodeURIComponent(atob(encodedData))
-    const compressed = JSON.parse(jsonString)
+    // Decode from URL-safe Base64 and decompress with pako
+    const compressed = fromUrlSafeBase64(encodedData)
+    const jsonString = pako.inflate(compressed, { to: 'string' })
+    const decompressed = JSON.parse(jsonString)
     
     // Reconstruct the full schedule object
     const schedule: SavedSchedule = {
-      metadata: compressed.m,
-      calendar: compressed.c.map((month: { m: string; y: number; f?: number; d: Array<{ dt: string; w: boolean; r: boolean; t?: boolean }> }) => {
+      metadata: decompressed.m,
+      calendar: decompressed.c.map((month: { m: string; y: number; f?: number; d: Array<{ dt: string; w: boolean; r: boolean; t?: boolean }> }) => {
         // Calculate firstDayOfWeek from the first day if not provided (backward compatibility)
         let firstDayOfWeek = month.f
         if (firstDayOfWeek === undefined && month.d.length > 0) {
@@ -124,6 +145,7 @@ export const decompressCalendarData = (encodedData: string): SavedSchedule => {
 
 /**
  * Check if calendar data can fit in URL (under 2000 characters)
+ * With pako compression, this is rarely an issue, but kept for backwards compatibility
  */
 export const canDataFitInUrl = (schedule: SavedSchedule): boolean => {
   try {
@@ -152,19 +174,21 @@ export const isMobile = (): boolean => {
 
 /**
  * Generate share URL with calendar data
+ * With pako compression, calendar data almost always fits in URL
  */
 export const generateShareUrl = (scheduleId: string, schedule?: SavedSchedule): string => {
   if (typeof window === 'undefined') return ''
   const baseUrl = window.location.origin
   
-  // If schedule data is provided, try to encode it in the URL
-  if (schedule && canDataFitInUrl(schedule)) {
+  // If schedule data is provided, always try to encode it in the URL
+  if (schedule) {
     try {
       const encodedData = compressCalendarData(schedule)
       return `${baseUrl}/shared/${scheduleId}?data=${encodedData}`
     } catch (error) {
       console.error('Failed to encode calendar data in URL:', error)
-      // Fall back to original URL without data
+      // Fall back to URL without data - but this will likely fail for new users
+      console.warn('Falling back to URL without data - new users may not be able to view this calendar')
     }
   }
   

@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { CalendarProvider } from '@/contexts/CalendarContext'
 import { UIProvider } from '@/contexts/UIContext'
-import { getSchedule, SavedSchedule } from '@/lib/utils/storage'
+import { SavedSchedule } from '@/lib/utils/storage'
 import { decompressCalendarData } from '@/lib/utils/share'
 import { Share2, ExternalLink, Calendar } from 'lucide-react'
 
@@ -22,7 +22,7 @@ function SharedCalendarContent({ scheduleId }: { scheduleId: string }) {
   useEffect(() => {
     const loadSharedSchedule = () => {
       try {
-        // First, try to get calendar data from URL parameters
+        // Get calendar data from URL parameters
         const urlParams = new URLSearchParams(window.location.search)
         const encodedData = urlParams.get('data')
         
@@ -33,20 +33,16 @@ function SharedCalendarContent({ scheduleId }: { scheduleId: string }) {
             return
           } catch (decodeError) {
             console.error('Error decoding calendar data from URL:', decodeError)
-            // Fall through to localStorage fallback
+            setError('The shared calendar link is corrupted or invalid. Please ask for a new link.')
+            return
           }
         }
         
-        // Fallback to localStorage for backward compatibility
-        const savedSchedule = getSchedule(scheduleId)
-        if (savedSchedule) {
-          setSchedule(savedSchedule)
-        } else {
-          setError('Schedule not found or has expired')
-        }
+        // No calendar data in URL - this means the link is incomplete
+        setError('This share link is incomplete and cannot be displayed. Please ask for a new, complete link.')
       } catch (err) {
         console.error('Error loading shared schedule:', err)
-        setError('Unable to load the shared schedule')
+        setError('An unexpected error occurred while trying to load the schedule.')
       } finally {
         setLoading(false)
       }
