@@ -3,6 +3,8 @@
 import React, { useState } from 'react';
 import { Download, Share2, BookmarkCheck, ChevronUp, CalendarPlus } from 'lucide-react';
 import { ExportFormat } from './export-format-selector';
+import { useShareCalendar } from '@/hooks/useShareCalendar';
+import { ShareModal } from '@/components/ShareModal';
 
 interface BottomToolbarProps {
   onExport: () => void;
@@ -19,6 +21,7 @@ interface BottomToolbarProps {
 export function BottomToolbar({ onExport, onFormatChange, onSettings, selectedFormat, isDownloading = false, className = '', onExpandedChange, expandedPanel, onExpandedPanelChange }: BottomToolbarProps) {
   const [isExpanded, setIsExpanded] = useState(false);
   const exportButtonRef = React.useRef<HTMLButtonElement>(null);
+  const { isShareModalOpen, shareId, openShareModal, closeShareModal } = useShareCalendar();
 
   const handleExpandedChange = (expanded: boolean) => {
     setIsExpanded(expanded);
@@ -208,6 +211,7 @@ export function BottomToolbar({ onExport, onFormatChange, onSettings, selectedFo
             
             {/* Share Button */}
             <button
+              onClick={openShareModal}
               className="p-2 rounded-xl hover:bg-white/60 hover:shadow-lg hover:shadow-orange-500/10 
                 hover:scale-105 active:scale-95 transition-all duration-200 ease-out group
                 focus:outline-none focus:ring-2 focus:ring-orange-500/50 focus:ring-offset-2 focus:ring-offset-white/80
@@ -243,6 +247,15 @@ export function BottomToolbar({ onExport, onFormatChange, onSettings, selectedFo
           </div>
         </div>
       </div>
+      
+      {/* Share Modal */}
+      {shareId && (
+        <ShareModal 
+          isOpen={isShareModalOpen}
+          onClose={closeShareModal}
+          scheduleId={shareId}
+        />
+      )}
     </>
   );
 }

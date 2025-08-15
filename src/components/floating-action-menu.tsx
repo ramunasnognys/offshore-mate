@@ -3,6 +3,8 @@
 import React, { useState } from 'react';
 import { Download, FileImage, FileText, X, Share2, CalendarPlus } from 'lucide-react';
 import { ExportFormat } from './export-format-selector';
+import { useShareCalendar } from '@/hooks/useShareCalendar';
+import { ShareModal } from '@/components/ShareModal';
 
 interface FloatingActionMenuProps {
   onExport: (format: ExportFormat) => void;
@@ -13,6 +15,7 @@ interface FloatingActionMenuProps {
 export function FloatingActionMenu({ onExport, isDownloading = false, className = '' }: FloatingActionMenuProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [hoveredFormat, setHoveredFormat] = useState<ExportFormat | null>(null);
+  const { isShareModalOpen, shareId, openShareModal, closeShareModal } = useShareCalendar();
 
   const handleExport = (format: ExportFormat) => {
     onExport(format);
@@ -39,7 +42,7 @@ export function FloatingActionMenu({ onExport, isDownloading = false, className 
           <button
             className="flex items-center gap-3 bg-white rounded-full pl-4 pr-5 py-3 shadow-lg hover:shadow-xl transition-all duration-200 group"
             onClick={() => {
-              // Share functionality to be implemented
+              openShareModal();
               setIsOpen(false);
             }}
             aria-label="Share calendar"
@@ -127,6 +130,15 @@ export function FloatingActionMenu({ onExport, isDownloading = false, className 
           {hoveredFormat === 'png' ? 'High-quality image' : hoveredFormat === 'pdf' ? 'Printable document' : 'Import to calendar app'}
           <div className="absolute bottom-0 right-4 transform translate-y-1/2 rotate-45 w-2 h-2 bg-gray-900" />
         </div>
+      )}
+      
+      {/* Share Modal */}
+      {shareId && (
+        <ShareModal 
+          isOpen={isShareModalOpen}
+          onClose={closeShareModal}
+          scheduleId={shareId}
+        />
       )}
     </div>
   );
