@@ -4,18 +4,22 @@
 - main:
   - heading "Offshore Mate" [level=1]
   - paragraph: Navigate your offshore schedule with precision
+  - img
   - text: Start Date
   - button "Pick your start date":
     - text: Pick your start date
     - img
+  - img
   - text: Work Rotation
-  - button "14/14"
-  - button "14/21"
-  - button "Other"
-  - button "Saved Schedules View your saved schedules":
-    - text: Saved Schedules View your saved schedules
+  - button "14/14 14 days on, 14 days off"
+  - button "14/21 14 days on, 21 days off"
+  - button "28/28 28 days on, 28 days off"
+  - button "Custom Set your own rotation"
+  - button "Saved Schedules View and manage your schedules 0 saved":
     - img
-  - button "Generate"
+    - text: Saved Schedules View and manage your schedules 0 saved
+    - img
+  - button "Generate Schedule"
   - paragraph: Version v.2
 - status:
   - img

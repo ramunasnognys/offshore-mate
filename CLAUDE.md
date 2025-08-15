@@ -2,105 +2,100 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## Plan & Review
+
+### Before starting work
+- Always in plan mode to make a plan
+- After get the plan, make sure you Write the plan to .claude/tasks/TASK_NAME.md.
+- The plan should be a detailed implementation plan and the reasoning behind them, as well as tasks broken down.
+- If the task require external knowledge or certain package, also research to get latest knowledge (Use Task tool for research)
+- Don't over plan it, always think MVP.
+- Once you write the plan, firstly ask me to review it. Do not continue until I approve the plan.
+
+### While implementing
+- You should update the plan as you work.
+- After you complete tasks in the plan, you should update and append detailed descriptions of the changes you made, so following tasks can be easily hand over to other engineers.
+
 ## Project Overview
 
-Offshore Mate is a Next.js 15 web application that generates visual work rotation calendars for offshore workers. The app supports multiple rotation patterns (14/14, 14/21, 21/21, 28/28) and allows users to save/load schedules with local storage.
+This is a Next.js SaaS template with AI-based learning features, using:
+- **Next.js 15.3.3** with App Router and Turbopack
+- **React 19** with TypeScript (strict mode)
+- **Supabase** for authentication and database
+- **Tailwind CSS v4** with PostCSS
+- **shadcn/ui** components (New York style)
+- **pnpm** as package manager
 
-## Common Development Commands
+## Development Commands
 
-**Development:**
-```bash
-npm run dev          # Start development server with turbopack
-npm run build        # Build for production  
-npm run start        # Start production server
-npm run lint         # Run ESLint
-```
+### `bash`
+# Start development server with Turbopack
+pnpm dev
 
-**Testing:**
-```bash
-npx playwright test  # Run all Playwright tests
-npx playwright test --ui  # Run tests with UI mode
-```
+# Build for production
+pnpm build
 
-## Architecture Overview
+# Start production server
+pnpm start
 
-### Context-Based State Management
-- **CalendarContext** (`src/contexts/CalendarContext.tsx`) - Central state for calendar generation and rotation form data
-- **UIContext** (`src/contexts/UIContext.tsx`) - UI state management for mobile responsiveness and user interactions
-- Custom hooks encapsulate business logic: `useCalendarGeneration`, `useRotationForm`, `useScheduleManagement`
+# Run Linting
+pnpm lint
 
-### Key Components Architecture
-- **Calendar Generation**: `src/lib/utils/rotation.ts` contains core rotation calculation logic with `generateRotationCalendar()` function
-- **Export System**: Separate utilities for PNG (`html2canvas`), PDF (`jsPDF`), and iCal (`ical-generator`) exports
-- **Storage**: LocalStorage management in `src/lib/utils/storage.ts` with SSR safety checks
-- **Mobile-First Design**: Components use `isMobileView` context for responsive rendering
+# Install dependencies
+pnpm install
 
-### File Structure Patterns
-```
-src/
-├── components/           # UI components
-│   ├── ui/              # Radix UI-based primitives  
-│   └── calendar/        # Calendar-specific components
-├── contexts/            # React context providers
-├── hooks/               # Custom hooks for business logic
-├── lib/utils/           # Utility functions and core logic
-└── types/               # TypeScript type definitions
-```
+# Add shadcn/ui components
+pnpm dlx shadcn@latest add [component-name]
 
-## Development Guidelines
+## Architecture & Key Patterns
 
-### TypeScript & React Patterns
-- **Strict TypeScript** - All components must be properly typed with interfaces from `src/types/rotation.ts`
-- **React 19 RC** - Be aware of potential compatibility issues; avoid deprecated patterns
-- **SSR Safety** - Always use client-side checks for `localStorage` and browser APIs:
-  ```typescript
-  const isClient = typeof window !== 'undefined'
-  if (isClient && isStorageAvailable()) { /* use localStorage */ }
-  ```
+### Authentication Flow
+- Middleware at `middleware.ts` handles session management via Supabase
+- Protected routes start with `/app/*`
+- Unauthenticated users redirect to `/login`
+- Authenticated users at `/` redirect to `/app`
+- Server actions for auth operations in `app/login/actions.ts`
 
-### Component Development Standards  
-- **Radix UI Primitives** - Use existing UI components from `src/components/ui/`
-- **Glass-morphism Design** - Follow `backdrop-blur-xl bg-white/30` styling patterns
-- **Mobile-First Responsive** - Always implement responsive design with `isMobileView` context
-- **Accessibility** - Radix components provide built-in accessibility; maintain these standards
+## Routing Structure
+- **Public routes**: `/`, `/login`, `/auth/*`
+- **Protected routes**: `/app/*` (requires authentication)
 
-### State Management Patterns
-- **Context over Props Drilling** - Use `CalendarContext` and `UIContext` for shared state
-- **Custom Hooks** - Extract business logic into hooks (see `src/hooks/` for examples)
-- **LocalStorage Integration** - Use `useScheduleManagement` hook for persistent data
+## Component Architecture
+- UI Components use shadcn/ui (located in `components/ui/`)
+- Components follow React Server Components (RSC) pattern
+- Use `cn()` utility from `lib/utils` for className merging
+- Import aliases: `@/components`, `@/lib/utils`, `@/components/ui`, `@/hooks`
 
-### Export Functionality Standards
-- **Multi-format Support** - Handle PNG, PDF, and iCal exports with proper error handling
-- **Progress Indicators** - Use `ExportProgressModal` for long-running export operations  
-- **Mobile Considerations** - Different export flows for mobile vs desktop
+## Styling Approach
+- Tailwind CSS v4 with CSS variables
+- Dark mode support via CSS variables
+- Global styles in `app/globals.css`
+- Component styles use utility classes, not separate CSS files
 
-### Testing Approach
-- **Playwright E2E Tests** - Tests are configured in `playwright.config.ts` 
-- **Test Environment** - Tests run against `http://localhost:3000` with automatic dev server startup
-- **Cross-browser Testing** - Chromium, Firefox, and WebKit support configured
+## Environment Variables
+Required environment variables for Supabase:
+- NEXT_PUBLIC_SUPABASE_URL
+- NEXT_PUBLIC_SUPABASE_ANON_KEY
 
-### Git Branch Strategy
-- Feature branches: `feature/descriptive-name`
-- Main branch: `main` for production deployments
-- Always commit with descriptive messages after completing tasks
+## Important Implementation Notes
+### Supabase Integration
+- Server-side client creation uses `@supabase/ssr`
+- Middleware handles cookie management for auth persistence
+- Use server actions for mutations (see `app/login/actions.ts` pattern)
 
-### Performance Considerations
-- **Next.js 15** - Built-in optimizations enabled
-- **Turbopack** - Used in development for faster builds
-- **Image Optimization** - html2canvas exports are optimized for file size
-- **Bundle Analysis** - Monitor bundle size when adding new dependencies
+### TypeScript Configuration
+- Strict mode enabled
+- Path aliases configured (`@/*` maps to root)
+- Use proper typing for all components and functions
 
-### Mobile UI Patterns & Fixes
-- **Navigation Button Z-Index** - Ensure navigation buttons have proper z-index (10+) to prevent bottom sheet overlap
-- **Calendar Container Padding** - Dynamic padding-bottom calculation using CSS variables for bottom toolbar accommodation:
-  ```css
-  #calendar-container.with-bottom-toolbar {
-    padding-bottom: calc(var(--bottom-toolbar-total-height) + var(--bottom-toolbar-buffer));
-  }
-  ```
-- **Chrome Mobile Specific Fixes** - Use `@supports` queries for Chrome-specific calendar spacing adjustments
-- **Touch Target Sizing** - Minimum 44px touch targets for mobile accessibility
-- **CSS Animations** - Modern animations with reduced motion support:
-  - `todayGlowModern` - Subtle glow effect for current date
-  - `todayShimmer` - Shimmer effect for enhanced visibility
-  - Performance optimizations with `animation-play-state` control
+### ESLint Setup
+- Uses flat config format (eslint.config.mjs)
+- Next.js specific rules applied
+- Run `pnpm lint` before committing
+
+### Component Development
+When adding new features:
+1. Use shadcn/ui components when possible
+2. Follow RSC patterns (use `use client` only when needed)
+3. Place server actions in separate `.ts` files
+4. Keep c
