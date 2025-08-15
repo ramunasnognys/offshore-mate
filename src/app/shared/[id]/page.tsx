@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { CalendarProvider } from '@/contexts/CalendarContext'
 import { UIProvider } from '@/contexts/UIContext'
 import { getSchedule, SavedSchedule } from '@/lib/utils/storage'
+import { decompressCalendarData } from '@/lib/utils/share'
 import { Share2, ExternalLink, Calendar } from 'lucide-react'
 
 interface SharedCalendarPageProps {
@@ -21,6 +22,22 @@ function SharedCalendarContent({ scheduleId }: { scheduleId: string }) {
   useEffect(() => {
     const loadSharedSchedule = () => {
       try {
+        // First, try to get calendar data from URL parameters
+        const urlParams = new URLSearchParams(window.location.search)
+        const encodedData = urlParams.get('data')
+        
+        if (encodedData) {
+          try {
+            const decodedSchedule = decompressCalendarData(encodedData)
+            setSchedule(decodedSchedule)
+            return
+          } catch (decodeError) {
+            console.error('Error decoding calendar data from URL:', decodeError)
+            // Fall through to localStorage fallback
+          }
+        }
+        
+        // Fallback to localStorage for backward compatibility
         const savedSchedule = getSchedule(scheduleId)
         if (savedSchedule) {
           setSchedule(savedSchedule)

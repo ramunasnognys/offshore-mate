@@ -5,6 +5,7 @@ import { Share2, Mail, MessageCircle, Copy, Check } from 'lucide-react'
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { useCalendar } from '@/contexts/CalendarContext'
 import { useUI } from '@/contexts/UIContext'
+import { SavedSchedule } from '@/lib/utils/storage'
 import * as shareUtils from '@/lib/utils/share'
 
 interface ShareModalProps {
@@ -16,10 +17,39 @@ interface ShareModalProps {
 export function ShareModal({ isOpen, onClose, scheduleId }: ShareModalProps) {
   const [copied, setCopied] = useState(false)
   const [isSharing, setIsSharing] = useState(false)
+  const [shareUrl, setShareUrl] = useState('')
   const { yearCalendar, selectedDate, selectedRotation } = useCalendar()
   const { setErrorMessage } = useUI()
   
-  const shareUrl = shareUtils.generateShareUrl(scheduleId)
+  // Generate share URL with calendar data
+  useEffect(() => {
+    if (yearCalendar && yearCalendar.length > 0) {
+      try {
+        // Create a SavedSchedule object from current calendar data
+        const schedule: SavedSchedule = {
+          metadata: {
+            id: scheduleId,
+            name: `${selectedRotation} Schedule`,
+            rotationPattern: selectedRotation,
+            startDate: selectedDate,
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString(),
+            schemaVersion: 'v1'
+          },
+          calendar: yearCalendar
+        }
+        
+        const url = shareUtils.generateShareUrl(scheduleId, schedule)
+        setShareUrl(url)
+      } catch (error) {
+        console.error('Error generating share URL:', error)
+        // Fallback to simple URL without data
+        setShareUrl(shareUtils.generateShareUrl(scheduleId))
+      }
+    } else {
+      setShareUrl(shareUtils.generateShareUrl(scheduleId))
+    }
+  }, [scheduleId, yearCalendar, selectedDate, selectedRotation])
   
   // Reset copied state when modal closes
   useEffect(() => {
@@ -45,6 +75,29 @@ export function ShareModal({ isOpen, onClose, scheduleId }: ShareModalProps) {
             <p className="text-sm text-red-600">
               Please generate a calendar first before sharing.
             </p>
+          </div>
+        </DialogContent>
+      </Dialog>
+    )
+  }
+
+  // Show loading state while URL is being generated
+  if (!shareUrl) {
+    return (
+      <Dialog open={isOpen} onOpenChange={onClose}>
+        <DialogContent className="sm:max-w-md backdrop-blur-xl bg-white/95 border border-white/60">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Share2 className="w-5 h-5" />
+              Share Your Calendar
+            </DialogTitle>
+          </DialogHeader>
+          
+          <div className="flex items-center justify-center py-8">
+            <div className="text-center">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-orange-500 mx-auto mb-4"></div>
+              <p className="text-gray-600">Preparing share link...</p>
+            </div>
           </div>
         </DialogContent>
       </Dialog>
