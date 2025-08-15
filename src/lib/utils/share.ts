@@ -24,12 +24,30 @@ export const compressCalendarData = (schedule: SavedSchedule): string => {
       c: schedule.calendar.map(month => ({
         m: month.month,
         y: month.year,
-        d: month.days.map(day => ({
-          dt: day.date.toISOString().split('T')[0], // Just the date part
-          w: day.isWorkDay,
-          r: day.isInRotation,
-          t: day.isTransitionDay || undefined // Only include if true
-        }))
+        d: month.days.map(day => {
+          // Safely handle date conversion
+          let dateString: string
+          try {
+            if (day.date instanceof Date) {
+              dateString = day.date.toISOString().split('T')[0]
+            } else if (typeof day.date === 'string') {
+              dateString = new Date(day.date).toISOString().split('T')[0]
+            } else {
+              throw new Error('Invalid date format')
+            }
+          } catch (dateError) {
+            console.error('Invalid date in calendar data:', day.date, dateError)
+            // Use a fallback date or skip this day
+            dateString = new Date().toISOString().split('T')[0]
+          }
+          
+          return {
+            dt: dateString,
+            w: day.isWorkDay,
+            r: day.isInRotation,
+            t: day.isTransitionDay || undefined // Only include if true
+          }
+        })
       }))
     }
     
@@ -77,10 +95,17 @@ export const decompressCalendarData = (encodedData: string): SavedSchedule => {
  */
 export const canDataFitInUrl = (schedule: SavedSchedule): boolean => {
   try {
+    // Validate schedule structure first
+    if (!schedule || !schedule.calendar || !Array.isArray(schedule.calendar)) {
+      console.warn('Invalid schedule structure for URL encoding')
+      return false
+    }
+    
     const compressed = compressCalendarData(schedule)
     const testUrl = `${window.location.origin}/shared/test?data=${compressed}`
     return testUrl.length < 2000
-  } catch {
+  } catch (error) {
+    console.error('Error checking if data fits in URL:', error)
     return false
   }
 }

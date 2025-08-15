@@ -1,11 +1,12 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
-import { Share2, Mail, MessageCircle, Copy, Check } from 'lucide-react'
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
+import { Share2, Mail, MessageCircle, Copy, Check, X } from 'lucide-react'
+import { Dialog, DialogContent, DialogBottomContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { useCalendar } from '@/contexts/CalendarContext'
 import { useUI } from '@/contexts/UIContext'
 import { SavedSchedule } from '@/lib/utils/storage'
+import { useMobileDetection } from '@/hooks/useMobileDetection'
 import * as shareUtils from '@/lib/utils/share'
 
 interface ShareModalProps {
@@ -20,6 +21,9 @@ export function ShareModal({ isOpen, onClose, scheduleId }: ShareModalProps) {
   const [shareUrl, setShareUrl] = useState('')
   const { yearCalendar, selectedDate, selectedRotation } = useCalendar()
   const { setErrorMessage } = useUI()
+  const isMobileView = useMobileDetection()
+
+  const DialogContentComponent = isMobileView ? DialogBottomContent : DialogContent
   
   // Generate share URL with calendar data
   useEffect(() => {
@@ -63,20 +67,42 @@ export function ShareModal({ isOpen, onClose, scheduleId }: ShareModalProps) {
   if (!yearCalendar || yearCalendar.length === 0) {
     return (
       <Dialog open={isOpen} onOpenChange={onClose}>
-        <DialogContent className="sm:max-w-md backdrop-blur-xl bg-white/95 border border-white/60">
-          <DialogHeader>
-            <DialogTitle className="flex items-center gap-2">
-              <Share2 className="w-5 h-5" />
-              Share Your Calendar
-            </DialogTitle>
-          </DialogHeader>
-          
-          <div className="p-4 rounded-lg bg-red-50/50 backdrop-blur border border-red-200/50">
-            <p className="text-sm text-red-600">
-              Please generate a calendar first before sharing.
-            </p>
+        <DialogContentComponent className={isMobileView 
+          ? "p-0 max-h-[85vh] w-full max-w-none" 
+          : "sm:max-w-md backdrop-blur-xl bg-white/95 border border-white/60"
+        }>
+          <div className="flex flex-col h-full">
+            <DialogHeader className={`${isMobileView ? 'p-4 pb-3' : 'p-6 pb-4'} border-b border-gray-100`}>
+              <div className={`flex items-center ${isMobileView ? 'justify-center' : 'justify-between'}`}>
+                <div className={isMobileView ? 'text-center' : ''}>
+                  <DialogTitle className={`flex items-center gap-2 font-semibold text-gray-900 ${
+                    isMobileView ? 'text-lg justify-center' : 'text-xl'
+                  }`}>
+                    <Share2 className="w-5 h-5" />
+                    Share Your Calendar
+                  </DialogTitle>
+                </div>
+                {!isMobileView && (
+                  <button
+                    onClick={onClose}
+                    className="p-2 hover:bg-gray-100 rounded-full transition-colors min-w-[44px] min-h-[44px] flex items-center justify-center"
+                    aria-label="Close dialog"
+                  >
+                    <X className="w-5 h-5 text-gray-400" />
+                  </button>
+                )}
+              </div>
+            </DialogHeader>
+            
+            <div className={`flex-1 ${isMobileView ? 'p-4' : 'p-6'}`}>
+              <div className="p-4 rounded-lg bg-red-50/50 backdrop-blur border border-red-200/50">
+                <p className="text-sm text-red-600">
+                  Please generate a calendar first before sharing.
+                </p>
+              </div>
+            </div>
           </div>
-        </DialogContent>
+        </DialogContentComponent>
       </Dialog>
     )
   }
@@ -85,21 +111,41 @@ export function ShareModal({ isOpen, onClose, scheduleId }: ShareModalProps) {
   if (!shareUrl) {
     return (
       <Dialog open={isOpen} onOpenChange={onClose}>
-        <DialogContent className="sm:max-w-md backdrop-blur-xl bg-white/95 border border-white/60">
-          <DialogHeader>
-            <DialogTitle className="flex items-center gap-2">
-              <Share2 className="w-5 h-5" />
-              Share Your Calendar
-            </DialogTitle>
-          </DialogHeader>
-          
-          <div className="flex items-center justify-center py-8">
-            <div className="text-center">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-orange-500 mx-auto mb-4"></div>
-              <p className="text-gray-600">Preparing share link...</p>
+        <DialogContentComponent className={isMobileView 
+          ? "p-0 max-h-[85vh] w-full max-w-none" 
+          : "sm:max-w-md backdrop-blur-xl bg-white/95 border border-white/60"
+        }>
+          <div className="flex flex-col h-full">
+            <DialogHeader className={`${isMobileView ? 'p-4 pb-3' : 'p-6 pb-4'} border-b border-gray-100`}>
+              <div className={`flex items-center ${isMobileView ? 'justify-center' : 'justify-between'}`}>
+                <div className={isMobileView ? 'text-center' : ''}>
+                  <DialogTitle className={`flex items-center gap-2 font-semibold text-gray-900 ${
+                    isMobileView ? 'text-lg justify-center' : 'text-xl'
+                  }`}>
+                    <Share2 className="w-5 h-5" />
+                    Share Your Calendar
+                  </DialogTitle>
+                </div>
+                {!isMobileView && (
+                  <button
+                    onClick={onClose}
+                    className="p-2 hover:bg-gray-100 rounded-full transition-colors min-w-[44px] min-h-[44px] flex items-center justify-center"
+                    aria-label="Close dialog"
+                  >
+                    <X className="w-5 h-5 text-gray-400" />
+                  </button>
+                )}
+              </div>
+            </DialogHeader>
+            
+            <div className={`flex-1 flex items-center justify-center ${isMobileView ? 'p-4' : 'p-8'}`}>
+              <div className="text-center">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-orange-500 mx-auto mb-4"></div>
+                <p className="text-gray-600">Preparing share link...</p>
+              </div>
             </div>
           </div>
-        </DialogContent>
+        </DialogContentComponent>
       </Dialog>
     )
   }
@@ -162,86 +208,119 @@ export function ShareModal({ isOpen, onClose, scheduleId }: ShareModalProps) {
   
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-md backdrop-blur-xl bg-white/95 border border-white/60">
-        <DialogHeader>
-          <DialogTitle className="flex items-center gap-2">
-            <Share2 className="w-5 h-5" />
-            Share Your Calendar
-          </DialogTitle>
-        </DialogHeader>
-        
-        {/* Preview Section */}
-        <div className="space-y-4">
-          <div className="p-4 rounded-lg bg-gray-50/50 backdrop-blur border border-gray-200/50">
-            <p className="text-sm text-gray-600 mb-2">Share Preview</p>
-            <p className="font-medium">{shareData.title}</p>
-            <p className="text-sm text-gray-500 mt-1">{shareData.dateRange}</p>
-            <div className="mt-3 p-2 bg-white/80 rounded border border-gray-200/50">
-              <p className="text-xs text-gray-500 break-all">{shareUrl}</p>
+      <DialogContentComponent className={isMobileView 
+        ? "p-0 max-h-[85vh] w-full max-w-none" 
+        : "sm:max-w-md backdrop-blur-xl bg-white/95 border border-white/60"
+      }>
+        <div className="flex flex-col h-full">
+          <DialogHeader className={`${isMobileView ? 'p-4 pb-3' : 'p-6 pb-4'} border-b border-gray-100`}>
+            <div className={`flex items-center ${isMobileView ? 'justify-center' : 'justify-between'}`}>
+              <div className={isMobileView ? 'text-center' : ''}>
+                <DialogTitle className={`flex items-center gap-2 font-semibold text-gray-900 ${
+                  isMobileView ? 'text-lg justify-center' : 'text-xl'
+                }`}>
+                  <Share2 className="w-5 h-5" />
+                  Share Your Calendar
+                </DialogTitle>
+              </div>
+              {!isMobileView && (
+                <button
+                  onClick={onClose}
+                  className="p-2 hover:bg-gray-100 rounded-full transition-colors min-w-[44px] min-h-[44px] flex items-center justify-center"
+                  aria-label="Close dialog"
+                >
+                  <X className="w-5 h-5 text-gray-400" />
+                </button>
+              )}
+            </div>
+          </DialogHeader>
+
+          <div className={`flex-1 overflow-y-auto ${isMobileView ? 'p-4' : 'p-6'}`}>
+            {/* Preview Section */}
+            <div className={`space-y-4 ${isMobileView ? 'space-y-3' : 'space-y-4'}`}>
+              <div className="p-4 rounded-lg bg-gray-50/50 backdrop-blur border border-gray-200/50">
+                <p className={`text-gray-600 mb-2 ${isMobileView ? 'text-xs' : 'text-sm'}`}>Share Preview</p>
+                <p className={`font-medium ${isMobileView ? 'text-base' : 'text-lg'}`}>{shareData.title}</p>
+                <p className={`text-gray-500 mt-1 ${isMobileView ? 'text-xs' : 'text-sm'}`}>{shareData.dateRange}</p>
+                <div className="mt-3 p-2 bg-white/80 rounded border border-gray-200/50">
+                  <p className="text-xs text-gray-500 break-all">{shareUrl}</p>
+                </div>
+              </div>
+              
+              {/* Share Options */}
+              <div className={`grid gap-2 ${isMobileView ? 'gap-3' : 'gap-2'}`}>
+                {/* Native Share (if available) */}
+                {shareUtils.isNativeShareSupported() && (
+                  <button
+                    onClick={handleNativeShare}
+                    disabled={isSharing}
+                    className={`flex items-center justify-center gap-2 w-full bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-xl hover:shadow-lg hover:scale-105 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 ${
+                      isMobileView ? 'py-4 px-4 min-h-[48px] text-base' : 'py-3 px-4'
+                    }`}
+                  >
+                    <Share2 className="w-5 h-5" />
+                    {isSharing ? 'Sharing...' : 'Share'}
+                  </button>
+                )}
+                
+                {/* WhatsApp */}
+                <button
+                  onClick={handleWhatsAppShare}
+                  className={`flex items-center justify-center gap-2 w-full bg-green-500 text-white rounded-xl hover:bg-green-600 hover:shadow-lg hover:scale-105 transition-all duration-200 ${
+                    isMobileView ? 'py-4 px-4 min-h-[48px] text-base' : 'py-3 px-4'
+                  }`}
+                >
+                  <MessageCircle className="w-5 h-5" />
+                  Share on WhatsApp
+                </button>
+                
+                {/* Email */}
+                <button
+                  onClick={handleEmailShare}
+                  className={`flex items-center justify-center gap-2 w-full bg-blue-500 text-white rounded-xl hover:bg-blue-600 hover:shadow-lg hover:scale-105 transition-all duration-200 ${
+                    isMobileView ? 'py-4 px-4 min-h-[48px] text-base' : 'py-3 px-4'
+                  }`}
+                >
+                  <Mail className="w-5 h-5" />
+                  Share via Email
+                </button>
+                
+                {/* Copy Link */}
+                <button
+                  onClick={handleCopy}
+                  className={`flex items-center justify-center gap-2 w-full bg-gray-100 text-gray-700 rounded-xl hover:bg-gray-200 hover:shadow hover:scale-105 transition-all duration-200 ${
+                    isMobileView ? 'py-4 px-4 min-h-[48px] text-base' : 'py-3 px-4'
+                  }`}
+                >
+                  {copied ? (
+                    <>
+                      <Check className="w-5 h-5 text-green-500" />
+                      <span className="text-green-500">Copied!</span>
+                    </>
+                  ) : (
+                    <>
+                      <Copy className="w-5 h-5" />
+                      Copy Link
+                    </>
+                  )}
+                </button>
+              </div>
             </div>
           </div>
-          
-          {/* Share Options */}
-          <div className="grid gap-2">
-            {/* Native Share (if available) */}
-            {shareUtils.isNativeShareSupported() && (
-              <button
-                onClick={handleNativeShare}
-                disabled={isSharing}
-                className="flex items-center justify-center gap-2 w-full py-3 px-4 
-                  bg-gradient-to-r from-orange-500 to-orange-600 text-white 
-                  rounded-xl hover:shadow-lg hover:scale-105 transition-all duration-200
-                  disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
+
+          {/* Close button for mobile */}
+          {isMobileView && (
+            <div className="border-t border-gray-100 p-4">
+              <button 
+                onClick={onClose}
+                className="w-full min-h-[48px] text-base py-3 px-4 bg-gray-100 text-gray-700 rounded-xl hover:bg-gray-200 transition-colors"
               >
-                <Share2 className="w-5 h-5" />
-                {isSharing ? 'Sharing...' : 'Share'}
+                Close
               </button>
-            )}
-            
-            {/* WhatsApp */}
-            <button
-              onClick={handleWhatsAppShare}
-              className="flex items-center justify-center gap-2 w-full py-3 px-4 
-                bg-green-500 text-white rounded-xl hover:bg-green-600 
-                hover:shadow-lg hover:scale-105 transition-all duration-200"
-            >
-              <MessageCircle className="w-5 h-5" />
-              Share on WhatsApp
-            </button>
-            
-            {/* Email */}
-            <button
-              onClick={handleEmailShare}
-              className="flex items-center justify-center gap-2 w-full py-3 px-4 
-                bg-blue-500 text-white rounded-xl hover:bg-blue-600 
-                hover:shadow-lg hover:scale-105 transition-all duration-200"
-            >
-              <Mail className="w-5 h-5" />
-              Share via Email
-            </button>
-            
-            {/* Copy Link */}
-            <button
-              onClick={handleCopy}
-              className="flex items-center justify-center gap-2 w-full py-3 px-4 
-                bg-gray-100 text-gray-700 rounded-xl hover:bg-gray-200 
-                hover:shadow hover:scale-105 transition-all duration-200"
-            >
-              {copied ? (
-                <>
-                  <Check className="w-5 h-5 text-green-500" />
-                  <span className="text-green-500">Copied!</span>
-                </>
-              ) : (
-                <>
-                  <Copy className="w-5 h-5" />
-                  Copy Link
-                </>
-              )}
-            </button>
-          </div>
+            </div>
+          )}
         </div>
-      </DialogContent>
+      </DialogContentComponent>
     </Dialog>
   )
 }
