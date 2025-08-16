@@ -187,7 +187,7 @@ function SharedCalendarRenderer({ schedule }: { schedule: SavedSchedule }) {
             ))}
             
             {/* Empty cells for proper weekday alignment */}
-            {Array.from({ length: month.firstDayOfWeek === 0 ? 6 : month.firstDayOfWeek - 1 }).map((_, index) => (
+            {Array.from({ length: (month.firstDayOfWeek - 1) % 7 }).map((_, index) => (
               <div key={`empty-${index}`} className="aspect-square" />
             ))}
             

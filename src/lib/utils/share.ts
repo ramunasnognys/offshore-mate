@@ -110,7 +110,9 @@ export const decompressCalendarData = (encodedData: string): SavedSchedule => {
         if (firstDayOfWeek === undefined && month.d.length > 0) {
           try {
             const firstDate = new Date(month.d[0].dt)
-            firstDayOfWeek = firstDate.getDay()
+            const jsDay = firstDate.getDay() // JavaScript format: 0=Sunday, 1=Monday, etc.
+            // Convert to Monday-based format: 1=Monday, 2=Tuesday, ..., 7=Sunday
+            firstDayOfWeek = jsDay === 0 ? 7 : jsDay
           } catch (error) {
             console.error('Error calculating firstDayOfWeek from first date:', error)
             firstDayOfWeek = 1 // Default to Monday
