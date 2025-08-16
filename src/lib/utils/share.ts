@@ -109,7 +109,9 @@ export const decompressCalendarData = (encodedData: string): SavedSchedule => {
         let firstDayOfWeek = month.f
         if (firstDayOfWeek === undefined && month.d.length > 0) {
           try {
-            const firstDate = new Date(month.d[0].dt)
+            // Parse date in local timezone to avoid timezone shift issues
+            const [year, monthNum, day] = month.d[0].dt.split('-').map(Number)
+            const firstDate = new Date(year, monthNum - 1, day)
             const jsDay = firstDate.getDay() // JavaScript format: 0=Sunday, 1=Monday, etc.
             // Convert to Monday-based format: 1=Monday, 2=Tuesday, ..., 7=Sunday
             firstDayOfWeek = jsDay === 0 ? 7 : jsDay
@@ -124,10 +126,12 @@ export const decompressCalendarData = (encodedData: string): SavedSchedule => {
           year: month.y,
           firstDayOfWeek: firstDayOfWeek || 1,
           days: month.d.map((day: { dt: string; w: boolean; r: boolean; t?: boolean }) => {
-          // Ensure we have a valid date string and convert it properly
+          // Ensure we have a valid date string and convert it properly in local timezone
           let dateObj: Date
           try {
-            dateObj = new Date(day.dt)
+            // Parse date in local timezone to avoid timezone shift issues
+            const [year, monthNum, dayNum] = day.dt.split('-').map(Number)
+            dateObj = new Date(year, monthNum - 1, dayNum)
             // Validate the date is actually valid
             if (isNaN(dateObj.getTime())) {
               throw new Error('Invalid date')

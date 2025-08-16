@@ -90,28 +90,32 @@ export function CalendarDisplay({
   // Calculate the actual rotation pattern being displayed (with weekday adjustment)
   const displayedRotationPattern = React.useMemo(() => {
     if (selectedRotation === 'Custom') {
-      // For custom rotations, just show the selected values
-      return selectedRotation;
+      // For custom rotations, show the custom label
+      return 'Custom Rotation';
     }
     
     const config = rotationConfigs[selectedRotation as RotationPattern];
     if (!config || !selectedDate) return selectedRotation;
     
-    // Calculate the adjusted values based on the start date
-    const { adjustedWorkDays, adjustedOffDays } = calculateWeekdayAdjustment(
+    // Always return the original pattern label, regardless of adjustment
+    return config.label;
+  }, [selectedRotation, selectedDate])
+
+  // Check if weekday adjustment was applied
+  const isAdjusted = React.useMemo(() => {
+    if (selectedRotation === 'Custom' || !selectedDate) return false;
+    
+    const config = rotationConfigs[selectedRotation as RotationPattern];
+    if (!config) return false;
+    
+    // Calculate if adjustment was made
+    const { adjustedWorkDays } = calculateWeekdayAdjustment(
       new Date(selectedDate),
       config.workDays,
       config.offDays
     );
     
-    // Return the display string
-    if (adjustedWorkDays === config.workDays) {
-      // No adjustment needed, show original pattern
-      return selectedRotation;
-    } else {
-      // Show adjusted pattern
-      return `${adjustedWorkDays}/${adjustedOffDays} Rotation`;
-    }
+    return adjustedWorkDays !== config.workDays;
   }, [selectedRotation, selectedDate])
 
   return (
@@ -146,7 +150,7 @@ export function CalendarDisplay({
         <div className="flex justify-center">
           <div className="inline-flex items-center bg-white/80 backdrop-blur-sm rounded-full px-4 py-2 shadow-sm border border-gray-200/50">
             <span className="text-sm font-medium text-gray-800">{displayedRotationPattern}</span>
-            {displayedRotationPattern !== selectedRotation && (
+            {isAdjusted && (
               <span className="ml-2 text-xs text-gray-500">(adjusted for weekday consistency)</span>
             )}
           </div>
