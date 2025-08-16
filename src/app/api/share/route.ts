@@ -38,14 +38,18 @@ export async function POST(request: NextRequest) {
     }
 
     // Security: Validate URL is from same domain
-    // For development, use the actual port from the request
+    // Get the current host and protocol consistently
     const host = request.headers.get('host') || 'localhost:3000'
     const protocol = host.includes('localhost') ? 'http' : 'https'
-    const baseUrl = process.env.VERCEL_URL 
-      ? `https://${process.env.VERCEL_URL}` 
-      : `${protocol}://${host}`
+    const baseUrl = `${protocol}://${host}`
 
-    if (!longUrl.startsWith(baseUrl)) {
+    // Allow URLs from current domain or any Vercel deployment domain
+    const isValidDomain = longUrl.startsWith(baseUrl) || 
+                         (process.env.VERCEL_URL && longUrl.startsWith(`https://${process.env.VERCEL_URL}`)) ||
+                         longUrl.includes('.vercel.app') ||
+                         longUrl.includes('offshoremate.com')
+
+    if (!isValidDomain) {
       return NextResponse.json(
         { error: 'Invalid URL domain' },
         { status: 400 }
