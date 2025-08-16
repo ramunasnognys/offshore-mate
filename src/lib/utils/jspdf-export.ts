@@ -134,7 +134,7 @@ function generateCalendarHTML(calendar: MonthData[]): string {
         display: flex;
         flex-direction: column;
       ">
-        <h3 style="text-align: center; margin: 0 0 16px 0; font-size: 36px; color: #1f2937; font-weight: bold; flex-shrink: 0;">${month.month} ${month.year}</h3>
+        <h3 style="text-align: center; margin: 0 0 16px 0; font-size: 36px; color: #1f2937; font-weight: bold; font-family: serif; flex-shrink: 0;">${month.month} ${month.year}</h3>
         <div style="
           display: grid; 
           grid-template-columns: repeat(7, 1fr); 
@@ -206,7 +206,7 @@ function getDayColor(day: CalendarDay | null): string {
   }
   
   if (day.isWorkDay) {
-    return '#ffb366'; // Light orange for work days (like in the image)
+    return '#93c5fd'; // Light blue for work days
   }
   
   return '#b3e5b3'; // Light green for off days (like in the image)
@@ -227,7 +227,7 @@ function getDayBorderColor(day: CalendarDay | null): string {
   }
   
   if (day.isWorkDay) {
-    return '#fb923c'; // Orange border for work days
+    return '#3b82f6'; // Blue border for work days
   }
   
   return '#4ade80'; // Green border for off days

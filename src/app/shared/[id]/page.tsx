@@ -172,7 +172,7 @@ function SharedCalendarRenderer({ schedule }: { schedule: SavedSchedule }) {
       {schedule.calendar.map((month, index) => (
         <div key={index} className="bg-white/40 backdrop-blur-lg rounded-2xl p-6 border border-white/60 shadow-lg">
           <div className="flex items-center justify-between mb-4">
-            <h3 className="text-xl font-semibold text-gray-800">
+            <h3 className="text-xl font-bold text-gray-800 font-serif">
               {month.month} {month.year}
             </h3>
           </div>
@@ -214,17 +214,16 @@ function SharedCalendarRenderer({ schedule }: { schedule: SavedSchedule }) {
                     relative transition-all duration-200
                     ${!day.isInRotation 
                       ? 'text-gray-300 bg-gray-50/30' 
-                      : day.isWorkDay 
-                        ? 'bg-gradient-to-br from-emerald-400 to-green-500 text-white shadow-sm'
-                        : 'bg-gradient-to-br from-blue-400 to-blue-500 text-white shadow-sm'
+                      : day.isTransitionDay
+                        ? 'bg-gradient-to-br from-pink-400 to-pink-500 text-white shadow-sm'
+                        : day.isWorkDay 
+                          ? 'bg-gradient-to-br from-blue-400 to-blue-500 text-white shadow-sm'
+                          : 'bg-gradient-to-br from-green-400 to-green-500 text-white shadow-sm'
                     }
                     ${isToday ? 'ring-2 ring-orange-400 ring-offset-2 ring-offset-white/60' : ''}
                   `}
                 >
                   <span className="relative z-10">{dayNumber}</span>
-                  {day.isTransitionDay && (
-                    <div className="absolute inset-0 bg-gradient-to-br from-amber-400 to-orange-500 rounded-lg opacity-40"></div>
-                  )}
                 </div>
               )
             })}
@@ -233,15 +232,15 @@ function SharedCalendarRenderer({ schedule }: { schedule: SavedSchedule }) {
           {/* Legend */}
           <div className="flex justify-center gap-4 mt-4 text-xs">
             <div className="flex items-center gap-1">
-              <div className="w-3 h-3 bg-gradient-to-br from-emerald-400 to-green-500 rounded"></div>
+              <div className="w-3 h-3 bg-gradient-to-br from-blue-400 to-blue-500 rounded"></div>
               <span className="text-gray-600">Work Days</span>
             </div>
             <div className="flex items-center gap-1">
-              <div className="w-3 h-3 bg-gradient-to-br from-blue-400 to-blue-500 rounded"></div>
+              <div className="w-3 h-3 bg-gradient-to-br from-green-400 to-green-500 rounded"></div>
               <span className="text-gray-600">Off Days</span>
             </div>
             <div className="flex items-center gap-1">
-              <div className="w-3 h-3 bg-gradient-to-br from-amber-400 to-orange-500 rounded"></div>
+              <div className="w-3 h-3 bg-gradient-to-br from-pink-400 to-pink-500 rounded"></div>
               <span className="text-gray-600">Transition Days</span>
             </div>
           </div>

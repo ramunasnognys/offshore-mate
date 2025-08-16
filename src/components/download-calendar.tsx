@@ -34,7 +34,7 @@ export function DownloadCalendar({ calendar }: DownloadCalendarProps) {
         </h1>
         <div className="flex items-center gap-8">
           <div className="flex items-center gap-2">
-            <div className="w-6 h-6 rounded bg-orange-500/30 border-2 border-orange-500" />
+            <div className="w-6 h-6 rounded bg-blue-500/30 border-2 border-blue-500" />
             <span className="text-xl text-gray-700">Work</span>
           </div>
           <div className="flex items-center gap-2">
@@ -57,7 +57,7 @@ export function DownloadCalendar({ calendar }: DownloadCalendarProps) {
             style={{ width: '100%', height: '25%' }}
           >
             <div className="h-full flex flex-col">
-              <h3 className="text-3xl font-bold text-gray-800 mb-4 text-center">
+              <h3 className="text-3xl font-bold text-gray-800 mb-4 text-center font-serif">
                 {month.month} {month.year}
               </h3>
               
@@ -81,7 +81,7 @@ export function DownloadCalendar({ calendar }: DownloadCalendarProps) {
                         : day.isTransitionDay
                           ? 'bg-pink-500/30 text-pink-900 border-pink-500'
                           : day.isWorkDay 
-                            ? 'bg-orange-500/30 text-orange-900 border-orange-500' 
+                            ? 'bg-blue-500/30 text-blue-900 border-blue-500' 
                             : 'bg-green-500/30 text-green-900 border-green-500'
                     }`}
                   >

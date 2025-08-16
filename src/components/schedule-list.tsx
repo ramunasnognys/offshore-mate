@@ -33,7 +33,7 @@ interface CalendarMonthProps {
 const WEEKDAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'] as const;
 
 const DAY_STYLES = {
-  work: 'bg-orange-500/20 text-orange-800 border border-orange-500/30',
+  work: 'bg-blue-500/20 text-blue-800 border border-blue-500/30',
   off: 'bg-green-500/20 text-green-800 border border-green-500/30',
   transition: 'bg-pink-500/20 text-pink-800 ring-1 md:ring-2 ring-pink-500/50 border border-pink-500/30',
   inactive: 'bg-gray-100/50 text-gray-400 border border-gray-200/30'
@@ -43,7 +43,7 @@ const LEGEND_CONFIG = [
   {
     type: 'work' as const,
     label: 'Work Days',
-    className: 'bg-orange-500/20 border border-orange-500/30',
+    className: 'bg-blue-500/20 border border-blue-500/30',
     icon: <Wrench className="w-3 h-3 md:w-5 md:h-5" />
   },
   {
@@ -221,7 +221,7 @@ function CalendarMonth({ month, isMobile, isFirst, isLast, onNavigate }: Calenda
             
             <h3 
               id={`month-${month.month}-${month.year}`}
-              className="text-lg md:text-xl font-bold text-gray-800 px-4 select-none flex-1 text-center"
+              className="text-lg md:text-xl font-bold text-gray-800 px-4 select-none flex-1 text-center font-serif"
             >
               {month.month} {month.year}
             </h3>
@@ -252,7 +252,7 @@ function CalendarMonth({ month, isMobile, isFirst, isLast, onNavigate }: Calenda
           // Desktop header (unchanged)
           <h3 
             id={`month-${month.month}-${month.year}`}
-            className="text-lg md:text-xl font-semibold text-gray-800 mb-4 md:mb-6 text-center"
+            className="text-lg md:text-xl font-bold text-gray-800 mb-4 md:mb-6 text-center font-serif"
           >
             {month.month} {month.year}
           </h3>
