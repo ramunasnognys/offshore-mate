@@ -14,6 +14,17 @@ export interface ShareData {
   rotationPattern: string
 }
 
+// Types for URL shortening API
+interface ShortenUrlRequest {
+  longUrl: string
+}
+
+interface ShortenUrlResponse {
+  shortUrl: string
+  shareId: string
+  expiresAt: string
+}
+
 // Helper to convert Uint8Array to URL-safe Base64
 const toUrlSafeBase64 = (arr: Uint8Array): string => {
   const base64 = btoa(String.fromCharCode.apply(null, Array.from(arr)))
@@ -288,6 +299,80 @@ export const copyToClipboard = async (text: string): Promise<boolean> => {
 export const isNativeShareSupported = (): boolean => {
   if (typeof window === 'undefined') return false
   return navigator.share !== undefined
+}
+
+/**
+ * Shorten a long URL using the URL shortening API
+ * Falls back to the original URL if shortening fails
+ */
+export const shortenUrl = async (longUrl: string): Promise<{ shortUrl: string; shareId?: string }> => {
+  try {
+    // Validate input
+    if (!longUrl || typeof longUrl !== 'string') {
+      throw new Error('Invalid URL provided')
+    }
+
+    // Make API call to shorten URL
+    const response = await fetch('/api/share', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ longUrl } as ShortenUrlRequest),
+    })
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}))
+      throw new Error(`API error: ${response.status} - ${errorData.error || 'Unknown error'}`)
+    }
+
+    const result: ShortenUrlResponse = await response.json()
+    
+    // Validate response
+    if (!result.shortUrl) {
+      throw new Error('Invalid API response: missing shortUrl')
+    }
+
+    return {
+      shortUrl: result.shortUrl,
+      shareId: result.shareId
+    }
+
+  } catch (error) {
+    console.error('URL shortening failed:', error)
+    
+    // Graceful fallback to original URL
+    return {
+      shortUrl: longUrl
+    }
+  }
+}
+
+/**
+ * Generate share URL with optional shortening
+ * This function maintains backwards compatibility while adding shortening capability
+ */
+export const generateShareUrlWithShortening = async (
+  scheduleId: string, 
+  schedule?: SavedSchedule,
+  useShortening: boolean = true
+): Promise<string> => {
+  // Generate the long URL first (existing functionality)
+  const longUrl = generateShareUrl(scheduleId, schedule)
+  
+  // If shortening is disabled or we're on server side, return long URL
+  if (!useShortening || typeof window === 'undefined') {
+    return longUrl
+  }
+
+  // Attempt to shorten the URL
+  try {
+    const result = await shortenUrl(longUrl)
+    return result.shortUrl
+  } catch (error) {
+    console.error('Failed to shorten URL, using long URL:', error)
+    return longUrl
+  }
 }
 
 /**

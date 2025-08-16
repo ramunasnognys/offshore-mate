@@ -19,42 +19,67 @@ export function ShareModal({ isOpen, onClose, scheduleId }: ShareModalProps) {
   const [copied, setCopied] = useState(false)
   const [isSharing, setIsSharing] = useState(false)
   const [shareUrl, setShareUrl] = useState('')
+  const [isGeneratingUrl, setIsGeneratingUrl] = useState(false)
   const { yearCalendar, selectedDate, selectedRotation } = useCalendar()
   const { setErrorMessage } = useUI()
   const isMobileView = useMobileDetection()
 
   const DialogContentComponent = isMobileView ? DialogBottomContent : DialogContent
   
-  // Generate share URL with calendar data
+  // Generate short share URL with calendar data
   useEffect(() => {
-    if (yearCalendar && yearCalendar.length > 0) {
-      try {
-        // Create a SavedSchedule object from current calendar data
-        const schedule: SavedSchedule = {
-          metadata: {
-            id: scheduleId,
-            name: `${selectedRotation} Schedule`,
-            rotationPattern: selectedRotation,
-            startDate: selectedDate,
-            createdAt: new Date().toISOString(),
-            updatedAt: new Date().toISOString(),
-            schemaVersion: 'v1'
-          },
-          calendar: yearCalendar
+    if (isOpen && yearCalendar && yearCalendar.length > 0) {
+      const generateShortUrl = async () => {
+        setIsGeneratingUrl(true)
+        try {
+          // Create a SavedSchedule object from current calendar data
+          const schedule: SavedSchedule = {
+            metadata: {
+              id: scheduleId,
+              name: `${selectedRotation} Schedule`,
+              rotationPattern: selectedRotation,
+              startDate: selectedDate,
+              createdAt: new Date().toISOString(),
+              updatedAt: new Date().toISOString(),
+              schemaVersion: 'v1'
+            },
+            calendar: yearCalendar
+          }
+          
+          // Generate long URL first (existing functionality)
+          const longUrl = shareUtils.generateShareUrl(scheduleId, schedule)
+          
+          // Attempt to shorten the URL
+          const result = await shareUtils.shortenUrl(longUrl)
+          setShareUrl(result.shortUrl)
+          
+          // If the short URL is the same as long URL, it means shortening failed
+          // but we gracefully fell back, so we can show a subtle warning
+          if (result.shortUrl === longUrl && longUrl.length > 100) {
+            console.warn('URL shortening service unavailable, using full link')
+            // Don't show error to user as fallback is working
+          }
+          
+        } catch (error) {
+          console.error('Error generating share URL:', error)
+          setErrorMessage('Failed to generate share link. Please try again.')
+          setShareUrl('')
+        } finally {
+          setIsGeneratingUrl(false)
         }
-        
-        const url = shareUtils.generateShareUrl(scheduleId, schedule)
-        setShareUrl(url)
-      } catch (error) {
-        console.error('Error generating share URL:', error)
-        setErrorMessage('Failed to generate share link. Please try again.')
-        setShareUrl('')
       }
+      
+      generateShortUrl()
+    } else if (!isOpen) {
+      // Reset URL when modal closes
+      setShareUrl('')
+      setIsGeneratingUrl(false)
     } else {
       // No calendar data available - don't generate URL without data
       setShareUrl('')
+      setIsGeneratingUrl(false)
     }
-  }, [scheduleId, yearCalendar, selectedDate, selectedRotation, setErrorMessage])
+  }, [isOpen, scheduleId, yearCalendar, selectedDate, selectedRotation, setErrorMessage])
   
   // Reset copied state when modal closes
   useEffect(() => {
@@ -109,7 +134,7 @@ export function ShareModal({ isOpen, onClose, scheduleId }: ShareModalProps) {
   }
 
   // Show loading state while URL is being generated
-  if (!shareUrl) {
+  if (isGeneratingUrl || (!shareUrl && isOpen)) {
     return (
       <Dialog open={isOpen} onOpenChange={onClose}>
         <DialogContentComponent className={isMobileView 
@@ -142,7 +167,9 @@ export function ShareModal({ isOpen, onClose, scheduleId }: ShareModalProps) {
             <div className={`flex-1 flex items-center justify-center ${isMobileView ? 'p-4' : 'p-8'}`}>
               <div className="text-center">
                 <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-orange-500 mx-auto mb-4"></div>
-                <p className="text-gray-600">Preparing share link...</p>
+                <p className="text-gray-600">
+                  {isGeneratingUrl ? 'Generating short link...' : 'Preparing share link...'}
+                </p>
               </div>
             </div>
           </div>
