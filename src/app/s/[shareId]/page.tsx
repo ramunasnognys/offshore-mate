@@ -21,35 +21,30 @@ export async function generateStaticParams() {
 }
 
 export default async function ShortUrlRedirect({ params }: ShortUrlRedirectProps) {
+  const { shareId } = await params
+  
+  // Validate shareId format first to avoid unnecessary database lookups
+  if (!shareId || typeof shareId !== 'string' || shareId.length !== 8 || !/^[A-Za-z0-9_-]{8}$/.test(shareId)) {
+    return notFound()
+  }
+
+  let mapping: ShortUrlMapping | null = null
+
   try {
-    const { shareId } = await params
-    
-    // For debugging - let's add a hard-coded test
-    if (shareId === 'testtest') {
-      redirect('/shared/test?data=hardcoded_test')
-    }
-
-    // Validate shareId format  
-    if (!shareId || typeof shareId !== 'string' || shareId.length !== 8 || !/^[A-Za-z0-9_-]{8}$/.test(shareId)) {
-      notFound()
-      return
-    }
-
-    // Initialize Redis and get mapping
+    // Only wrap Redis operations in try-catch
     const redis = Redis.fromEnv()
     const key = `share:${shareId}`
-    const mapping = await redis.get<ShortUrlMapping>(key)
-
-    if (!mapping?.longUrl) {
-      notFound()
-      return
-    }
-
-    // Redirect to the long URL
-    redirect(mapping.longUrl)
-
+    mapping = await redis.get<ShortUrlMapping>(key)
   } catch (error) {
-    console.error('Redirect error:', error)
-    notFound()
+    // This will catch actual Redis connection errors, etc.
+    console.error('Error fetching share link from Redis:', error)
+    return notFound()
   }
+
+  if (!mapping?.longUrl) {
+    return notFound()
+  }
+
+  // Now call redirect outside of the try...catch block
+  redirect(mapping.longUrl)
 }
