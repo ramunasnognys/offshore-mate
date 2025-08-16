@@ -3,6 +3,7 @@
 import html2canvas from 'html2canvas';
 import { jsPDF } from 'jspdf';
 import { MonthData, CalendarDay } from '@/types/rotation';
+import { CALENDAR_COLORS, CALENDAR_TYPOGRAPHY, CALENDAR_LAYOUT } from '@/lib/constants/calendar-colors';
 
 interface PDFExportOptions {
   calendar: MonthData[];
@@ -32,21 +33,21 @@ export async function exportCalendarAsJsPDF(options: PDFExportOptions): Promise<
     // Add title and legend to match PNG layout
     calendarElement.innerHTML = `
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; height: 60px;">
-        <h1 style="font-size: 48px; margin: 0; color: #1f2937; font-weight: bold; font-family: var(--font-display), system-ui, sans-serif;">
+        <h1 style="font-size: ${CALENDAR_TYPOGRAPHY.mainTitle}; margin: 0; color: ${CALENDAR_COLORS.monthTitle}; font-weight: ${CALENDAR_TYPOGRAPHY.mainTitleWeight}; font-family: var(--font-display), system-ui, sans-serif;">
           Offshore Calendar
         </h1>
-        <div style="display: flex; align-items: center; gap: 32px;">
-          <div style="display: flex; align-items: center; gap: 8px;">
-            <div style="width: 24px; height: 24px; background: rgba(249, 115, 22, 0.3); border: 2px solid #f97316; border-radius: 4px;"></div>
-            <span style="font-size: 20px; color: #374151; font-weight: normal;">Work</span>
+        <div style="display: flex; align-items: center; gap: ${CALENDAR_LAYOUT.legendGap};">
+          <div style="display: flex; align-items: center; gap: ${CALENDAR_LAYOUT.legendItemGap};">
+            <div style="width: ${CALENDAR_LAYOUT.legendIndicatorSize}; height: ${CALENDAR_LAYOUT.legendIndicatorSize}; background: ${CALENDAR_COLORS.legendWork}; border: 2px solid ${CALENDAR_COLORS.legendWorkBorder}; border-radius: 4px;"></div>
+            <span style="font-size: ${CALENDAR_TYPOGRAPHY.legendText}; color: ${CALENDAR_COLORS.legendText}; font-weight: ${CALENDAR_TYPOGRAPHY.legendWeight};">Work</span>
           </div>
-          <div style="display: flex; align-items: center; gap: 8px;">
-            <div style="width: 24px; height: 24px; background: rgba(34, 197, 94, 0.3); border: 2px solid #22c55e; border-radius: 4px;"></div>
-            <span style="font-size: 20px; color: #374151; font-weight: normal;">Off</span>
+          <div style="display: flex; align-items: center; gap: ${CALENDAR_LAYOUT.legendItemGap};">
+            <div style="width: ${CALENDAR_LAYOUT.legendIndicatorSize}; height: ${CALENDAR_LAYOUT.legendIndicatorSize}; background: ${CALENDAR_COLORS.legendOff}; border: 2px solid ${CALENDAR_COLORS.legendOffBorder}; border-radius: 4px;"></div>
+            <span style="font-size: ${CALENDAR_TYPOGRAPHY.legendText}; color: ${CALENDAR_COLORS.legendText}; font-weight: ${CALENDAR_TYPOGRAPHY.legendWeight};">Off</span>
           </div>
-          <div style="display: flex; align-items: center; gap: 8px;">
-            <div style="width: 24px; height: 24px; background: rgba(236, 72, 153, 0.3); border: 2px solid #ec4899; border-radius: 4px;"></div>
-            <span style="font-size: 20px; color: #374151; font-weight: normal;">Travel</span>
+          <div style="display: flex; align-items: center; gap: ${CALENDAR_LAYOUT.legendItemGap};">
+            <div style="width: ${CALENDAR_LAYOUT.legendIndicatorSize}; height: ${CALENDAR_LAYOUT.legendIndicatorSize}; background: ${CALENDAR_COLORS.legendTravel}; border: 2px solid ${CALENDAR_COLORS.legendTravelBorder}; border-radius: 4px;"></div>
+            <span style="font-size: ${CALENDAR_TYPOGRAPHY.legendText}; color: ${CALENDAR_COLORS.legendText}; font-weight: ${CALENDAR_TYPOGRAPHY.legendWeight};">Travel</span>
           </div>
         </div>
       </div>
@@ -134,25 +135,25 @@ function generateCalendarHTML(calendar: MonthData[]): string {
         display: flex;
         flex-direction: column;
       ">
-        <h3 style="text-align: center; margin: 0 0 16px 0; font-size: 36px; color: #1f2937; font-weight: bold; font-family: serif; flex-shrink: 0;">${month.month} ${month.year}</h3>
+        <h3 style="text-align: center; margin: 0 0 16px 0; font-size: ${CALENDAR_TYPOGRAPHY.monthTitle}; color: ${CALENDAR_COLORS.monthTitle}; font-weight: ${CALENDAR_TYPOGRAPHY.monthTitleWeight}; font-family: serif; flex-shrink: 0;">${month.month} ${month.year}</h3>
         <div style="
           display: grid; 
           grid-template-columns: repeat(7, 1fr); 
           grid-template-rows: repeat(7, 1fr);
-          gap: 3px; 
-          font-size: 20px;
+          gap: ${CALENDAR_LAYOUT.cellGap}; 
+          font-size: ${CALENDAR_TYPOGRAPHY.dayHeader};
           flex: 1;
         ">
           ${['M', 'T', 'W', 'T', 'F', 'S', 'S'].map(day => 
             `<div style="
               text-align: center; 
-              font-weight: bold; 
+              font-weight: ${CALENDAR_TYPOGRAPHY.dayHeaderWeight}; 
               display: flex; 
               align-items: center; 
               justify-content: center; 
-              background: #f8f9fa; 
-              color: #374151; 
-              border-radius: 6px;
+              background: ${CALENDAR_COLORS.headerBackground}; 
+              color: ${CALENDAR_COLORS.headerText}; 
+              border-radius: ${CALENDAR_LAYOUT.cellBorderRadius};
               aspect-ratio: 1;
             ">${day}</div>`
           ).join('')}
@@ -162,11 +163,11 @@ function generateCalendarHTML(calendar: MonthData[]): string {
               display: flex;
               align-items: center;
               justify-content: center;
-              background: ${cell.isEmpty ? '#ffffff' : getDayColor(cell.day)};
-              color: ${getDayTextColor()};
-              border-radius: 6px;
-              font-weight: bold;
-              font-size: 24px;
+              background: ${cell.isEmpty ? CALENDAR_COLORS.calendarBackground : getDayColor(cell.day)};
+              color: ${CALENDAR_COLORS.dayText};
+              border-radius: ${CALENDAR_LAYOUT.cellBorderRadius};
+              font-weight: ${CALENDAR_TYPOGRAPHY.dayNumberWeight};
+              font-size: ${CALENDAR_TYPOGRAPHY.dayNumber};
               border: 1px solid ${cell.isEmpty ? 'transparent' : getDayBorderColor(cell.day)};
               aspect-ratio: 1;
             ">
@@ -198,37 +199,34 @@ function createMonthGrid(month: MonthData): Array<{day: CalendarDay | null, isEm
 
 function getDayColor(day: CalendarDay | null): string {
   if (!day || !day.isInRotation) {
-    return '#f8f9fa'; // Light gray for empty cells or days before rotation starts
+    return CALENDAR_COLORS.nonRotationDay;
   }
   
   if (day.isTransitionDay) {
-    return '#ffc1cc'; // Light pink for transition days (like in the image)
+    return CALENDAR_COLORS.travelDay;
   }
   
   if (day.isWorkDay) {
-    return '#93c5fd'; // Light blue for work days
+    return CALENDAR_COLORS.workDay;
   }
   
-  return '#b3e5b3'; // Light green for off days (like in the image)
+  return CALENDAR_COLORS.offDay;
 }
 
-function getDayTextColor(): string {
-  // Use dark text for better readability on light backgrounds
-  return '#1f2937';
-}
+// Removed getDayTextColor function as we now use CALENDAR_COLORS.dayText directly
 
 function getDayBorderColor(day: CalendarDay | null): string {
   if (!day || !day.isInRotation) {
-    return '#e5e7eb';
+    return CALENDAR_COLORS.nonRotationDayBorder;
   }
   
   if (day.isTransitionDay) {
-    return '#f472b6'; // Pink border for transition days
+    return CALENDAR_COLORS.travelDayBorder;
   }
   
   if (day.isWorkDay) {
-    return '#3b82f6'; // Blue border for work days
+    return CALENDAR_COLORS.workDayBorder;
   }
   
-  return '#4ade80'; // Green border for off days
+  return CALENDAR_COLORS.offDayBorder;
 }
