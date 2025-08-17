@@ -2,7 +2,7 @@
 
 import React, { useEffect } from 'react'
 import { CalendarProvider, useCalendar } from '@/contexts/CalendarContext'
-import { UIProvider, useUI } from '@/contexts/UIContext'
+import { UIProvider } from '@/contexts/UIContext'
 import { CalendarGenerator } from '@/components/calendar/CalendarGenerator'
 import { CalendarDisplay } from '@/components/calendar/CalendarDisplay'
 import { NotificationManager } from '@/components/common/NotificationManager'
@@ -38,10 +38,8 @@ function HomeContent() {
     setIsCalendarGenerated
   } = useCalendar()
 
-  // UI context
-  const { 
-    setShowSettings
-  } = useUI()
+  // UI context (currently unused but keeping for future use)
+  // const { } = useUI()
 
   // Schedule management
   const {
@@ -161,7 +159,6 @@ function HomeContent() {
         ) : (
           <CalendarDisplay
             onBack={resetCalendar}
-            onSave={handleSaveSchedule}
             isStorageAvailable={isClient && isStorageSupported}
           />
         )}
@@ -182,7 +179,7 @@ function HomeContent() {
             selectedFormat={exportFormat}
             onFormatChange={setExportFormat}
             onExport={handleExport}
-            onSettings={() => setShowSettings(true)}
+            onSaveSchedule={handleSaveSchedule}
             isDownloading={isDownloading}
             onExpandedChange={setIsExportPanelExpanded}
             expandedPanel={expandedPanel}

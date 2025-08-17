@@ -11,28 +11,22 @@ import { useMobileDetection } from '@/hooks/useMobileDetection'
 import { useMonthNavigation } from '@/hooks/useMonthNavigation'
 import { useScheduleManagement } from '@/hooks/useScheduleManagement'
 import { MonthData, RotationPattern } from '@/types/rotation'
-import { ContextualSaveBar } from '@/components/ContextualSaveBar'
 import { calculateWeekdayAdjustment, rotationConfigs } from '@/lib/utils/rotation'
 
 interface CalendarDisplayProps {
   onBack: () => void
-  onSave: () => void
   isStorageAvailable: boolean
 }
 
 export function CalendarDisplay({ 
-  onBack, 
-  onSave,
+  onBack,
   isStorageAvailable: _isStorageAvailable 
 }: CalendarDisplayProps) {
   const {
     yearCalendar,
-    scheduleName,
     setScheduleName,
     selectedRotation,
     selectedDate,
-    isSaved,
-    currentScheduleId,
     setYearCalendar,
     setCurrentScheduleId,
     setIsSaved,
@@ -149,25 +143,10 @@ export function CalendarDisplay({
         <div className="flex justify-center">
           <div className="inline-flex items-center bg-white/80 backdrop-blur-sm rounded-full px-4 py-2 shadow-sm border border-gray-200/50">
             <span className="text-sm font-medium text-gray-800">{rotationInfo.displayedPattern}</span>
-            {rotationInfo.isAdjusted && (
-              <span className="ml-2 text-xs text-gray-500">(adjusted for weekday consistency)</span>
-            )}
           </div>
         </div>
       </div>
 
-      {/* Contextual Save Bar - appears for new unsaved schedules */}
-      <ContextualSaveBar
-        yearCalendar={yearCalendar}
-        scheduleName={scheduleName}
-        selectedRotation={rotationInfo.displayedPattern}
-        selectedDate={selectedDate}
-        currentScheduleId={currentScheduleId}
-        isSaved={isSaved}
-        onNameChange={setScheduleName}
-        onSave={onSave}
-        onUpdate={onSave}
-      />
 
       {/* Calendar Display */}
       <div>

@@ -9,7 +9,7 @@ import { ShareModal } from '@/components/ShareModal';
 interface BottomToolbarProps {
   onExport: () => void;
   onFormatChange: (format: ExportFormat) => void;
-  onSettings: () => void;
+  onSaveSchedule: () => void;
   selectedFormat: ExportFormat;
   isDownloading?: boolean;
   className?: string;
@@ -18,7 +18,7 @@ interface BottomToolbarProps {
   onExpandedPanelChange?: (panel: 'export' | 'settings' | null) => void;
 }
 
-export function BottomToolbar({ onExport, onFormatChange, onSettings, selectedFormat, isDownloading = false, className = '', onExpandedChange, expandedPanel, onExpandedPanelChange }: BottomToolbarProps) {
+export function BottomToolbar({ onExport, onFormatChange, onSaveSchedule, selectedFormat, isDownloading = false, className = '', onExpandedChange, expandedPanel, onExpandedPanelChange }: BottomToolbarProps) {
   const [isExpanded, setIsExpanded] = useState(false);
   const exportButtonRef = React.useRef<HTMLButtonElement>(null);
   const { isShareModalOpen, shareId, openShareModal, closeShareModal } = useShareCalendar();
@@ -226,20 +226,15 @@ export function BottomToolbar({ onExport, onFormatChange, onSettings, selectedFo
             {/* Second Divider */}
             <div className="h-6 w-px bg-gradient-to-b from-transparent via-gray-300/60 to-transparent mx-4"></div>
             
-            {/* Settings Button */}
+            {/* Save Schedule Button */}
             <button
-              onClick={() => {
-                handlePanelChange(expandedPanel === 'settings' ? null : 'settings');
-                if (expandedPanel !== 'settings') {
-                  onSettings();
-                }
-              }}
+              onClick={onSaveSchedule}
               className="p-2 rounded-xl hover:bg-white/60 hover:shadow-lg hover:shadow-orange-500/10 
                 hover:scale-105 active:scale-95 transition-all duration-200 ease-out group
                 focus:outline-none focus:ring-2 focus:ring-orange-500/50 focus:ring-offset-2 focus:ring-offset-white/80
                 flex-1"
-              aria-label="Saved Schedules - View and manage your saved schedules"
-              title="View and manage your saved rotation schedules"
+              aria-label="Save Schedule - Save current calendar to your device"
+              title="Save current rotation schedule to your device"
             >
               <BookmarkCheck className="w-5 h-5 text-gray-700 group-hover:text-orange-500 group-hover:scale-110 
                 transition-all duration-200 ease-out mx-auto" />
