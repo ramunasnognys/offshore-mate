@@ -687,6 +687,7 @@ export default function Home() {
                   onSettings={() => {
                     setShowSettings(true);
                   }}
+                  onSaveSchedule={handleSaveSchedule}
                   isDownloading={isDownloading}
                 />
               )}

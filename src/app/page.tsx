@@ -180,6 +180,7 @@ function HomeContent() {
             onFormatChange={setExportFormat}
             onExport={handleExport}
             onSaveSchedule={handleSaveSchedule}
+            onSettings={() => {}}
             isDownloading={isDownloading}
             onExpandedChange={setIsExportPanelExpanded}
             expandedPanel={expandedPanel}
