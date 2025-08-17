@@ -32,8 +32,6 @@ export function EnhancedDatePickerDialog({
 
   const handleTodayClick = () => {
     onMonthChange(today) // Navigate to current month
-    onDateSelect(today)  // Select today's date
-    onClose()
   }
 
   const handleClearClick = () => {
@@ -78,7 +76,10 @@ export function EnhancedDatePickerDialog({
       }}
     >
       {/* Enhanced glassmorphic overlay */}
-      <div className="absolute inset-0 bg-gradient-to-br from-slate-900/30 via-purple-900/20 to-slate-900/30 backdrop-blur-lg" />
+      <div 
+        className="absolute inset-0 bg-gradient-to-br from-slate-900/30 via-purple-900/20 to-slate-900/30 backdrop-blur-lg" 
+        onClick={onClose}
+      />
       
       {/* Modal content */}
       <div 
@@ -96,7 +97,7 @@ export function EnhancedDatePickerDialog({
         {/* Close button */}
         <button
           onClick={onClose}
-          className="absolute right-4 top-4 p-2.5 rounded-full bg-white/20 backdrop-blur-sm hover:bg-white/30 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 transition-all duration-300 hover:scale-105"
+          className="absolute -right-3 -top-3 p-2.5 rounded-full bg-white/20 backdrop-blur-sm hover:bg-white/30 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 transition-all duration-300 hover:scale-105"
           aria-label="Close calendar"
         >
           <X className="h-5 w-5 text-slate-600" />
@@ -118,7 +119,7 @@ export function EnhancedDatePickerDialog({
             onClick={handleClearClick}
             className="flex-1 px-4 py-2 bg-white/60 backdrop-blur-sm text-slate-600 font-medium text-sm rounded-xl border border-white/40 hover:bg-white/80 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 transition-all duration-300 hover:scale-105 active:scale-95"
           >
-            Clear
+            Cancel
           </button>
           <button
             onClick={handleTodayClick}
