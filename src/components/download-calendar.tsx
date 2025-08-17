@@ -142,7 +142,7 @@ export function DownloadCalendar({ calendar }: DownloadCalendarProps) {
                   </div>
                 ))}
                 
-                {Array.from({ length: month.firstDayOfWeek === 0 ? 6 : month.firstDayOfWeek - 1 }).map((_, index) => (
+                {Array.from({ length: (month.firstDayOfWeek - 1) % 7 }).map((_, index) => (
                   <div key={`empty-${index}`} style={{ aspectRatio: '1' }} />
                 ))}
                 

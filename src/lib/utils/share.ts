@@ -59,9 +59,18 @@ export const compressCalendarData = (schedule: SavedSchedule): string => {
           let dateString: string
           try {
             if (day.date instanceof Date) {
-              dateString = day.date.toISOString().split('T')[0]
+              // Use local date formatting to avoid timezone shift
+              const year = day.date.getFullYear()
+              const month = String(day.date.getMonth() + 1).padStart(2, '0')
+              const dayOfMonth = String(day.date.getDate()).padStart(2, '0')
+              dateString = `${year}-${month}-${dayOfMonth}`
             } else if (typeof day.date === 'string') {
-              dateString = new Date(day.date).toISOString().split('T')[0]
+              // Parse string date in local timezone and reformat
+              const parsedDate = new Date(day.date)
+              const year = parsedDate.getFullYear()
+              const month = String(parsedDate.getMonth() + 1).padStart(2, '0')
+              const dayOfMonth = String(parsedDate.getDate()).padStart(2, '0')
+              dateString = `${year}-${month}-${dayOfMonth}`
             } else {
               throw new Error('Invalid date format')
             }

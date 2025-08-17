@@ -199,11 +199,15 @@ function SharedCalendarRenderer({ schedule }: { schedule: SavedSchedule }) {
               
               try {
                 const dayDate = day.date instanceof Date ? day.date : new Date(day.date)
+                if (isNaN(dayDate.getTime())) {
+                  throw new Error('Invalid date')
+                }
                 isToday = new Date().toDateString() === dayDate.toDateString()
                 dayNumber = dayDate.getDate().toString()
               } catch (error) {
                 console.error('Error processing date for day:', day, error)
-                dayNumber = '?'
+                // Use a more graceful fallback - show the day index + 1
+                dayNumber = (dayIndex + 1).toString()
               }
               
               return (

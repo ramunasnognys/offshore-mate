@@ -69,7 +69,7 @@ function getDayType(day: CalendarDay): DayType {
 }
 
 function getEmptyDaysCount(firstDayOfWeek: number): number {
-  return firstDayOfWeek === 0 ? 6 : firstDayOfWeek - 1;
+  return (firstDayOfWeek - 1) % 7;
 }
 
 // Utility function to check if a date is today

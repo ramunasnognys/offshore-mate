@@ -87,26 +87,22 @@ export function CalendarDisplay({
     }
   }
 
-  // Calculate the actual rotation pattern being displayed (with weekday adjustment)
-  const displayedRotationPattern = React.useMemo(() => {
+  // Calculate the rotation pattern display and adjustment status together to prevent race conditions
+  const rotationInfo = React.useMemo(() => {
     if (selectedRotation === 'Custom') {
-      // For custom rotations, show the custom label
-      return 'Custom Rotation';
+      return {
+        displayedPattern: 'Custom Rotation',
+        isAdjusted: false
+      };
     }
     
     const config = rotationConfigs[selectedRotation as RotationPattern];
-    if (!config || !selectedDate) return selectedRotation;
-    
-    // Always return the original pattern label, regardless of adjustment
-    return config.label;
-  }, [selectedRotation, selectedDate])
-
-  // Check if weekday adjustment was applied
-  const isAdjusted = React.useMemo(() => {
-    if (selectedRotation === 'Custom' || !selectedDate) return false;
-    
-    const config = rotationConfigs[selectedRotation as RotationPattern];
-    if (!config) return false;
+    if (!config || !selectedDate) {
+      return {
+        displayedPattern: selectedRotation,
+        isAdjusted: false
+      };
+    }
     
     // Calculate if adjustment was made
     const { adjustedWorkDays } = calculateWeekdayAdjustment(
@@ -115,7 +111,10 @@ export function CalendarDisplay({
       config.offDays
     );
     
-    return adjustedWorkDays !== config.workDays;
+    return {
+      displayedPattern: config.label,
+      isAdjusted: adjustedWorkDays !== config.workDays
+    };
   }, [selectedRotation, selectedDate])
 
   return (
@@ -149,8 +148,8 @@ export function CalendarDisplay({
         {/* Rotation Info Badge - Shows dynamic rotation pattern */}
         <div className="flex justify-center">
           <div className="inline-flex items-center bg-white/80 backdrop-blur-sm rounded-full px-4 py-2 shadow-sm border border-gray-200/50">
-            <span className="text-sm font-medium text-gray-800">{displayedRotationPattern}</span>
-            {isAdjusted && (
+            <span className="text-sm font-medium text-gray-800">{rotationInfo.displayedPattern}</span>
+            {rotationInfo.isAdjusted && (
               <span className="ml-2 text-xs text-gray-500">(adjusted for weekday consistency)</span>
             )}
           </div>
@@ -161,7 +160,7 @@ export function CalendarDisplay({
       <ContextualSaveBar
         yearCalendar={yearCalendar}
         scheduleName={scheduleName}
-        selectedRotation={displayedRotationPattern}
+        selectedRotation={rotationInfo.displayedPattern}
         selectedDate={selectedDate}
         currentScheduleId={currentScheduleId}
         isSaved={isSaved}
