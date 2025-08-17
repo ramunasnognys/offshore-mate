@@ -10,6 +10,7 @@ interface BottomToolbarProps {
   onExport: () => void;
   onFormatChange: (format: ExportFormat) => void;
   onSaveSchedule: () => void;
+  onSettings: () => void;
   selectedFormat: ExportFormat;
   isDownloading?: boolean;
   className?: string;
@@ -18,7 +19,7 @@ interface BottomToolbarProps {
   onExpandedPanelChange?: (panel: 'export' | 'settings' | null) => void;
 }
 
-export function BottomToolbar({ onExport, onFormatChange, onSaveSchedule, selectedFormat, isDownloading = false, className = '', onExpandedChange, expandedPanel, onExpandedPanelChange }: BottomToolbarProps) {
+export function BottomToolbar({ onExport, onFormatChange, onSaveSchedule, onSettings, selectedFormat, isDownloading = false, className = '', onExpandedChange, expandedPanel, onExpandedPanelChange }: BottomToolbarProps) {
   const [isExpanded, setIsExpanded] = useState(false);
   const exportButtonRef = React.useRef<HTMLButtonElement>(null);
   const { isShareModalOpen, shareId, openShareModal, closeShareModal } = useShareCalendar();
