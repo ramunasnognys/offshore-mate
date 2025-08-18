@@ -3,6 +3,7 @@ import { Inter } from 'next/font/google'
 import localFont from 'next/font/local'
 import { Analytics } from '@vercel/analytics/react'
 import './globals.css'
+import { getHomepageMetadata } from '@/lib/seo/metadata'
 
 // Load Inter font
 const inter = Inter({ 
@@ -20,10 +21,8 @@ const delaGothic = localFont({
   fallback: ['system-ui', 'arial'], // Provide fallback fonts
 })
 
-export const metadata: Metadata = {
-  title: 'Offshore Calendar',
-  description: 'Generate offshore work rotation schedules',
-}
+// Comprehensive SEO metadata using our enhanced system
+export const metadata: Metadata = getHomepageMetadata()
 
 export const viewport: Viewport = {
   width: 'device-width',
