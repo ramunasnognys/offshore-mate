@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from 'next'
 import { Inter } from 'next/font/google'
 import localFont from 'next/font/local'
+import { Analytics } from '@vercel/analytics/react'
 import './globals.css'
 
 // Load Inter font
@@ -42,6 +43,7 @@ export default function RootLayout({
     <html lang="en" className={`${inter.variable} ${delaGothic.variable}`}>
       <body className={`${inter.className}`}>
         {children}
+        <Analytics />
       </body>
     </html>
   )
