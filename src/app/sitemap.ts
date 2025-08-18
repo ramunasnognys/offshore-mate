@@ -3,7 +3,7 @@ import { SEO_CONFIG, SITEMAP_CONFIG } from '@/lib/seo/constants'
 import { RotationPattern } from '@/types/rotation'
 
 // Define the available rotation patterns
-const ROTATION_PATTERNS: RotationPattern[] = ['14/14', '14/21', '21/21', '28/28'];
+const ROTATION_PATTERNS: RotationPattern[] = ['14/14', '14/21', '28/28'];
 
 /**
  * Generate dynamic sitemap for the Offshore Mate application
