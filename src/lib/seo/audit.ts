@@ -626,7 +626,3 @@ export async function quickSEOAudit(url: string = 'https://offshore-mate.vercel.
   return await auditor.runFullAudit();
 }
 
-/**
- * Export the auditor class for external use
- */
-export { SEOAuditor };

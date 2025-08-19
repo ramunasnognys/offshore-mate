@@ -129,16 +129,6 @@ export function generateRotationFAQSchema(rotationPattern: RotationPattern): FAQ
       }
     ],
     
-    '21/21': [
-      {
-        '@type': 'Question',
-        name: `What is a ${rotationPattern} rotation schedule?`,
-        acceptedAnswer: {
-          '@type': 'Answer',
-          text: 'A 21/21 rotation means 21 consecutive days of work followed by 21 consecutive days off. This pattern is ideal for long-term offshore assignments with equal work and rest periods.'
-        }
-      }
-    ],
     
     '28/28': [
       {
@@ -277,7 +267,7 @@ export function generateLocalBusinessSchema() {
 /**
  * Safely stringify JSON-LD (prevents XSS attacks)
  */
-export function safeJSONLD(schema: any): string {
+export function safeJSONLD(schema: unknown): string {
   return JSON.stringify(schema, null, 2)
     .replace(/\u2028/g, '\\u2028')
     .replace(/\u2029/g, '\\u2029')
@@ -289,7 +279,7 @@ export function safeJSONLD(schema: any): string {
 /**
  * Combine multiple schemas into a single JSON-LD script
  */
-export function combineSchemas(...schemas: any[]): string {
+export function combineSchemas(...schemas: unknown[]): string {
   const combinedSchema = {
     '@context': 'https://schema.org',
     '@graph': schemas

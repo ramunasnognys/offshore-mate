@@ -9,6 +9,12 @@
  * - Performance monitoring
  */
 
+import { SEOAuditResult } from '@/types/seo';
+import { OptimizationResult } from './optimizer';
+import { SEOAuditor } from './audit';
+import { SEOOptimizer } from './optimizer';
+import { SEOValidator, ComprehensiveValidationResult } from './validator';
+
 // Metadata and constants
 export * from './metadata';
 export * from './constants';
@@ -117,7 +123,7 @@ export class SEOManager {
   /**
    * Generate final recommendations
    */
-  private generateFinalRecommendations(auditResult: any, optimizationResult: any, validationResult: any): string[] {
+  private generateFinalRecommendations(auditResult: SEOAuditResult, optimizationResult: OptimizationResult, validationResult: ComprehensiveValidationResult): string[] {
     const recommendations = [];
 
     // Based on remaining validation errors

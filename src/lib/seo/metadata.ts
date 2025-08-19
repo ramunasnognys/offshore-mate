@@ -1,7 +1,6 @@
 import { Metadata } from 'next';
 import { 
   DynamicMetadataProps, 
-  EnhancedMetadata, 
   OpenGraphData, 
   TwitterCardData,
   SEOPageType 
@@ -15,12 +14,8 @@ import { SEO_CONFIG, SEO_TEMPLATES, SOCIAL_CONFIG, IMAGE_OPTIMIZATION } from './
 export function generateMetadata(props: DynamicMetadataProps): Metadata {
   const {
     rotationPattern,
-    startDate,
-    scheduleName,
     scheduleId,
-    pageType,
-    customTitle,
-    customDescription
+    pageType
   } = props;
 
   const baseMetadata = getBaseMetadata(pageType);
@@ -73,12 +68,12 @@ export function generateMetadata(props: DynamicMetadataProps): Metadata {
  * Get base metadata for page type
  */
 function getBaseMetadata(pageType: SEOPageType): Metadata {
-  const template = SEO_TEMPLATES[pageType] || SEO_TEMPLATES.homepage;
+  const template = SEO_TEMPLATES[pageType as keyof typeof SEO_TEMPLATES] || SEO_TEMPLATES.homepage;
   
   return {
     title: {
-      template: template.titleTemplate || `%s | ${SEO_CONFIG.siteName}`,
-      default: template.title || SEO_CONFIG.defaultTitle
+      template: 'titleTemplate' in template ? template.titleTemplate : `%s | ${SEO_CONFIG.siteName}`,
+      default: 'title' in template ? template.title : SEO_CONFIG.defaultTitle
     },
     description: template.description || SEO_CONFIG.defaultDescription,
   };
@@ -230,7 +225,7 @@ function generateKeywords(pageType: SEOPageType, rotationPattern?: RotationPatte
     keywords = keywords.concat(pageKeywords[pageType]);
   }
   
-  return [...new Set(keywords)]; // Remove duplicates
+  return Array.from(new Set(keywords)); // Remove duplicates
 }
 
 /**

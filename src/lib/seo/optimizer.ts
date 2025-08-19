@@ -7,7 +7,7 @@ import {
 } from '@/types/seo';
 import { RotationPattern } from '@/types/rotation';
 import { generateMetadata } from './metadata';
-import { SEO_CONFIG, SEO_TEMPLATES } from './constants';
+import { SEO_CONFIG } from './constants';
 
 /**
  * Automated SEO Optimizer for Offshore Mate
@@ -44,7 +44,7 @@ export class SEOOptimizer {
         errors.push({
           issue: issue.title,
           error: error instanceof Error ? error.message : 'Unknown error',
-          recommendation: issue.fix
+          recommendation: issue.fix || 'No specific fix available'
         });
       }
     }
@@ -63,7 +63,7 @@ export class SEOOptimizer {
 
     const result: OptimizationResult = {
       optimizationsApplied: optimizations.length,
-      errors: errors.length,
+      errorsCount: errors.length,
       optimizations,
       errors,
       nextSteps: this.generateNextSteps(auditResult, optimizations)
@@ -89,8 +89,8 @@ export class SEOOptimizer {
 
     return {
       metadata: optimizedMetadata,
-      improvements: this.identifyMetadataImprovements(baseMetadata, optimizedMetadata),
-      score: this.calculateMetadataScore(optimizedMetadata)
+      improvements: this.identifyMetadataImprovements(baseMetadata as Record<string, unknown>, optimizedMetadata as Record<string, unknown>),
+      score: this.calculateMetadataScore(optimizedMetadata as Record<string, unknown>)
     };
   }
 
@@ -282,7 +282,7 @@ export class SEOOptimizer {
   /**
    * Apply advanced optimizations for enterprise level
    */
-  private async applyAdvancedOptimizations(auditResult: SEOAuditResult): Promise<AppliedOptimization[]> {
+  private async applyAdvancedOptimizations(_auditResult: SEOAuditResult): Promise<AppliedOptimization[]> {
     const optimizations: AppliedOptimization[] = [];
 
     // Advanced schema markup
@@ -327,7 +327,7 @@ export class SEOOptimizer {
   /**
    * Optimize description for SEO
    */
-  private optimizeDescription(description: string, props: DynamicMetadataProps): string {
+  private optimizeDescription(description: string, _props: DynamicMetadataProps): string {
     if (!description) return SEO_CONFIG.defaultDescription;
 
     // Ensure proper length (120-160 characters)
@@ -362,7 +362,7 @@ export class SEOOptimizer {
     }
 
     // Remove duplicates and limit to 10 keywords
-    return [...new Set(optimizedKeywords)].slice(0, 10);
+    return Array.from(new Set(optimizedKeywords)).slice(0, 10);
   }
 
   /**
@@ -531,7 +531,7 @@ export class SEOOptimizer {
   /**
    * Identify metadata improvements
    */
-  private identifyMetadataImprovements(original: any, optimized: any): string[] {
+  private identifyMetadataImprovements(original: Record<string, unknown>, optimized: Record<string, unknown>): string[] {
     const improvements = [];
     
     if (original.title !== optimized.title) {
@@ -542,7 +542,8 @@ export class SEOOptimizer {
       improvements.push('Enhanced meta description with better length and content');
     }
     
-    if (original.keywords?.length !== optimized.keywords?.length) {
+    if (Array.isArray(original.keywords) && Array.isArray(optimized.keywords) && 
+        original.keywords.length !== optimized.keywords.length) {
       improvements.push('Improved keyword selection and relevance');
     }
     
@@ -552,7 +553,7 @@ export class SEOOptimizer {
   /**
    * Calculate metadata score
    */
-  private calculateMetadataScore(metadata: any): number {
+  private calculateMetadataScore(metadata: Record<string, unknown>): number {
     let score = 0;
     const maxScore = 100;
     
@@ -564,14 +565,14 @@ export class SEOOptimizer {
     }
     
     // Description (30 points)
-    if (metadata.description) {
+    if (typeof metadata.description === 'string') {
       const descLength = metadata.description.length;
       if (descLength >= 120 && descLength <= 160) score += 30;
       else if (descLength > 0) score += 15;
     }
     
     // Keywords (20 points)
-    if (metadata.keywords && metadata.keywords.length > 0) {
+    if (Array.isArray(metadata.keywords) && metadata.keywords.length > 0) {
       score += Math.min(20, metadata.keywords.length * 2);
     }
     
@@ -622,7 +623,7 @@ export class SEOOptimizer {
 // Type definitions for optimization results
 export interface OptimizationResult {
   optimizationsApplied: number;
-  errors: number;
+  errorsCount: number;
   optimizations: AppliedOptimization[];
   errors: OptimizationError[];
   nextSteps: string[];
@@ -643,7 +644,7 @@ export interface OptimizationError {
 }
 
 export interface OptimizedMetadata {
-  metadata: any;
+  metadata: Record<string, unknown>;
   improvements: string[];
   score: number;
 }

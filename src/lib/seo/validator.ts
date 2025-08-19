@@ -121,7 +121,7 @@ export class SEOValidator {
       const html = await response.text();
 
       // Extract JSON-LD scripts
-      const jsonLdMatches = html.match(/<script[^>]+type=["\']application\/ld\+json["\'][^>]*>(.*?)<\/script>/gis);
+      const jsonLdMatches = html.match(/<script[^>]+type=["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script>/gi);
       
       if (!jsonLdMatches || jsonLdMatches.length === 0) {
         errors.push('No JSON-LD structured data found');
@@ -416,7 +416,7 @@ export class SEOValidator {
   /**
    * Validate individual schema object
    */
-  private validateSchemaObject(schema: any): SEOValidationResult {
+  private validateSchemaObject(schema: Record<string, unknown>): SEOValidationResult {
     const errors: string[] = [];
     const warnings: string[] = [];
     const suggestions: string[] = [];
@@ -447,7 +447,7 @@ export class SEOValidator {
   /**
    * Validate specific schema types
    */
-  private validateSchemaType(schema: any): SEOValidationResult {
+  private validateSchemaType(schema: Record<string, unknown>): SEOValidationResult {
     const errors: string[] = [];
     const warnings: string[] = [];
     const suggestions: string[] = [];

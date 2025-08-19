@@ -156,7 +156,7 @@ export function ScheduleProductSchema({
 
 // Combined Schema Component for multiple schemas
 interface CombinedSchemaProps extends BaseStructuredDataProps {
-  schemas: any[];
+  schemas: unknown[];
   id: string;
 }
 
@@ -216,7 +216,7 @@ export function RotationPatternSchema({
   const faqSchema = generateRotationFAQSchema(rotationPattern);
   const howToSchema = generateHowToSchema();
   
-  const schemas = [organizationSchema, faqSchema, howToSchema];
+  const schemas: unknown[] = [organizationSchema, faqSchema, howToSchema];
   
   if (breadcrumbs.length > 0) {
     const breadcrumbSchema = generateBreadcrumbSchema(breadcrumbs);
@@ -254,7 +254,7 @@ export function SharedScheduleSchema({
   const productSchema = generateScheduleProductSchema(scheduleName, rotationPattern, scheduleId);
   const faqSchema = generateRotationFAQSchema(rotationPattern);
   
-  const schemas = [organizationSchema, productSchema, faqSchema];
+  const schemas: unknown[] = [organizationSchema, productSchema, faqSchema];
   
   if (breadcrumbs.length > 0) {
     const breadcrumbSchema = generateBreadcrumbSchema(breadcrumbs);
