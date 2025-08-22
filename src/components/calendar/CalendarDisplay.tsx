@@ -118,12 +118,12 @@ export function CalendarDisplay({
         <div className="flex justify-between items-center">
           <button
             onClick={onBack}
-            className="bg-black text-white rounded-full px-4 md:px-6 py-2 md:py-3 text-sm md:text-base font-medium
-              shadow-sm hover:bg-black/90 transition-all duration-200 group inline-flex"
+            className="bg-gradient-to-r from-gray-900 to-black text-white rounded-2xl px-6 md:px-8 py-3 md:py-4 text-sm md:text-base font-semibold
+              shadow-lg hover:shadow-xl hover:from-black hover:to-gray-800 transition-all duration-300 group inline-flex border border-gray-700/20"
             aria-label="Go back to rotation selection"
           >
-            <span className="flex items-center gap-1.5 md:gap-2">
-              <ArrowRight className="w-3.5 h-3.5 md:w-4 md:h-4 rotate-180 group-hover:-translate-x-1 transition-transform" />
+            <span className="flex items-center gap-2 md:gap-3">
+              <ArrowRight className="w-4 h-4 md:w-5 md:h-5 rotate-180 group-hover:-translate-x-1 transition-transform duration-200" />
               Back
             </span>
           </button>
@@ -131,8 +131,9 @@ export function CalendarDisplay({
           {/* Today Button */}
           <button
             onClick={handleTodayClick}
-            className="bg-white/80 backdrop-blur-sm text-gray-700 rounded-full px-4 md:px-6 py-2 md:py-3 text-sm md:text-base font-medium
-              shadow-sm hover:bg-white hover:text-orange-500 transition-all duration-200 border border-gray-200/50 active:scale-95"
+            className="bg-white/90 backdrop-blur-sm text-gray-700 rounded-2xl px-6 md:px-8 py-3 md:py-4 text-sm md:text-base font-semibold
+              shadow-lg hover:shadow-xl hover:bg-white hover:text-orange-500 transition-all duration-300 border border-white/50 active:scale-95
+              hover:border-orange-200"
             aria-label="Jump to today's month"
           >
             Today
@@ -141,8 +142,11 @@ export function CalendarDisplay({
         
         {/* Rotation Info Badge - Shows dynamic rotation pattern */}
         <div className="flex justify-center">
-          <div className="inline-flex items-center bg-white/80 backdrop-blur-sm rounded-full px-4 py-2 shadow-sm border border-gray-200/50">
-            <span className="text-sm font-medium text-gray-800">{rotationInfo.displayedPattern}</span>
+          <div className="inline-flex items-center bg-gradient-to-r from-white/90 to-white/70 backdrop-blur-sm rounded-2xl px-6 py-3 shadow-lg border border-white/40">
+            <div className="flex items-center gap-2">
+              <div className="w-2 h-2 rounded-full bg-gradient-to-r from-blue-500 to-orange-500"></div>
+              <span className="text-sm font-semibold text-gray-800">{rotationInfo.displayedPattern}</span>
+            </div>
           </div>
         </div>
       </div>
