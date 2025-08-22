@@ -1,7 +1,6 @@
 'use client'
 
-import { Calendar as CalendarIcon } from 'lucide-react'
-import { Card, CardContent } from '@/components/ui/card'
+import { Calendar } from 'lucide-react'
 import { DatePicker } from '@/components/date-picker'
 
 interface StartDateCardProps {
@@ -11,20 +10,20 @@ interface StartDateCardProps {
 
 export function StartDateCard({ selectedDate, onDateSelect }: StartDateCardProps) {
   return (
-    <Card className="shadow-lg border-0 bg-white/80 backdrop-blur-sm">
-      <CardContent className="p-6 space-y-4">
-        <div className="flex items-center gap-2">
-          <CalendarIcon className="h-5 w-5 text-slate-600" />
-          <span className="text-sm font-semibold text-slate-700">Start Date</span>
-        </div>
-
-        <div>
-          <DatePicker 
-            date={selectedDate ? new Date(selectedDate) : undefined}
-            onSelect={onDateSelect}
-          />
-        </div>
-      </CardContent>
-    </Card>
+    <div className="p-4 bg-gray-50 border border-gray-200 rounded-xl space-y-3">
+      <div className="flex items-center gap-2">
+        <Calendar className="h-4 w-4 text-gray-600" />
+        <label className="text-gray-600 text-lg font-serif font-semibold tracking-wide">
+          Start Date
+        </label>
+      </div>
+      
+      <div className="p-3 bg-white border border-gray-200 rounded-lg">
+        <DatePicker 
+          date={selectedDate ? new Date(selectedDate) : undefined}
+          onSelect={onDateSelect}
+        />
+      </div>
+    </div>
   )
 }

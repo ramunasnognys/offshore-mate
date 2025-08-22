@@ -1,7 +1,6 @@
 "use client"
 
 import * as React from "react"
-import { Calendar as CalendarIcon } from "lucide-react"
 import { EnhancedDatePickerDialog } from "@/components/calendar/EnhancedDatePickerDialog"
 
 interface DatePickerProps {
@@ -36,12 +35,13 @@ export function DatePicker({ date, onSelect }: DatePickerProps) {
         className="flex items-center w-full hover:bg-white/10 transition-all duration-200 group rounded-2xl md:rounded-3xl"
       >
         <div className="flex-grow text-left">
-          <span className="text-gray-800 text-base md:text-lg font-medium group-hover:text-orange-500 transition-colors">
+          <span className={`font-medium transition-colors ${
+            date 
+              ? 'text-gray-800 text-base md:text-lg group-hover:text-orange-500' 
+              : 'text-gray-500 text-sm md:text-base'
+          }`}>
             {formatDisplayDate(date)}
           </span>
-        </div>
-        <div className="flex items-center justify-center ml-3 md:ml-4">
-          <CalendarIcon className="w-4 h-4 md:w-5 md:h-5 text-gray-400 group-hover:text-orange-500 transition-colors" />
         </div>
       </button>
 

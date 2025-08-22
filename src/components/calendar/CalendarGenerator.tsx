@@ -72,7 +72,7 @@ export function CalendarGenerator({
   }
 
   return (
-    <div className={`${isMobileView ? 'space-y-3' : 'space-y-4 md:space-y-6'}`}>
+    <div className={`${isMobileView ? 'space-y-6' : 'space-y-4 md:space-y-6'}`}>
       <StartDateCard
         selectedDate={selectedDate}
         onDateSelect={handleDateSelect}
@@ -102,9 +102,10 @@ export function CalendarGenerator({
       {/* Generate Button */}
       <button
         onClick={handleGenerateCalendar}
-        className="w-full h-14 text-lg font-semibold bg-slate-800 hover:bg-slate-900 
+        className="w-full h-14 text-base font-semibold bg-gray-900 hover:bg-black 
           text-white shadow-lg hover:shadow-xl transition-all duration-200 
-          disabled:opacity-50 rounded-2xl"
+          disabled:opacity-50 disabled:cursor-not-allowed rounded-2xl mt-8 
+          hover:scale-[1.02] active:scale-[0.98] focus:outline-none focus:ring-4 focus:ring-gray-900/20"
       >
         Generate Schedule
       </button>

@@ -182,14 +182,15 @@ export function SavedSchedulesSettings({
             ? "p-0 max-h-[85vh] w-full max-w-none backdrop-blur-xl bg-white/95" 
             : "max-w-2xl max-h-[80vh] p-0 backdrop-blur-xl bg-white/95 border border-white/30"
           }
+          hideCloseButton
         >
           <div className="flex flex-col h-full">
             {/* Header with glass-morphism effect */}
             <DialogHeader className={`${isMobileView ? 'p-4 pb-3' : 'p-6 pb-4'} border-b border-gray-100 backdrop-blur-xl bg-white/20`}>
-              <div className={`flex items-center ${isMobileView ? 'justify-center' : 'justify-between'}`}>
-                <div className={isMobileView ? 'text-center' : ''}>
+              <div className={`flex items-center ${isMobileView ? 'justify-center' : 'justify-center'}`}>
+                <div className={isMobileView ? 'text-center' : 'text-center'}>
                   <DialogTitle className={`font-semibold text-gray-900 flex items-center gap-2 ${
-                    isMobileView ? 'text-lg justify-center' : 'text-xl'
+                    isMobileView ? 'text-lg justify-center' : 'text-xl justify-center'
                   }`}>
                     <BookmarkCheck className="w-5 h-5 text-orange-500" />
                     Saved Schedules
@@ -205,15 +206,6 @@ export function SavedSchedulesSettings({
                     View, edit, and load your previously saved rotation schedules
                   </DialogDescription>
                 </div>
-                {!isMobileView && (
-                  <button
-                    onClick={closeDialog}
-                    className="p-2 hover:bg-gray-100 rounded-full transition-colors min-w-[44px] min-h-[44px] flex items-center justify-center"
-                    aria-label="Close dialog"
-                  >
-                    <X className="w-5 h-5 text-gray-400" />
-                  </button>
-                )}
               </div>
             </DialogHeader>
 

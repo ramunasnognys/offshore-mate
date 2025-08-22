@@ -214,7 +214,7 @@ function HomeContent() {
               </div>
 
               {!isCalendarGenerated ? (
-                <div className="bg-white/60 backdrop-blur-sm rounded-2xl border border-white/20 shadow-xl p-6">
+                <>
                   <CalendarGenerator
                     onShowSavedSchedules={() => setShowSavedSchedules(true)}
                     hasStorageSupport={isClient && isStorageSupported}
@@ -226,7 +226,7 @@ function HomeContent() {
                     isOpen={showSavedSchedules}
                     onOpenChange={setShowSavedSchedules}
                   />
-                </div>
+                </>
               ) : (
                 <div className={`${isMobileView === true ? 'bg-white/50 backdrop-blur-sm rounded-xl border border-white/20 shadow-lg p-4' : ''}`}>
                   <CalendarDisplay
