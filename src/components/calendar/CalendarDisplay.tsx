@@ -141,10 +141,10 @@ export function CalendarDisplay({
         
         {/* Rotation Info Badge - Shows dynamic rotation pattern */}
         <div className="flex justify-center">
-          <div className="inline-flex items-center bg-gradient-to-r from-white/90 to-white/70 backdrop-blur-sm rounded-2xl px-6 py-3 shadow-lg border border-white/40">
+          <div className="inline-flex items-center bg-white/30 backdrop-blur-sm rounded-xl px-4 py-2 shadow-sm border border-white/20">
             <div className="flex items-center gap-2">
-              <div className="w-2 h-2 rounded-full bg-gradient-to-r from-blue-500 to-orange-500"></div>
-              <span className="text-sm font-semibold text-gray-800">{rotationInfo.displayedPattern}</span>
+              <div className="w-1.5 h-1.5 rounded-full bg-gradient-to-r from-blue-400/70 to-orange-400/70"></div>
+              <span className="text-xs font-medium text-gray-500">{rotationInfo.displayedPattern}</span>
             </div>
           </div>
         </div>
