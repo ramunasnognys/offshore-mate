@@ -38,19 +38,37 @@ interface RotationOptionButtonProps {
 
 function RotationOptionButton({ option, isSelected, onClick }: RotationOptionButtonProps) {
   return (
-    <button
-      onClick={onClick}
-      className={`p-4 rounded-xl transition-all duration-200 text-left ${
-        isSelected
-          ? "bg-gray-900 text-white shadow-lg"
-          : "bg-gray-50 hover:bg-gray-100 border border-gray-200 hover:border-gray-300"
-      }`}
-    >
-      <div className="font-semibold text-base">{option.label}</div>
-      <div className={`text-xs mt-1 ${isSelected ? "text-gray-300" : "text-gray-500"}`}>
-        {option.description}
+    <label className="flex items-center justify-between p-4 rounded-xl bg-white border border-gray-200 hover:border-gray-300 transition-all duration-200 cursor-pointer">
+      <div className="flex-1">
+        <div className="font-semibold text-base text-gray-800">
+          {option.label}
+        </div>
+        <div className="text-sm text-gray-500 mt-1">
+          {option.description}
+        </div>
       </div>
-    </button>
+      <div className="ml-4">
+        <input
+          type="radio"
+          name="workRotation"
+          value={option.value}
+          checked={isSelected}
+          onChange={() => onClick()}
+          className="sr-only"
+        />
+        <div className={`w-5 h-5 rounded-full border-2 transition-all ${
+          isSelected 
+            ? 'border-orange-500 bg-orange-500' 
+            : 'border-gray-300'
+        } relative`}>
+          {isSelected && (
+            <div className="absolute inset-0 flex items-center justify-center">
+              <div className="w-2 h-2 bg-white rounded-full" />
+            </div>
+          )}
+        </div>
+      </div>
+    </label>
   )
 }
 
