@@ -187,7 +187,7 @@ This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md
 
 For support, please:
 - Open an issue on GitHub
-- Contact the developer at [developer@email.com](mailto:developer@email.com)
+- Contact us at [offshoremate.app@gmail.com](mailto:offshoremate.app@gmail.com)
 - Visit our [website](https://offshore-mate.vercel.app)
 
 ## ⚡ Performance

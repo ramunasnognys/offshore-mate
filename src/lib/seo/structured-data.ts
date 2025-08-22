@@ -25,7 +25,7 @@ export function generateOrganizationSchema(): OrganizationSchema {
     contactPoint: {
       '@type': 'ContactPoint',
       contactType: 'customer service',
-      email: 'support@offshore-mate.com'
+      email: 'offshoremate.app@gmail.com'
     }
   };
 }
@@ -250,7 +250,7 @@ export function generateLocalBusinessSchema() {
     description: SEO_CONFIG.organization.description,
     url: SEO_CONFIG.siteUrl,
     telephone: '+1-555-OFFSHORE',
-    email: 'support@offshore-mate.com',
+    email: 'offshoremate.app@gmail.com',
     address: {
       '@type': 'PostalAddress',
       addressCountry: 'US'

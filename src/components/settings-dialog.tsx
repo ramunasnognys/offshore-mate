@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { Save, Edit3, Check, Settings } from 'lucide-react';
+import { Save, Edit3, Check, Settings, Mail } from 'lucide-react';
 import {
   Dialog,
   DialogContent,
@@ -155,9 +155,28 @@ export function SettingsDialog({
           
           {/* Future settings sections can be added here */}
           <div className="border-t border-gray-200/50 pt-4">
-            <p className="text-sm text-gray-500 text-center">
+            <p className="text-sm text-gray-500 text-center mb-4">
               More settings coming soon...
             </p>
+            
+            {/* Feedback Section */}
+            <div className="p-3 rounded-xl bg-green-50 border border-green-200">
+              <div className="flex items-center gap-2 mb-2">
+                <Mail className="w-4 h-4 text-green-600" />
+                <h4 className="font-medium text-green-700 text-sm">Have suggestions?</h4>
+              </div>
+              <p className="text-xs text-green-600 mb-3">
+                Your feedback helps us improve Offshore Mate.
+              </p>
+              <a 
+                href="mailto:offshoremate.app@gmail.com?subject=Offshore Mate Feedback&body=Hi! I have some feedback about Offshore Mate:%0D%0A%0D%0A[Please describe your suggestion, bug report, or feature request here]%0D%0A%0D%0AThanks!"
+                className="inline-flex items-center gap-1.5 text-xs font-medium text-green-700 hover:text-green-800 transition-colors underline underline-offset-2 hover:underline-offset-4"
+                aria-label="Send feedback email to Offshore Mate team"
+              >
+                <Mail className="w-3 h-3" aria-hidden="true" />
+                offshoremate.app@gmail.com
+              </a>
+            </div>
           </div>
         </div>
       </DialogContent>
