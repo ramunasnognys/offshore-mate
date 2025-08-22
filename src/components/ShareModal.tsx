@@ -31,6 +31,8 @@ export function ShareModal({ isOpen, onClose, scheduleId }: ShareModalProps) {
     if (isOpen && yearCalendar && yearCalendar.length > 0) {
       const generateShortUrl = async () => {
         setIsGeneratingUrl(true)
+        let longUrl = ''
+        
         try {
           // Create a SavedSchedule object from current calendar data
           const schedule: SavedSchedule = {
@@ -47,7 +49,7 @@ export function ShareModal({ isOpen, onClose, scheduleId }: ShareModalProps) {
           }
           
           // Generate long URL first (existing functionality)
-          const longUrl = shareUtils.generateShareUrl(scheduleId, schedule)
+          longUrl = shareUtils.generateShareUrl(scheduleId, schedule)
           
           // Attempt to shorten the URL
           const result = await shareUtils.shortenUrl(longUrl)
@@ -62,8 +64,14 @@ export function ShareModal({ isOpen, onClose, scheduleId }: ShareModalProps) {
           
         } catch (error) {
           console.error('Error generating share URL:', error)
-          setErrorMessage('Failed to generate share link. Please try again.')
-          setShareUrl('')
+          // Fallback to long URL if we have it, otherwise show error
+          if (longUrl) {
+            setShareUrl(longUrl)
+            console.warn('URL shortening failed, using long URL as fallback')
+          } else {
+            setErrorMessage('Failed to generate share link. Please try again.')
+            setShareUrl('')
+          }
         } finally {
           setIsGeneratingUrl(false)
         }

@@ -12,12 +12,13 @@ import { SavedSchedulesSettings } from '@/components/SavedSchedulesSettings'
 import { useMobileDetection } from '@/hooks/useMobileDetection'
 import { useScheduleManagement } from '@/hooks/useScheduleManagement'
 import { useExportCalendar } from '@/hooks/useExportCalendar'
+import { DesktopSidebar } from '@/components/desktop/DesktopSidebar'
 import { RotationPattern } from '@/types/rotation'
 
 function HomeContent() {
   const isMobileView = useMobileDetection()
   const [isClient, setIsClient] = React.useState(false)
-  const [isExportPanelExpanded, setIsExportPanelExpanded] = React.useState(false)
+  const [_isExportPanelExpanded, setIsExportPanelExpanded] = React.useState(false)
   const [expandedPanel, setExpandedPanel] = React.useState<'export' | 'settings' | null>(null)
   
   // Get calendar context
@@ -116,15 +117,15 @@ function HomeContent() {
         onSwitchToPNG={handleUsePNGInstead}
       />
 
-      <main className={`flex-1 overflow-y-auto flex ${isCalendarGenerated ? 'items-start pt-6' : 'items-center'} justify-center p-4 md:p-8 safe-area-inset-x ${isMobileView !== false ? 'mobile-safe-top' : ''} ${isCalendarGenerated && isMobileView === true ? 'has-bottom-toolbar' : ''} ${isCalendarGenerated && isMobileView === true && isExportPanelExpanded ? 'pb-96' : ''}`} 
-        style={{
-          ...(isCalendarGenerated && isMobileView === true ? { 
-            paddingBottom: isExportPanelExpanded ? '24rem' : 'calc(var(--bottom-toolbar-total-height) + var(--bottom-toolbar-buffer))',
-            WebkitOverflowScrolling: 'touch'
-          } : {})
-        }}>
+      <div className={`${isCalendarGenerated ? 'lg:grid lg:grid-cols-[1fr_320px] lg:gap-8 lg:max-w-screen-lg lg:mx-auto lg:p-8' : 'flex items-center justify-center min-h-[calc(100dvh-200px)]'}`}>
+        <main className={`flex-1 overflow-y-auto flex ${isCalendarGenerated ? 'items-start pt-6' : 'items-center'} justify-center p-4 md:p-8 lg:p-0 safe-area-inset-x ${isMobileView !== false ? 'mobile-safe-top' : ''} ${isCalendarGenerated && isMobileView === true ? 'has-bottom-toolbar' : ''}`} 
+          style={{
+            ...(isCalendarGenerated && isMobileView === true ? { 
+              WebkitOverflowScrolling: 'touch'
+            } : {})
+          }}>
 
-      <div className="relative w-full max-w-[500px]">
+        <div className="relative w-full max-w-[500px]">
         <div className={`${isCalendarGenerated && isMobileView === true ? 'mb-4 pt-2' : 'mb-8 md:mb-12'} ${isMobileView !== false ? 'pt-safe' : ''}`}>
           <h1 className={`font-display text-center text-gray-800 ${
             isCalendarGenerated && isMobileView === true 
@@ -169,8 +170,14 @@ function HomeContent() {
             <p className="tracking-wide">Version v.2</p>
           </div>
         )}
+        </div>
+        </main>
+
+        {/* Desktop Sidebar */}
+        {isCalendarGenerated && isMobileView === false && (
+          <DesktopSidebar />
+        )}
       </div>
-      </main>
 
       {/* Bottom Toolbar - Mobile only */}
       {isCalendarGenerated && isMobileView === true && (
