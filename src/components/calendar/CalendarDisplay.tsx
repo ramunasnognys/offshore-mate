@@ -1,7 +1,7 @@
 'use client'
 
 import React from 'react'
-import { ArrowRight } from 'lucide-react'
+import { Home, Calendar } from 'lucide-react'
 import { ScheduleList } from '@/components/schedule-list'
 import { DownloadCalendar } from '@/components/download-calendar'
 import { SavedSchedulesSettings } from '@/components/SavedSchedulesSettings'
@@ -19,7 +19,7 @@ interface CalendarDisplayProps {
 }
 
 export function CalendarDisplay({ 
-  onBack,
+  onBack: _onBack,
   isStorageAvailable: _isStorageAvailable 
 }: CalendarDisplayProps) {
   const {
@@ -63,23 +63,11 @@ export function CalendarDisplay({
     currentMonthIndex,
     goToPreviousMonth,
     goToNextMonth,
-    goToToday
+    goToToday: _goToToday
   } = useMonthNavigation({ 
     yearCalendar, 
     initialMonthIndex: findCurrentMonthIndex(yearCalendar) 
   })
-
-  const handleTodayClick = () => {
-    goToToday()
-    
-    // Smooth scroll to today's month on desktop
-    if (isMobileView === false && yearCalendar.length > 0) {
-      const monthElement = document.querySelector(
-        `[aria-labelledby*="${yearCalendar[currentMonthIndex]?.month}-${yearCalendar[currentMonthIndex]?.year}"]`
-      )
-      monthElement?.scrollIntoView({ behavior: 'smooth', block: 'center' })
-    }
-  }
 
   // Calculate the rotation pattern display and adjustment status together to prevent race conditions
   const rotationInfo = React.useMemo(() => {
@@ -113,31 +101,20 @@ export function CalendarDisplay({
 
   return (
     <div className={`space-y-6 md:space-y-8 ${isMobileView === true ? 'mobile-calendar-container' : ''}`}>
-      {/* Header with Back Button and Today Button */}
+      {/* Header with Back and Today Text Elements */}
       <div className="flex flex-col gap-3">
         <div className="flex justify-between items-center">
-          <button
-            onClick={onBack}
-            className="bg-gradient-to-r from-gray-900 to-black text-white rounded-2xl px-6 md:px-8 py-3 md:py-4 text-sm md:text-base font-semibold
-              shadow-lg hover:shadow-xl hover:from-black hover:to-gray-800 transition-all duration-300 group inline-flex border border-gray-700/20"
-            aria-label="Go back to rotation selection"
-          >
-            <span className="flex items-center gap-2 md:gap-3">
-              <ArrowRight className="w-4 h-4 md:w-5 md:h-5 rotate-180 group-hover:-translate-x-1 transition-transform duration-200" />
-              Back
-            </span>
-          </button>
+          {/* Back Text Element */}
+          <div className="inline-flex items-center gap-2 md:gap-3 text-gray-600">
+            <Home className="w-4 h-4 md:w-5 md:h-5" />
+            <span className="text-sm md:text-base font-medium">Back</span>
+          </div>
           
-          {/* Today Button */}
-          <button
-            onClick={handleTodayClick}
-            className="bg-white/90 backdrop-blur-sm text-gray-700 rounded-2xl px-6 md:px-8 py-3 md:py-4 text-sm md:text-base font-semibold
-              shadow-lg hover:shadow-xl hover:bg-white hover:text-orange-500 transition-all duration-300 border border-white/50 active:scale-95
-              hover:border-orange-200"
-            aria-label="Jump to today's month"
-          >
-            Today
-          </button>
+          {/* Today Text Element */}
+          <div className="inline-flex items-center gap-2 md:gap-3 text-gray-600">
+            <Calendar className="w-4 h-4 md:w-5 md:h-5" />
+            <span className="text-sm md:text-base font-medium">Today</span>
+          </div>
         </div>
         
         {/* Rotation Info Badge - Shows dynamic rotation pattern */}
