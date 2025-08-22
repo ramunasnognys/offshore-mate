@@ -9,6 +9,7 @@ import { NotificationManager } from '@/components/common/NotificationManager'
 import { SavedSchedules } from '@/components/saved-schedules'
 import { BottomToolbar } from '@/components/bottom-toolbar'
 import { SavedSchedulesSettings } from '@/components/SavedSchedulesSettings'
+import { DesktopSidebar } from '@/components/desktop/DesktopSidebar'
 import { useMobileDetection } from '@/hooks/useMobileDetection'
 import { useScheduleManagement } from '@/hooks/useScheduleManagement'
 import { useExportCalendar } from '@/hooks/useExportCalendar'
@@ -116,7 +117,7 @@ function HomeContent() {
         onSwitchToPNG={handleUsePNGInstead}
       />
 
-      <main className={`flex-1 overflow-y-auto flex ${isCalendarGenerated ? 'items-start pt-6' : 'items-center'} justify-center p-4 md:p-8 safe-area-inset-x ${isMobileView !== false ? 'mobile-safe-top' : ''} ${isCalendarGenerated && isMobileView === true ? 'has-bottom-toolbar' : ''} ${isCalendarGenerated && isMobileView === true && isExportPanelExpanded ? 'pb-96' : ''}`} 
+      <main className={`flex-1 overflow-y-auto ${isCalendarGenerated ? 'items-start pt-6' : 'items-center'} p-4 md:p-8 safe-area-inset-x ${isMobileView !== false ? 'mobile-safe-top' : ''} ${isCalendarGenerated && isMobileView === true ? 'has-bottom-toolbar' : ''} ${isCalendarGenerated && isMobileView === true && isExportPanelExpanded ? 'pb-96' : ''} ${isCalendarGenerated && isMobileView === false ? 'flex' : 'flex justify-center'}`} 
         style={{
           ...(isCalendarGenerated && isMobileView === true ? { 
             paddingBottom: isExportPanelExpanded ? '24rem' : 'calc(var(--bottom-toolbar-total-height) + var(--bottom-toolbar-buffer))',
@@ -124,7 +125,48 @@ function HomeContent() {
           } : {})
         }}>
 
-      <div className="relative w-full max-w-[500px]">
+      {/* Desktop Layout - Two Column Grid */}
+      {isCalendarGenerated && isMobileView === false ? (
+        <div className="w-full flex flex-col items-center">
+          {/* Centered Title Section */}
+          <div className="mb-8 md:mb-12">
+            <h1 className="font-display text-center text-gray-800 text-4xl md:text-5xl lg:text-5xl mb-2">
+              Offshore Mate
+            </h1>
+            <p className="text-center text-orange-500 tracking-wide uppercase font-light text-[10px] md:text-sm">
+              Navigate your offshore schedule with precision
+            </p>
+          </div>
+          
+          {/* Centered Two-Column Layout */}
+          <div className="flex gap-6 justify-center">
+            {/* Calendar Column */}
+            <div className="w-[500px] min-w-[500px] flex-shrink-0">
+              <CalendarDisplay
+                onBack={resetCalendar}
+                isStorageAvailable={isClient && isStorageSupported}
+              />
+              
+              {/* Footer */}
+              <div className="mt-8 text-center text-sm text-gray-300 tracking-wide">
+                <p className="tracking-wide">Version v.2</p>
+              </div>
+            </div>
+            
+            {/* Desktop Sidebar */}
+            <DesktopSidebar 
+              exportFormat={exportFormat}
+              onFormatChange={setExportFormat}
+              onExport={handleExport}
+              onSaveSchedule={handleSaveSchedule}
+              isDownloading={isDownloading}
+              onLoadSchedule={loadSchedule}
+            />
+          </div>
+        </div>
+      ) : (
+        /* Mobile Layout - Single Column */
+        <div className="relative w-full max-w-[500px]">
         <div className={`${isCalendarGenerated && isMobileView === true ? 'mb-4 pt-2' : 'mb-8 md:mb-12'} ${isMobileView !== false ? 'pt-safe' : ''}`}>
           <h1 className={`font-display text-center text-gray-800 ${
             isCalendarGenerated && isMobileView === true 
@@ -170,6 +212,7 @@ function HomeContent() {
           </div>
         )}
       </div>
+      )}
       </main>
 
       {/* Bottom Toolbar - Mobile only */}

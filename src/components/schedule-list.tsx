@@ -129,7 +129,7 @@ function DayCell({ day }: DayCellProps) {
           <div className="absolute inset-0 bg-white/10 rounded-md"></div>
         </>
       )}
-      <div className={`w-full h-full flex items-center justify-center rounded-md text-xs md:text-base font-medium min-h-[40px] md:min-h-[52px] relative z-10 ${
+      <div className={`w-full h-full flex items-center justify-center rounded-md text-xs md:text-base font-medium min-h-[32px] md:min-h-[44px] relative z-10 ${
         isCurrentDate ? 'text-white drop-shadow-sm' : ''
       }`}>
         {/* Perfectly centered day number */}
@@ -151,14 +151,14 @@ function CalendarGrid({ month }: CalendarMonthProps) {
   
   return (
     <div 
-      className="flex-grow grid grid-cols-7 gap-0.5 md:gap-2 content-start"
+      className="flex-grow grid grid-cols-7 gap-0.5 md:gap-1.5 content-start"
       role="grid"
       aria-label={`Calendar for ${month.month} ${month.year}`}
     >
       <WeekdayHeaders />
       
       {Array.from({ length: emptyDaysCount }).map((_, index) => (
-        <div key={`empty-${index}`} className="aspect-square min-h-[40px] md:min-h-[52px]" role="gridcell" aria-hidden="true" />
+        <div key={`empty-${index}`} className="aspect-square min-h-[32px] md:min-h-[44px]" role="gridcell" aria-hidden="true" />
       ))}
       
       {month.days.map((day, index) => (
@@ -171,10 +171,10 @@ function CalendarGrid({ month }: CalendarMonthProps) {
 
 function CalendarLegend() {
   return (
-    <div className="grid grid-cols-3 gap-1 md:gap-2 mt-3 md:mt-4 pt-2 md:pt-3 border-t border-gray-200/30">
+    <div className="grid grid-cols-3 gap-1 md:gap-2 mt-2 md:mt-3 pt-2 md:pt-2 border-t border-gray-200/30">
       {LEGEND_CONFIG.map((item) => (
         <div key={item.type} className="flex flex-col items-center gap-1 text-center">
-          <div className={`w-6 h-6 md:w-10 md:h-10 rounded-lg ${item.className} flex items-center justify-center`}>
+          <div className={`w-5 h-5 md:w-8 md:h-8 rounded-lg ${item.className} flex items-center justify-center`}>
             {item.icon}
           </div>
           <span className="text-[8px] md:text-xs text-gray-600 font-medium leading-tight">
@@ -189,7 +189,7 @@ function CalendarLegend() {
 function CalendarMonth({ month, isMobile, isFirst, isLast, onNavigate }: CalendarMonthProps) {
   return (
     <div 
-      className={`backdrop-blur-xl bg-white rounded-3xl border border-white/20 shadow-lg p-3 md:p-6 pb-3 md:pb-6 ${isMobile ? 'mb-6' : ''}`}
+      className={`backdrop-blur-xl bg-white rounded-3xl border border-white/20 shadow-lg p-2 md:p-4 pb-2 md:pb-4 ${isMobile ? 'mb-6' : ''}`}
       role="region"
       aria-labelledby={`month-${month.month}-${month.year}`}
     >
@@ -252,7 +252,7 @@ function CalendarMonth({ month, isMobile, isFirst, isLast, onNavigate }: Calenda
           // Desktop header (unchanged)
           <h3 
             id={`month-${month.month}-${month.year}`}
-            className="text-lg md:text-xl font-bold text-gray-800 mb-4 md:mb-6 text-center font-serif"
+            className="text-lg md:text-xl font-bold text-gray-800 mb-3 md:mb-4 text-center font-serif"
           >
             {month.month} {month.year}
           </h3>
