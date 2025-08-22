@@ -119,7 +119,7 @@ export function CalendarDisplay({
           {/* Back Button */}
           <button
             onClick={onBack}
-            className="inline-flex items-center gap-2 md:gap-3 text-gray-600 hover:text-gray-800 transition-all duration-200 group cursor-pointer
+            className="inline-flex items-center gap-2 md:gap-3 text-gray-600 hover:text-orange-500 transition-all duration-200 group cursor-pointer
               hover:scale-105 active:scale-95"
             aria-label="Go back to rotation selection"
           >
