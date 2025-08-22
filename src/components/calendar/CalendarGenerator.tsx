@@ -9,7 +9,6 @@ import { useUI } from '@/contexts/UIContext'
 import { useMobileDetection } from '@/hooks/useMobileDetection'
 import { RotationPattern } from '@/types/rotation'
 import { getAllScheduleMetadata } from '@/lib/utils/storage'
-import { Waves } from 'lucide-react'
 
 interface CalendarGeneratorProps {
   onShowSavedSchedules: () => void
@@ -106,10 +105,9 @@ export function CalendarGenerator({
           onClick={handleGenerateCalendar}
           className="generate-button w-2/3 h-14 text-white text-lg font-bold rounded-full
             disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:transform-none
-            focus:outline-none flex items-center justify-center gap-4 tracking-wide"
+            focus:outline-none flex items-center justify-center tracking-wide"
           disabled={!selectedDate || !selectedRotation}
         >
-          <Waves className="h-6 w-6" aria-hidden="true" />
           Generate Schedule
         </button>
       </div>

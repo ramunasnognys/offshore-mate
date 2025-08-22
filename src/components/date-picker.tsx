@@ -13,7 +13,7 @@ export function DatePicker({ date, onSelect }: DatePickerProps) {
   const [currentMonth, setCurrentMonth] = React.useState(date || new Date())
 
   const formatDisplayDate = (date: Date | undefined) => {
-    if (!date) return 'Pick your start date'
+    if (!date) return 'Pick a start date'
     return date.toLocaleDateString('en-US', {
       month: 'long',
       day: 'numeric',
@@ -37,8 +37,8 @@ export function DatePicker({ date, onSelect }: DatePickerProps) {
         <div className="flex-grow text-left">
           <span className={`font-medium transition-colors ${
             date 
-              ? 'text-gray-800 text-base md:text-lg group-hover:text-orange-500' 
-              : 'text-gray-500 text-sm md:text-base'
+              ? 'text-gray-800 text-sm group-hover:text-orange-500' 
+              : 'text-gray-500 text-sm'
           }`}>
             {formatDisplayDate(date)}
           </span>
