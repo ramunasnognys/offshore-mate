@@ -72,7 +72,7 @@ export function SettingsTab() {
           <h4 className="font-medium text-green-700">Have suggestions?</h4>
         </div>
         <p className="text-xs text-green-600 mb-3">
-          We're constantly improving Offshore Mate. Your feedback helps us prioritize new features and improvements.
+          We&apos;re constantly improving Offshore Mate. Your feedback helps us prioritize new features and improvements.
         </p>
         <a 
           href="mailto:offshoremate.app@gmail.com?subject=Offshore Mate Feedback&body=Hi! I have some feedback about Offshore Mate:%0D%0A%0D%0A[Please describe your suggestion, bug report, or feature request here]%0D%0A%0D%0AThanks!"

@@ -7,7 +7,6 @@ import { SaveTab } from './tabs/SaveTab'
 import { SettingsTab } from './tabs/SettingsTab'
 import { useUI } from '@/contexts/UIContext'
 import { ExportFormat } from '@/hooks/useExportCalendar'
-import { SavedSchedule } from '@/lib/utils/storage'
 
 interface DesktopSidebarProps {
   exportFormat: ExportFormat

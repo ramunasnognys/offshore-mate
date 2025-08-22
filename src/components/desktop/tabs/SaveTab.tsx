@@ -10,7 +10,6 @@ import { ShareModal } from '@/components/ShareModal'
 import { ScheduleMetadata, getAllScheduleMetadataSorted, deleteSchedule } from '@/lib/utils/storage'
 import { useScheduleManagement } from '@/hooks/useScheduleManagement'
 import { formatDistanceToNow } from 'date-fns'
-import { SavedSchedule } from '@/lib/utils/storage'
 
 interface SaveTabProps {
   onSaveSchedule: () => void
