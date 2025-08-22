@@ -27,6 +27,10 @@ interface UIContextType {
   // Saved schedules editing state
   editingScheduleId: string | null
   setEditingScheduleId: (id: string | null) => void
+
+  // Desktop specific state
+  activeDesktopTab: 'export' | 'save' | 'settings'
+  setActiveDesktopTab: (tab: 'export' | 'save' | 'settings') => void
 }
 
 const UIContext = createContext<UIContextType | undefined>(undefined)
@@ -39,6 +43,7 @@ export function UIProvider({ children }: { children: ReactNode }) {
   const [isDownloading, setIsDownloading] = useState(false)
   const [isSaving, setIsSaving] = useState(false)
   const [editingScheduleId, setEditingScheduleId] = useState<string | null>(null)
+  const [activeDesktopTab, setActiveDesktopTab] = useState<'export' | 'save' | 'settings'>('export')
 
   const clearError = useCallback(() => {
     setErrorMessage('')
@@ -59,7 +64,9 @@ export function UIProvider({ children }: { children: ReactNode }) {
     isSaving,
     setIsSaving,
     editingScheduleId,
-    setEditingScheduleId
+    setEditingScheduleId,
+    activeDesktopTab,
+    setActiveDesktopTab
   }
 
   return (
