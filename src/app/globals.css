@@ -565,3 +565,55 @@
     }
   }
 }
+
+/* New Generate Schedule Button - Offshore Mate Orange and Blue Gradient */
+.generate-button {
+  @apply relative overflow-hidden;
+  /* Premium bright gradient - Ultra bright Blue to Orange for luxury design */
+  background: linear-gradient(135deg, #2563EB 0%, #3B82F6 25%, #F97316 75%, #FF6B35 100%);
+  background-size: 200% 200%;
+  animation: generateGradientShift 3s ease-in-out infinite;
+  
+  /* Premium shadow system with bright colors and subtle glow */
+  box-shadow: 
+    0 4px 14px 0 rgba(37, 99, 235, 0.35),
+    0 8px 20px 0 rgba(249, 115, 22, 0.25),
+    0 12px 28px 0 rgba(255, 107, 53, 0.15),
+    0 0 40px 0 rgba(59, 130, 246, 0.1);
+    
+  /* Smooth luxury transitions */
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.generate-button:hover {
+  transform: translateY(-2px) scale(1.02);
+  /* Enhanced premium hover glow */
+  box-shadow: 
+    0 6px 20px 0 rgba(37, 99, 235, 0.4),
+    0 12px 28px 0 rgba(249, 115, 22, 0.3),
+    0 18px 36px 0 rgba(255, 107, 53, 0.2),
+    0 0 50px 0 rgba(59, 130, 246, 0.15);
+}
+
+.generate-button:active {
+  transform: translateY(0px) scale(0.98);
+}
+
+.generate-button:focus {
+  outline: none;
+  box-shadow: 
+    0 6px 20px 0 rgba(37, 99, 235, 0.4),
+    0 12px 28px 0 rgba(249, 115, 22, 0.3),
+    0 18px 36px 0 rgba(255, 107, 53, 0.2),
+    0 0 50px 0 rgba(59, 130, 246, 0.15),
+    0 0 0 4px rgba(37, 99, 235, 0.25);
+}
+
+@keyframes generateGradientShift {
+  0%, 100% { 
+    background-position: 0% 50%; 
+  }
+  50% { 
+    background-position: 100% 50%; 
+  }
+}
