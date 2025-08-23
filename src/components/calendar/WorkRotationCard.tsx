@@ -65,7 +65,7 @@ function RotationOptionButton({ option, isSelected, onClick }: RotationOptionBut
       variant="rotation-selection"
       context={isMobile ? 'mobile' : 'desktop'}
       interactionMode={isMobile ? 'touch' : 'mouse'}
-      importance="primary"
+      importance="secondary"
       rotationType={getRotationType(option.value)}
       adaptiveContrast={true}
       physicsEnabled={false}
@@ -236,7 +236,7 @@ export function WorkRotationCard({
       variant="info-panel"
       context={isMobile ? 'mobile' : 'desktop'}
       interactionMode={isMobile ? 'touch' : 'mouse'}
-      importance="primary"
+      importance="secondary"
       adaptiveContrast={true}
       glassEffect={true}
       ariaLabel="Work rotation pattern selection"

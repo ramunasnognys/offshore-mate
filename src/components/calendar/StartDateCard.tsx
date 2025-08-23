@@ -24,7 +24,7 @@ export function StartDateCard({ selectedDate, onDateSelect }: StartDateCardProps
       variant="date-picker"
       context={isMobile ? 'mobile' : 'desktop'}
       interactionMode={isMobile ? 'touch' : 'mouse'}
-      importance="primary"
+      importance="secondary"
       adaptiveContrast={true}
       glassEffect={true}
       ariaLabel="Start date selection"
@@ -63,16 +63,6 @@ export function StartDateCard({ selectedDate, onDateSelect }: StartDateCardProps
             onSelect={onDateSelect}
           />
         </SmartCard>
-        
-        {/* Selected Date Display */}
-        {selectedDate && (
-          <div className="text-sm text-current/70 text-center p-2 bg-current/5 rounded-lg">
-            <span className="font-medium">Selected: </span>
-            <time dateTime={selectedDate} className="font-semibold text-current">
-              {formattedDate}
-            </time>
-          </div>
-        )}
       </div>
     </SmartCard>
   )
