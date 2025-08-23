@@ -108,9 +108,8 @@ export function CalendarGenerator({
           size="lg"
           icon={<Waves className="h-6 w-6" />}
           onClick={handleGenerateCalendar}
-          disabled={!selectedDate || !selectedRotation}
           ariaDescribedBy="generate-button-description"
-          className="w-2/3"
+          className={isMobileView ? "w-full" : "w-2/3"}
         >
           Generate Schedule
         </GenerateButton>

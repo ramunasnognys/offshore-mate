@@ -10,7 +10,6 @@ interface GenerateButtonProps extends React.ButtonHTMLAttributes<HTMLButtonEleme
   isLoading?: boolean
   icon?: React.ReactNode
   children: React.ReactNode
-  disabled?: boolean
   ariaDescribedBy?: string
 }
 
@@ -20,7 +19,6 @@ export const GenerateButton: React.FC<GenerateButtonProps> = ({
   isLoading = false,
   icon,
   children,
-  disabled,
   ariaDescribedBy,
   className,
   ...props
@@ -53,7 +51,7 @@ export const GenerateButton: React.FC<GenerateButtonProps> = ({
 
   const getResponsiveClasses = () => {
     if (size === 'lg') {
-      return 'md:px-12 md:py-6 md:text-xl px-8 py-4 text-lg' // Responsive for large buttons
+      return 'md:px-12 md:py-6 md:text-xl px-10 py-5 text-base min-w-[280px] md:min-w-[320px]' // Better mobile sizing
     }
     return getSizeClasses()
   }
@@ -64,14 +62,14 @@ export const GenerateButton: React.FC<GenerateButtonProps> = ({
     <button
       className={cn(
         'font-semibold rounded-full border-0 focus-enhanced transition-all duration-300 ease-out',
-        'flex items-center justify-center tracking-wide',
-        'disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100',
+        'flex items-center justify-center tracking-wide whitespace-nowrap',
+        // iOS Safari specific fixes
+        '-webkit-appearance-none appearance-none',
+        'touch-manipulation',
         getVariantClasses(),
         getResponsiveClasses(),
-        disabled && 'generate-button-disabled',
         className
       )}
-      disabled={disabled || isLoading}
       aria-describedby={ariaDescribedBy}
       {...props}
     >
