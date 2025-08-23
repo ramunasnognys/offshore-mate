@@ -126,6 +126,15 @@ export interface SmartCardProps extends BaseCardProps {
   hoverDelay?: number; // milliseconds
   focusDelay?: number; // milliseconds
   
+  // Phase 2 Visual Enhancements
+  phase2Enhanced?: boolean;
+  microInteractions?: boolean;
+  enhancedShadows?: boolean;
+  gradientBackground?: boolean;
+  borderEffects?: boolean;
+  enhancedTypography?: boolean;
+  visualIndicators?: boolean;
+  
   // Contextual adaptation
   environmentalData?: {
     ambientLight?: 'bright' | 'normal' | 'dim';

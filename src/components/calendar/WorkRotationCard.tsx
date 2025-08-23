@@ -71,6 +71,13 @@ function RotationOptionButton({ option, isSelected, onClick }: RotationOptionBut
       physicsEnabled={false}
       magneticHover={!isMobile}
       glassEffect={true}
+      // Phase 2 enhancements
+      phase2Enhanced={true}
+      microInteractions={true}
+      enhancedShadows={true}
+      gradientBackground={true}
+      borderEffects={true}
+      enhancedTypography={true}
       ariaLabel={`${option.label} rotation pattern`}
       ariaDescription={`${option.description}. ${isSelected ? 'Currently selected' : 'Click to select'}`}
       ariaSelected={isSelected}
@@ -239,6 +246,14 @@ export function WorkRotationCard({
       importance="secondary"
       adaptiveContrast={true}
       glassEffect={true}
+      // Phase 2 enhancements
+      phase2Enhanced={true}
+      microInteractions={true}
+      enhancedShadows={true}
+      gradientBackground={true}
+      borderEffects={true}
+      enhancedTypography={true}
+      visualIndicators={true}
       ariaLabel="Work rotation pattern selection"
       ariaDescription="Choose your work rotation schedule from the available options or create a custom pattern"
       className="card-container"

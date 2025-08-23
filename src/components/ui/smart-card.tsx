@@ -72,6 +72,14 @@ export const SmartCard = forwardRef<HTMLDivElement, SmartCardProps>(({
   physicsEnabled = false,
   magneticHover = false,
   glassEffect = true,
+  // Phase 2 enhancements
+  phase2Enhanced = false,
+  microInteractions = false,
+  enhancedShadows = false,
+  gradientBackground = false,
+  borderEffects = false,
+  enhancedTypography = false,
+  visualIndicators = false,
   ariaLabel,
   ariaDescription,
   ariaSelected,
@@ -146,6 +154,15 @@ export const SmartCard = forwardRef<HTMLDivElement, SmartCardProps>(({
       magneticHover && 'card-magnetic',
       adaptiveContrast && 'card-adaptive-contrast',
       
+      // Phase 2 enhancements
+      phase2Enhanced && 'card-phase2-enhanced',
+      microInteractions && 'card-micro-suite',
+      enhancedShadows && 'card-shadow-enhanced',
+      gradientBackground && 'card-gradient-enhanced',
+      borderEffects && 'card-border-enhanced card-border-glow',
+      enhancedTypography && 'card-title-enhanced',
+      visualIndicators && 'card-badge-enhanced',
+      
       // State classes
       state.isSelected && 'card-selected',
       state.isDisabled && 'card-disabled',
@@ -170,6 +187,8 @@ export const SmartCard = forwardRef<HTMLDivElement, SmartCardProps>(({
   }, [
     variant, context, interactionMode, importance, rotationType, dayType,
     glassEffect, physicsEnabled, magneticHover, adaptiveContrast,
+    phase2Enhanced, microInteractions, enhancedShadows, gradientBackground,
+    borderEffects, enhancedTypography, visualIndicators,
     state, cognitiveBias, className
   ]);
 

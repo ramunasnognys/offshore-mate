@@ -27,6 +27,14 @@ export function StartDateCard({ selectedDate, onDateSelect }: StartDateCardProps
       importance="secondary"
       adaptiveContrast={true}
       glassEffect={true}
+      // Phase 2 enhancements
+      phase2Enhanced={true}
+      microInteractions={true}
+      enhancedShadows={true}
+      gradientBackground={true}
+      borderEffects={true}
+      enhancedTypography={true}
+      visualIndicators={true}
       ariaLabel="Start date selection"
       ariaDescription={`Select the start date for your rotation. Currently selected: ${formattedDate}`}
       className="card-container"
