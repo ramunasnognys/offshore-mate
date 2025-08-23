@@ -1,9 +1,11 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
+import { Waves } from 'lucide-react'
 import { StartDateCard } from '@/components/calendar/StartDateCard'
 import { WorkRotationCard } from '@/components/calendar/WorkRotationCard'
 import { SavedSchedulesCard } from '@/components/calendar/SavedSchedulesCard'
+import { GenerateButton } from '@/components/ui/generate-button'
 import { useCalendar } from '@/contexts/CalendarContext'
 import { useUI } from '@/contexts/UIContext'
 import { useMobileDetection } from '@/hooks/useMobileDetection'
@@ -101,15 +103,21 @@ export function CalendarGenerator({
       
       {/* Generate Button */}
       <div className="flex justify-center">
-        <button
+        <GenerateButton
+          variant="primary"
+          size="lg"
+          icon={<Waves className="h-6 w-6" />}
           onClick={handleGenerateCalendar}
-          className="generate-button w-2/3 h-14 text-white text-lg font-bold rounded-full
-            disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:transform-none
-            focus:outline-none flex items-center justify-center tracking-wide"
           disabled={!selectedDate || !selectedRotation}
+          ariaDescribedBy="generate-button-description"
+          className="w-2/3"
         >
           Generate Schedule
-        </button>
+        </GenerateButton>
+        {/* Hidden description for accessibility */}
+        <div id="generate-button-description" className="sr-only">
+          Generate your offshore work schedule based on selected start date and rotation pattern
+        </div>
       </div>
     </div>
   )

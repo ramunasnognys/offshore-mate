@@ -586,54 +586,96 @@
   }
 }
 
-/* New Generate Schedule Button - Offshore Mate Orange and Blue Gradient */
-.generate-button {
+/* Generate Button Styling - Based on buttonstyle.md specification */
+
+/* Primary Generate Button (CTA) */
+.cta-primary {
   @apply relative overflow-hidden;
-  /* Premium bright gradient - Ultra bright Blue to Orange for luxury design */
-  background: linear-gradient(135deg, #2563EB 0%, #3B82F6 25%, #F97316 75%, #FF6B35 100%);
-  background-size: 200% 200%;
-  animation: generateGradientShift 3s ease-in-out infinite;
-  
-  /* Premium shadow system with bright colors and subtle glow */
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  transition: all 0.3s ease;
   box-shadow: 
-    0 4px 14px 0 rgba(37, 99, 235, 0.35),
-    0 8px 20px 0 rgba(249, 115, 22, 0.25),
-    0 12px 28px 0 rgba(255, 107, 53, 0.15),
-    0 0 40px 0 rgba(59, 130, 246, 0.1);
-    
-  /* Smooth luxury transitions */
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    0 4px 14px 0 rgba(102, 126, 234, 0.35),
+    0 8px 20px 0 rgba(118, 75, 162, 0.25),
+    0 12px 28px 0 rgba(102, 126, 234, 0.15);
 }
 
-.generate-button:hover {
+.cta-primary:hover {
   transform: translateY(-2px) scale(1.02);
-  /* Enhanced premium hover glow */
   box-shadow: 
-    0 6px 20px 0 rgba(37, 99, 235, 0.4),
-    0 12px 28px 0 rgba(249, 115, 22, 0.3),
-    0 18px 36px 0 rgba(255, 107, 53, 0.2),
-    0 0 50px 0 rgba(59, 130, 246, 0.15);
+    0 15px 35px rgba(102, 126, 234, 0.4),
+    0 8px 20px 0 rgba(118, 75, 162, 0.3),
+    0 18px 36px 0 rgba(102, 126, 234, 0.2);
 }
 
-.generate-button:active {
-  transform: translateY(0px) scale(0.98);
+.cta-primary:active {
+  transform: translateY(0) scale(0.98);
 }
 
-.generate-button:focus {
+/* Enhanced focus ring */
+.focus-enhanced:focus {
   outline: none;
   box-shadow: 
-    0 6px 20px 0 rgba(37, 99, 235, 0.4),
-    0 12px 28px 0 rgba(249, 115, 22, 0.3),
-    0 18px 36px 0 rgba(255, 107, 53, 0.2),
-    0 0 50px 0 rgba(59, 130, 246, 0.15),
-    0 0 0 4px rgba(37, 99, 235, 0.25);
+    0 15px 35px rgba(102, 126, 234, 0.4),
+    0 8px 20px 0 rgba(118, 75, 162, 0.3),
+    0 18px 36px 0 rgba(102, 126, 234, 0.2),
+    0 0 0 4px rgba(102, 126, 234, 0.25);
 }
 
-@keyframes generateGradientShift {
-  0%, 100% { 
-    background-position: 0% 50%; 
+/* Glass Generate Button */
+.glass-button {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  transition: all 0.3s ease;
+}
+
+.glass-button:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: translateY(-1px);
+}
+
+/* Gradient Generate Button */
+.gradient-purple {
+  background: linear-gradient(135deg, rgb(147, 51, 234) 0%, rgb(79, 70, 229) 100%);
+  transition: all 0.3s ease;
+}
+
+.gradient-purple:hover {
+  transform: scale(1.05);
+  box-shadow: 0 10px 25px rgba(147, 51, 234, 0.25);
+}
+
+/* Disabled state for all generate buttons */
+.generate-button-disabled {
+  background: rgba(148, 163, 184, 0.5) !important;
+  color: rgb(100, 116, 139) !important;
+  cursor: not-allowed !important;
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+/* Loading spinner animation */
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
   }
-  50% { 
-    background-position: 100% 50%; 
+  to {
+    transform: rotate(360deg);
   }
+}
+
+.animate-spin {
+  animation: spin 1s linear infinite;
+}
+
+/* Responsive adjustments for mobile */
+@media (max-width: 768px) {
+  .cta-primary {
+    /* Reduce padding and text size on mobile */
+  }
+}
+
+/* Legacy support - keeping generate-button class for backward compatibility */
+.generate-button {
+  @apply cta-primary;
 }

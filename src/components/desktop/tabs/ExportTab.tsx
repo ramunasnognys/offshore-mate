@@ -2,6 +2,7 @@
 
 import React from 'react'
 import { Download, CalendarPlus } from 'lucide-react'
+import { GenerateButton } from '@/components/ui/generate-button'
 import { ExportFormat } from '@/hooks/useExportCalendar'
 
 interface ExportTabProps {
@@ -106,21 +107,27 @@ export function ExportTab({ selectedFormat, onFormatChange, onExport, isDownload
       </div>
       
       {/* Export Button */}
-      <button
+      <GenerateButton
+        variant="gradient"
+        size="md"
+        icon={<Download className="h-4 w-4" />}
         onClick={onExport}
         disabled={isDownloading}
-        className="w-full bg-black text-white rounded-xl py-3 font-medium flex items-center justify-center gap-2 
-          hover:bg-gray-900 hover:shadow-lg hover:shadow-black/20 hover:scale-[1.02] 
-          active:scale-[0.98] transition-all duration-200 ease-out disabled:opacity-50 disabled:hover:scale-100
-          focus:outline-none focus:ring-2 focus:ring-orange-500/50 focus:ring-offset-2"
+        isLoading={isDownloading}
+        className="w-full"
+        ariaDescribedBy="export-button-description"
       >
-        <Download className={`w-4 h-4 ${isDownloading ? 'animate-bounce' : 'transition-transform duration-200'}`} />
+        Export Calendar
+      </GenerateButton>
+      
+      {/* Hidden description for accessibility */}
+      <div id="export-button-description" className="sr-only">
         {isDownloading ? (
-          selectedFormat === 'ics' ? 'Creating...' : 'Exporting...'
+          selectedFormat === 'ics' ? 'Creating calendar file...' : 'Exporting calendar...'
         ) : (
-          'Export Calendar'
+          `Export calendar in ${selectedFormat.toUpperCase()} format`
         )}
-      </button>
+      </div>
       
       {/* Format Info */}
       <div className="text-xs text-gray-500 space-y-1">
