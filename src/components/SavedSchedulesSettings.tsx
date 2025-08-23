@@ -180,15 +180,14 @@ export function SavedSchedulesSettings({
         <DialogContentComponent 
           className={isMobileView 
             ? "p-0 max-h-[85vh] w-full max-w-none backdrop-blur-xl bg-white/95" 
-            : "max-w-2xl max-h-[80vh] p-0 backdrop-blur-xl bg-white/95 border border-white/30"
+            : "max-w-3xl max-h-[85vh] p-0 backdrop-blur-xl bg-white/95 border border-white/30 flex flex-col"
           }
-          hideCloseButton
         >
-          <div className="flex flex-col h-full">
-            {/* Header with glass-morphism effect */}
-            <DialogHeader className={`${isMobileView ? 'p-4 pb-3' : 'p-6 pb-4'} border-b border-gray-100 backdrop-blur-xl bg-white/20`}>
-              <div className={`flex items-center ${isMobileView ? 'justify-center' : 'justify-center'}`}>
-                <div className={isMobileView ? 'text-center' : 'text-center'}>
+          <div className="flex flex-col h-full max-h-[85vh]">
+            {/* Header - Desktop only has bottom close button */}
+            <DialogHeader className={`${isMobileView ? 'p-4 pb-3' : 'p-6 pb-4'} border-b border-gray-100 backdrop-blur-xl bg-white/20 flex-shrink-0`}>
+              <div className="flex items-center justify-center">
+                <div className="text-center">
                   <DialogTitle className={`font-semibold text-gray-900 flex items-center gap-2 ${
                     isMobileView ? 'text-lg justify-center' : 'text-xl justify-center'
                   }`}>
@@ -209,8 +208,8 @@ export function SavedSchedulesSettings({
               </div>
             </DialogHeader>
 
-            {/* Content area */}
-            <div className={`flex-1 overflow-y-auto ${isMobileView ? 'p-4' : 'p-6'}`}>
+            {/* Scrollable Content Area */}
+            <div className={`flex-1 min-h-0 overflow-y-auto ${isMobileView ? 'p-4' : 'p-6'}`}>
               {isLoading ? (
                 <div className={`flex items-center justify-center ${isMobileView ? 'p-6' : 'p-8'}`} role="status" aria-live="polite">
                   <div className="animate-pulse text-gray-500 flex items-center gap-2">
@@ -231,7 +230,7 @@ export function SavedSchedulesSettings({
                   </div>
                 </div>
               ) : (
-                <div className={`space-y-3 ${isMobileView ? 'space-y-3' : 'space-y-4'}`}>
+                <div className={`space-y-3 ${isMobileView ? 'space-y-3' : 'space-y-4'} ${!isMobileView ? 'pb-4' : ''}`}>
                   {savedSchedules.map((schedule) => {
                     const status = getScheduleStatus(schedule.startDate);
                     const rotationColor = getRotationColor(schedule.rotationPattern);
@@ -245,7 +244,7 @@ export function SavedSchedulesSettings({
                         }}
                         className={`backdrop-blur-xl bg-white/30 rounded-2xl border border-white/30 cursor-pointer transition-all duration-200 hover:shadow-md hover:bg-white/40 ${
                           removingId === schedule.id ? 'opacity-0 scale-95' : 'opacity-100'
-                        } ${isMobileView ? 'p-4' : 'p-6'}`}
+                        } ${isMobileView ? 'p-4' : 'p-5'}`}
                         role="button"
                         tabIndex={0}
                         onKeyDown={(e) => {
@@ -358,8 +357,8 @@ export function SavedSchedulesSettings({
               )}
             </div>
 
-            {/* Footer */}
-            <div className={`border-t border-gray-100 backdrop-blur-xl bg-white/20 ${isMobileView ? 'p-4' : 'p-6'}`}>
+            {/* Footer - Fixed at bottom */}
+            <div className={`border-t border-gray-100 backdrop-blur-xl bg-white/20 ${isMobileView ? 'p-4' : 'p-6'} flex-shrink-0`}>
               <Button 
                 onClick={closeDialog}
                 className={`w-full ${isMobileView ? 'min-h-[48px] text-base' : 'min-h-[44px]'}`}

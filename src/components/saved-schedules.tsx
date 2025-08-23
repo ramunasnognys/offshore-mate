@@ -157,13 +157,14 @@ export function SavedSchedules({ onLoadSchedule, isOpen = false, onOpenChange }:
         <DialogContentComponent 
           className={isMobileView 
             ? "p-0 max-h-[85vh] w-full max-w-none" 
-            : "max-w-2xl max-h-[80vh] p-0"
+            : "max-w-3xl max-h-[85vh] p-0 flex flex-col"
           }
         >
-          <div className="flex flex-col h-full">
-            <DialogHeader className={`${isMobileView ? 'p-4 pb-3' : 'p-6 pb-4'} border-b border-gray-100`}>
-              <div className={`flex items-center ${isMobileView ? 'justify-center' : 'justify-between'}`}>
-                <div className={isMobileView ? 'text-center' : ''}>
+          <div className="flex flex-col h-full max-h-[85vh]">
+            {/* Header - Desktop only has bottom close button */}
+            <DialogHeader className={`${isMobileView ? 'p-4 pb-3' : 'p-6 pb-4'} border-b border-gray-100 flex-shrink-0`}>
+              <div className="flex items-center justify-center">
+                <div className="text-center">
                   <DialogTitle className={`font-semibold text-gray-900 ${
                     isMobileView ? 'text-lg' : 'text-xl'
                   }`}>
@@ -175,19 +176,11 @@ export function SavedSchedules({ onLoadSchedule, isOpen = false, onOpenChange }:
                     View, edit, and load your previously saved rotation schedules
                   </DialogDescription>
                 </div>
-                {!isMobileView && (
-                  <button
-                    onClick={closeDialog}
-                    className="p-2 hover:bg-gray-100 rounded-full transition-colors min-w-[44px] min-h-[44px] flex items-center justify-center"
-                    aria-label="Close dialog"
-                  >
-                    <X className="w-5 h-5 text-gray-400" />
-                  </button>
-                )}
               </div>
             </DialogHeader>
 
-            <div className={`flex-1 overflow-y-auto ${isMobileView ? 'p-4' : 'p-6'}`}>
+            {/* Scrollable Content Area */}
+            <div className={`flex-1 min-h-0 overflow-y-auto ${isMobileView ? 'p-4' : 'p-6'}`}>
               {isLoading ? (
                 <div className={`flex items-center justify-center ${isMobileView ? 'p-6' : 'p-8'}`} role="status" aria-live="polite">
                   <div className="animate-pulse text-gray-500">Loading saved schedules...</div>
@@ -203,7 +196,7 @@ export function SavedSchedules({ onLoadSchedule, isOpen = false, onOpenChange }:
                   </p>
                 </div>
               ) : (
-                <div className={`space-y-3 ${isMobileView ? 'space-y-3' : 'space-y-4'}`}>
+                <div className={`space-y-3 ${isMobileView ? 'space-y-3' : 'space-y-4'} ${!isMobileView ? 'pb-4' : ''}`}>
                   {savedSchedules.map((schedule) => {
                     const status = getScheduleStatus(schedule.startDate);
                     return (
@@ -215,7 +208,7 @@ export function SavedSchedules({ onLoadSchedule, isOpen = false, onOpenChange }:
                         }}
                         className={`bg-white rounded-2xl border border-gray-200 cursor-pointer transition-all duration-200 hover:shadow-md hover:border-gray-300 ${
                           removingId === schedule.id ? 'opacity-0 scale-95' : 'opacity-100'
-                        } ${isMobileView ? 'p-4' : 'p-6'}`}
+                        } ${isMobileView ? 'p-4' : 'p-5'}`}
                         role="button"
                         tabIndex={0}
                         onKeyDown={(e) => {
@@ -328,7 +321,8 @@ export function SavedSchedules({ onLoadSchedule, isOpen = false, onOpenChange }:
               )}
             </div>
 
-            <div className={`border-t border-gray-100 ${isMobileView ? 'p-4' : 'p-6'}`}>
+            {/* Footer - Fixed at bottom */}
+            <div className={`border-t border-gray-100 ${isMobileView ? 'p-4' : 'p-6'} flex-shrink-0 bg-white`}>
               <Button 
                 onClick={closeDialog}
                 className={`w-full ${isMobileView ? 'min-h-[48px] text-base' : 'min-h-[44px]'}`}
