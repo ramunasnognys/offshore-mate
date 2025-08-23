@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { BookmarkCheck, Trash, Calendar, Clock, PencilLine, X, Check, ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogBottomContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
+import { SmartCard } from '@/components/ui/smart-card';
 import { useUI } from '@/contexts/UIContext';
 import { ScheduleMetadata, getAllScheduleMetadataSorted, deleteSchedule } from '@/lib/utils/storage';
 import { useScheduleManagement } from '@/hooks/useScheduleManagement';
@@ -236,17 +237,22 @@ export function SavedSchedulesSettings({
                     const rotationColor = getRotationColor(schedule.rotationPattern);
                     
                     return (
-                      <div
+                      <SmartCard
                         key={schedule.id}
+                        variant="action-card"
+                        context={isMobileView ? 'mobile' : 'desktop'}
+                        interactionMode={isMobileView ? 'touch' : 'mouse'}
+                        importance="secondary"
+                        adaptiveContrast={true}
+                        physicsEnabled={false}
+                        magneticHover={false}
+                        glassEffect={true}
+                        ariaLabel={`Load schedule: ${schedule.name || schedule.rotationPattern + ' Schedule'}`}
+                        ariaDescription={`${schedule.rotationPattern} rotation starting ${formatDate(schedule.startDate)}, last modified ${getTimeAgo(schedule.updatedAt)}`}
                         onClick={() => {
                           onLoadSchedule(schedule.id);
                           closeDialog();
                         }}
-                        className={`backdrop-blur-xl bg-white/30 rounded-2xl border border-white/30 cursor-pointer transition-all duration-200 hover:shadow-md hover:bg-white/40 ${
-                          removingId === schedule.id ? 'opacity-0 scale-95' : 'opacity-100'
-                        } ${isMobileView ? 'p-4' : 'p-5'}`}
-                        role="button"
-                        tabIndex={0}
                         onKeyDown={(e) => {
                           if (e.key === 'Enter' || e.key === ' ') {
                             e.preventDefault();
@@ -254,7 +260,9 @@ export function SavedSchedulesSettings({
                             closeDialog();
                           }
                         }}
-                        aria-label={`Load schedule: ${schedule.name || schedule.rotationPattern + ' Schedule'}`}
+                        className={`transition-all duration-200 card-container ${
+                          removingId === schedule.id ? 'opacity-0 scale-95' : 'opacity-100'
+                        }`}
                       >
                         <div className="flex items-start justify-between">
                           <div className="flex-1 min-w-0">
@@ -350,7 +358,7 @@ export function SavedSchedulesSettings({
                             )}
                           </div>
                         </div>
-                      </div>
+                      </SmartCard>
                     );
                   })}
                 </div>

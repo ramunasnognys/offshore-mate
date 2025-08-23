@@ -1,0 +1,426 @@
+/* Enhanced Accessibility Foundations for Card System */
+
+/* ===== FOCUS MANAGEMENT SYSTEM ===== */
+
+/* Smart focus ring with context awareness */
+.card-focusable {
+  position: relative;
+  outline: none; /* Remove default outline */
+}
+
+.card-focusable:focus-visible {
+  /* Dynamic focus ring based on card importance */
+  outline: var(--focus-ring-width) solid var(--focus-color);
+  outline-offset: var(--focus-ring-offset);
+  
+  /* Enhanced visual feedback with glow */
+  box-shadow:
+    0 0 0 calc(var(--focus-ring-width) + var(--focus-ring-offset)) rgba(var(--focus-color-rgb), 0.2),
+    0 0 16px rgba(var(--focus-color-rgb), 0.3),
+    var(--shadow-soft);
+  
+  /* Ensure focus is always visible */
+  z-index: 100;
+}
+
+/* High importance cards get enhanced focus */
+.card-importance-primary:focus-visible {
+  outline-width: 3px;
+  outline-offset: 4px;
+  box-shadow:
+    0 0 0 7px rgba(var(--focus-color-rgb), 0.25),
+    0 0 20px rgba(var(--focus-color-rgb), 0.4),
+    var(--shadow-medium);
+}
+
+/* Rotation-specific focus colors */
+.card-rotation-14-21:focus-visible {
+  --focus-color: var(--color-rotation-14-21-primary);
+  --focus-color-rgb: var(--color-rotation-14-21-primary-rgb);
+}
+
+.card-rotation-28-28:focus-visible {
+  --focus-color: var(--color-rotation-28-28-primary);
+  --focus-color-rgb: var(--color-rotation-28-28-primary-rgb);
+}
+
+.card-rotation-14-14:focus-visible {
+  --focus-color: var(--color-rotation-14-14-primary);
+  --focus-color-rgb: var(--color-rotation-14-14-primary-rgb);
+}
+
+.card-rotation-15-20:focus-visible {
+  --focus-color: var(--color-rotation-15-20-primary);
+  --focus-color-rgb: var(--color-rotation-15-20-primary-rgb);
+}
+
+.card-rotation-custom:focus-visible {
+  --focus-color: var(--color-rotation-custom-primary);
+  --focus-color-rgb: var(--color-rotation-custom-primary-rgb);
+}
+
+/* ===== KEYBOARD NAVIGATION ENHANCEMENTS ===== */
+
+/* Skip to content helper */
+.skip-to-content {
+  position: absolute;
+  top: -40px;
+  left: 6px;
+  background: var(--focus-color);
+  color: white;
+  padding: 8px 16px;
+  border-radius: 4px;
+  text-decoration: none;
+  font-weight: 600;
+  z-index: 1000;
+  transition: top 0.2s ease;
+}
+
+.skip-to-content:focus {
+  top: 6px;
+}
+
+/* Tab sequence indicators */
+.card-tab-sequence {
+  position: relative;
+}
+
+.card-tab-sequence::before {
+  content: attr(data-tab-index);
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  background: var(--focus-color);
+  color: white;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  font-weight: 600;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  z-index: 10;
+}
+
+.card-tab-sequence:focus-visible::before {
+  opacity: 1;
+}
+
+/* ===== SCREEN READER ENHANCEMENTS ===== */
+
+/* Screen reader only content */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Screen reader announcements */
+.sr-announcement {
+  position: absolute;
+  left: -10000px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
+/* Live region for dynamic content */
+.live-region {
+  position: absolute;
+  left: -10000px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
+/* Enhanced card descriptions for screen readers */
+.card-description-enhanced::after {
+  content: '. ' attr(data-additional-info) '. ' attr(data-interaction-hint);
+  position: absolute;
+  left: -10000px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
+/* ===== HIGH CONTRAST MODE SUPPORT ===== */
+
+@media (prefers-contrast: high) {
+  .card-focusable:focus-visible {
+    outline: 3px solid Highlight;
+    outline-offset: 2px;
+    background: Canvas;
+    color: CanvasText;
+  }
+  
+  .card-selected {
+    border: 3px solid Highlight;
+    background: SelectedItem;
+    color: SelectedItemText;
+  }
+  
+  .card-disabled {
+    opacity: 1;
+    background: Canvas;
+    color: GrayText;
+    border-color: GrayText;
+  }
+  
+  /* Ensure sufficient contrast for all interactive elements */
+  .card-interactive {
+    border: 2px solid ButtonBorder;
+    background: ButtonFace;
+    color: ButtonText;
+  }
+  
+  .card-interactive:hover {
+    border-color: Highlight;
+    background: HighlightText;
+    color: Highlight;
+  }
+}
+
+/* ===== FORCED COLORS MODE SUPPORT ===== */
+
+@media (forced-colors: active) {
+  .card-base {
+    forced-color-adjust: none;
+    border: 1px solid ButtonBorder;
+    background: ButtonFace;
+    color: ButtonText;
+  }
+  
+  .card-selected {
+    border: 2px solid Highlight;
+    background: SelectedItem;
+    color: SelectedItemText;
+  }
+  
+  .card-disabled {
+    border-color: GrayText;
+    background: Canvas;
+    color: GrayText;
+  }
+}
+
+/* ===== REDUCED MOTION ACCESSIBILITY ===== */
+
+@media (prefers-reduced-motion: reduce) {
+  /* Remove all animations and transitions */
+  .card-base,
+  .card-focusable,
+  .card-interactive,
+  .card-selected {
+    animation: none !important;
+    transition: none !important;
+  }
+  
+  /* Keep essential focus indicators without animation */
+  .card-focusable:focus-visible {
+    outline: 3px solid var(--focus-color);
+    outline-offset: 2px;
+    box-shadow: 0 0 0 6px rgba(var(--focus-color-rgb), 0.2);
+  }
+  
+  /* Instant state changes */
+  .card-interactive:hover {
+    transform: none;
+    box-shadow: var(--shadow-medium);
+  }
+}
+
+/* ===== TOUCH ACCESSIBILITY ===== */
+
+/* Larger touch targets for better accessibility */
+@media (pointer: coarse) {
+  .card-interactive {
+    min-width: 44px;
+    min-height: 44px;
+    padding: max(12px, var(--card-padding, 1rem));
+  }
+  
+  /* Enhanced visual feedback for touch */
+  .card-interactive:active {
+    background: var(--card-bg-active, var(--card-bg-hover));
+    transform: scale(0.98);
+    transition: all 0.1s ease;
+  }
+}
+
+/* ===== COGNITIVE ACCESSIBILITY ===== */
+
+/* Clear visual hierarchy */
+.card-cognitive-clear {
+  /* Simplified visual design for cognitive accessibility */
+  background: Canvas;
+  border: 2px solid ButtonBorder;
+  color: CanvasText;
+  font-family: system-ui, sans-serif;
+  line-height: 1.5;
+}
+
+.card-cognitive-clear:hover {
+  border-color: var(--focus-color);
+  box-shadow: 0 0 0 2px rgba(var(--focus-color-rgb), 0.2);
+}
+
+.card-cognitive-clear:focus-visible {
+  outline: 3px solid var(--focus-color);
+  outline-offset: 2px;
+}
+
+/* Consistent interaction patterns */
+.card-consistent-interaction {
+  /* Predictable behavior across all cards */
+  cursor: pointer;
+  user-select: none;
+}
+
+.card-consistent-interaction:hover,
+.card-consistent-interaction:focus {
+  /* Same hover and focus styles for predictability */
+  border-color: var(--focus-color);
+  box-shadow: 0 0 0 2px rgba(var(--focus-color-rgb), 0.2);
+}
+
+/* ===== ERROR AND VALIDATION STATES ===== */
+
+/* Error state with clear visual and semantic indicators */
+.card-error {
+  border: 2px solid #dc2626;
+  background: #fef2f2;
+  color: #991b1b;
+  position: relative;
+}
+
+.card-error::before {
+  content: 'Error: ';
+  font-weight: 600;
+  color: #dc2626;
+}
+
+.card-error:focus-visible {
+  outline: 3px solid #dc2626;
+  outline-offset: 2px;
+}
+
+/* Success state */
+.card-success {
+  border: 2px solid #16a34a;
+  background: #f0fdf4;
+  color: #166534;
+}
+
+.card-success::before {
+  content: 'Success: ';
+  font-weight: 600;
+  color: #16a34a;
+}
+
+/* Warning state */
+.card-warning {
+  border: 2px solid #ca8a04;
+  background: #fffbeb;
+  color: #92400e;
+}
+
+.card-warning::before {
+  content: 'Warning: ';
+  font-weight: 600;
+  color: #ca8a04;
+}
+
+/* ===== LOADING AND BUSY STATES ===== */
+
+/* Accessible loading indicator */
+.card-loading-accessible {
+  position: relative;
+  overflow: hidden;
+}
+
+.card-loading-accessible::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 3px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    var(--focus-color),
+    transparent
+  );
+  animation: loadingIndicator 1.5s infinite;
+}
+
+.card-loading-accessible::after {
+  content: 'Loading...';
+  position: absolute;
+  left: -10000px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
+@keyframes loadingIndicator {
+  0% { left: -100%; }
+  100% { left: 100%; }
+}
+
+/* Busy state with appropriate ARIA */
+.card-busy {
+  position: relative;
+  pointer-events: none;
+  opacity: 0.8;
+}
+
+.card-busy::after {
+  content: attr(aria-label) ' is currently processing. Please wait.';
+  position: absolute;
+  left: -10000px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
+/* ===== UTILITY CLASSES FOR ACCESSIBILITY ===== */
+
+/* Focus trap for modal cards */
+.card-focus-trap {
+  /* Ensures focus stays within card when modal */
+  isolation: isolate;
+}
+
+.card-focus-trap:focus-within {
+  outline: 3px solid var(--focus-color);
+  outline-offset: 4px;
+}
+
+/* Announcement helper */
+.announce-to-sr {
+  position: absolute;
+  left: -10000px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
+/* Context announcement */
+.context-announcement::before {
+  content: attr(data-context) '. ';
+  position: absolute;
+  left: -10000px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}

@@ -2,6 +2,8 @@
 
 import { Calendar } from 'lucide-react'
 import { DatePicker } from '@/components/date-picker'
+import { SmartCard } from '@/components/ui/smart-card'
+import { useMobileDetection } from '@/hooks/useMobileDetection'
 
 interface StartDateCardProps {
   selectedDate: string
@@ -9,21 +11,69 @@ interface StartDateCardProps {
 }
 
 export function StartDateCard({ selectedDate, onDateSelect }: StartDateCardProps) {
+  const isMobile = useMobileDetection()
+  const formattedDate = selectedDate ? new Date(selectedDate).toLocaleDateString('en-US', {
+    weekday: 'long',
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric'
+  }) : 'No date selected'
+  
   return (
-    <div className="p-4 bg-gray-50 border border-gray-200 rounded-xl space-y-3">
-      <div className="flex items-center gap-2">
-        <Calendar className="h-4 w-4 text-gray-600" />
-        <label className="text-gray-600 text-lg font-serif font-semibold tracking-wide">
-          Start Date
-        </label>
+    <SmartCard
+      variant="date-picker"
+      context={isMobile ? 'mobile' : 'desktop'}
+      interactionMode={isMobile ? 'touch' : 'mouse'}
+      importance="primary"
+      adaptiveContrast={true}
+      glassEffect={true}
+      ariaLabel="Start date selection"
+      ariaDescription={`Select the start date for your rotation. Currently selected: ${formattedDate}`}
+      className="card-container"
+    >
+      <div className="space-y-4">
+        {/* Header */}
+        <div className="flex items-center gap-3">
+          <div className="p-2 bg-current/10 rounded-lg">
+            <Calendar className="h-5 w-5 text-current" />
+          </div>
+          <div className="flex-1">
+            <h2 className="text-current text-lg font-serif font-semibold tracking-wide">
+              Start Date
+            </h2>
+            <p className="text-current/70 text-sm mt-1">
+              When does your rotation begin?
+            </p>
+          </div>
+        </div>
+        
+        {/* Date Picker Container */}
+        <SmartCard
+          variant="info-panel"
+          context={isMobile ? 'mobile' : 'desktop'}
+          interactionMode={isMobile ? 'touch' : 'mouse'}
+          importance="secondary"
+          adaptiveContrast={true}
+          glassEffect={false}
+          ariaLabel="Date picker input"
+          className="bg-white/80 hover:bg-white/90 transition-colors duration-200"
+        >
+          <DatePicker 
+            date={selectedDate ? new Date(selectedDate) : undefined}
+            onSelect={onDateSelect}
+          />
+        </SmartCard>
+        
+        {/* Selected Date Display */}
+        {selectedDate && (
+          <div className="text-sm text-current/70 text-center p-2 bg-current/5 rounded-lg">
+            <span className="font-medium">Selected: </span>
+            <time dateTime={selectedDate} className="font-semibold text-current">
+              {formattedDate}
+            </time>
+          </div>
+        )}
       </div>
-      
-      <div className="p-3 bg-white border border-gray-200 rounded-lg">
-        <DatePicker 
-          date={selectedDate ? new Date(selectedDate) : undefined}
-          onSelect={onDateSelect}
-        />
-      </div>
-    </div>
+    </SmartCard>
   )
 }
