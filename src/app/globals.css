@@ -456,6 +456,11 @@
     font-size: 0.875rem;
   }
   
+  /* Reduce right padding for rotation selection cards */
+  .card-variant-rotation-selection.card-base {
+    padding-right: 0.5rem;
+  }
+  
   .card-variant-day-display {
     min-height: 40px;
     aspect-ratio: 1;
@@ -475,6 +480,11 @@
     gap: 1rem;
     align-items: center;
   }
+  
+  /* Reduce right padding for rotation selection cards */
+  .card-variant-rotation-selection.card-base {
+    padding-right: 0.75rem;
+  }
 }
 
 @container card (min-width: 401px) {
@@ -489,6 +499,11 @@
     grid-template-columns: auto 1fr auto;
     gap: 1.5rem;
     align-items: center;
+  }
+  
+  /* Reduce right padding for rotation selection cards */
+  .card-variant-rotation-selection.card-base {
+    padding-right: 1rem;
   }
   
   .card-variant-info-panel {
