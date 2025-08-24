@@ -275,9 +275,9 @@ export function ShareModal({ isOpen, onClose, scheduleId }: ShareModalProps) {
             {/* Preview Section */}
             <div className={`space-y-4 ${isMobileView ? 'space-y-3' : 'space-y-4'}`}>
               <div className="p-4 rounded-lg bg-gray-50/50 backdrop-blur border border-gray-200/50">
-                <p className={`text-gray-600 mb-2 ${isMobileView ? 'text-xs' : 'text-sm'}`}>Share Preview</p>
+                <p className={`text-gray-500 mb-2 ${isMobileView ? 'text-xs' : 'text-sm'}`}>Share Preview</p>
                 <p className={`font-medium ${isMobileView ? 'text-base' : 'text-lg'}`}>{shareData.title}</p>
-                <p className={`text-gray-500 mt-1 ${isMobileView ? 'text-xs' : 'text-sm'}`}>{shareData.dateRange}</p>
+                <p className={`text-gray-400 mt-1 ${isMobileView ? 'text-xs' : 'text-sm'}`}>{shareData.dateRange}</p>
                 <div className="mt-3 p-2 bg-white/80 rounded border border-gray-200/50">
                   <p className="text-xs text-gray-500 break-all">{shareUrl}</p>
                 </div>

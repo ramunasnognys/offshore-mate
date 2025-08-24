@@ -42,14 +42,14 @@ export function StartDateCard({ selectedDate, onDateSelect }: StartDateCardProps
       <div className="space-y-4">
         {/* Header */}
         <div className="flex items-center gap-3">
-          <div className="p-2 bg-current/10 rounded-lg">
+          <div className="p-2 bg-gradient-radial from-current/5 to-current/2 rounded-lg transition-all duration-300 hover:from-current/8 hover:to-current/4">
             <Calendar className="h-5 w-5 text-current" />
           </div>
           <div className="flex-1">
             <h2 className="text-current text-lg font-serif font-semibold tracking-wide">
               Start Date
             </h2>
-            <p className="text-current/70 text-sm mt-1">
+            <p className="text-current/50 text-sm mt-1">
               When does your rotation begin?
             </p>
           </div>
@@ -64,7 +64,7 @@ export function StartDateCard({ selectedDate, onDateSelect }: StartDateCardProps
           adaptiveContrast={true}
           glassEffect={false}
           ariaLabel="Date picker input"
-          className="bg-white/80 hover:bg-white/90 transition-colors duration-200"
+          className="bg-white/80 hover:bg-white/90 transition-colors duration-200 !py-3"
         >
           <DatePicker 
             date={selectedDate ? new Date(selectedDate) : undefined}

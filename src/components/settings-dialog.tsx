@@ -129,7 +129,7 @@ export function SettingsDialog({
               )}
               
               {/* Schedule details subtitle */}
-              <div className="text-sm text-gray-500 mt-2">
+              <div className="text-sm text-gray-400 mt-2">
                 {selectedRotation} • Starts {formatDate(selectedDate)}
               </div>
             </div>

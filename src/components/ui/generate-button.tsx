@@ -51,7 +51,7 @@ export const GenerateButton: React.FC<GenerateButtonProps> = ({
 
   const getResponsiveClasses = () => {
     if (size === 'lg') {
-      return 'md:px-12 md:py-6 md:text-xl px-10 py-5 text-base min-w-[280px] md:min-w-[320px]' // Better mobile sizing
+      return 'md:px-12 md:py-6 md:text-xl px-10 py-5 text-lg min-w-[280px] md:min-w-[320px]' // Better mobile sizing
     }
     return getSizeClasses()
   }

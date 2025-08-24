@@ -199,7 +199,7 @@ function HomeContent() {
                   {(!isCalendarGenerated || isMobileView !== true) && (
                     <div className="flex items-center justify-center gap-2">
                       <div className="w-6 h-px bg-gradient-to-r from-transparent via-orange-400 to-transparent"></div>
-                      <p className="text-center text-gray-600 tracking-wider uppercase font-medium text-[10px] md:text-sm">
+                      <p className="text-center text-gray-500 tracking-wider uppercase font-medium text-[10px] md:text-sm">
                         Navigate your offshore schedule with precision
                       </p>
                       <div className="w-6 h-px bg-gradient-to-r from-transparent via-orange-400 to-transparent"></div>

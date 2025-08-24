@@ -106,7 +106,7 @@ export function CalendarGenerator({
         <GenerateButton
           variant="primary"
           size="lg"
-          icon={<Waves className="h-6 w-6" />}
+          icon={<Waves className="h-5 w-5" />}
           onClick={handleGenerateCalendar}
           ariaDescribedBy="generate-button-description"
           className={isMobileView ? "w-full" : "w-2/3"}

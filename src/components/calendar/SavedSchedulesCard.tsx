@@ -37,26 +37,22 @@ export function SavedSchedulesCard({ onShowSavedSchedules, savedSchedulesCount }
     >
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <div className="card-icon-enhanced">
+          <div className="p-2 bg-gradient-radial from-current/5 to-current/2 rounded-lg transition-all duration-300 hover:from-current/8 hover:to-current/4">
             <Users className="h-5 w-5 text-current" />
           </div>
           <div>
-            <h3 className="card-title-enhanced">
+            <h2 className="text-current text-lg font-serif font-semibold tracking-wide">
               Saved Schedules
-            </h3>
-            <p className="card-description-enhanced">
+            </h2>
+            <p className="text-current/50 text-sm mt-1">
               Manage your saved rotation patterns
             </p>
           </div>
         </div>
         
-        <div className="flex items-center gap-3 flex-shrink-0">
-          <div className="card-badge-enhanced">
-            {savedSchedulesCount} saved
-          </div>
-          <div className="card-icon-enhanced">
-            <ArrowRight className="w-4 h-4 text-current/60 group-hover:text-current transition-all duration-200 group-hover:translate-x-0.5" />
-          </div>
+        <div className="card-tag-enhanced">
+          {savedSchedulesCount} saved
+          <ArrowRight className="w-4 h-4 text-current/60 group-hover:text-current transition-all duration-200 group-hover:translate-x-0.5" />
         </div>
       </div>
     </SmartCard>

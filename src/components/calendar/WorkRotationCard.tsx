@@ -88,23 +88,20 @@ function RotationOptionButton({ option, isSelected, onClick }: RotationOptionBut
     >
       <div className="flex items-center justify-between w-full">
         <div className="flex-1 min-w-0">
-          <div className="font-semibold text-base text-current mb-1">
+          <div className="font-semibold text-base text-current">
             {option.label}
-          </div>
-          <div className="text-sm opacity-75 line-clamp-2">
-            {option.description}
           </div>
         </div>
         
-        <div className="ml-4 flex-shrink-0">
-          <div className={`w-5 h-5 rounded-full border-2 transition-all duration-200 relative ${
+        <div className="ml-6 flex-shrink-0">
+          <div className={`w-6 h-6 rounded-full border-2 transition-all duration-200 relative ${
             isSelected 
               ? 'border-current bg-current shadow-sm' 
               : 'border-current/40 hover:border-current/60'
           }`}>
             {isSelected && (
               <div className="absolute inset-0 flex items-center justify-center">
-                <div className="w-2 h-2 bg-white rounded-full" />
+                <div className="w-2.5 h-2.5 bg-white rounded-full" />
               </div>
             )}
           </div>
@@ -261,21 +258,21 @@ export function WorkRotationCard({
       <div className="space-y-6">
         {/* Header */}
         <div className="flex items-center gap-3">
-          <div className="p-2 bg-current/10 rounded-lg">
+          <div className="p-2 bg-gradient-radial from-current/5 to-current/2 rounded-lg transition-all duration-300 hover:from-current/8 hover:to-current/4">
             <Clock className="h-5 w-5 text-current" />
           </div>
           <div>
             <h2 className="text-current text-lg font-serif font-semibold tracking-wide">
               Work Rotation Pattern
             </h2>
-            <p className="text-current/70 text-sm mt-1">
+            <p className="text-current/50 text-sm mt-1">
               Select your offshore work schedule
             </p>
           </div>
         </div>
 
         {/* Rotation Options Grid */}
-        <div className="grid grid-cols-1 @[400px]:grid-cols-2 gap-4">
+        <div className="grid grid-cols-2 gap-4">
           {options.map((option) => (
             <RotationOptionButton
               key={option.value}

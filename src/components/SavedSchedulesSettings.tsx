@@ -200,7 +200,7 @@ export function SavedSchedulesSettings({
                       </span>
                     )}
                   </DialogTitle>
-                  <DialogDescription className={`text-gray-500 mt-1 ${
+                  <DialogDescription className={`text-gray-400 mt-1 ${
                     isMobileView ? 'text-xs' : 'text-sm'
                   }`}>
                     View, edit, and load your previously saved rotation schedules
@@ -225,7 +225,7 @@ export function SavedSchedulesSettings({
                     <h3 className={`font-medium text-gray-700 mb-2 ${isMobileView ? 'text-base' : 'text-lg'}`}>
                       No Saved Schedules
                     </h3>
-                    <p className={`text-gray-500 ${isMobileView ? 'text-xs' : 'text-sm'}`}>
+                    <p className={`text-gray-400 ${isMobileView ? 'text-xs' : 'text-sm'}`}>
                       Your schedules will appear here once you create and save them.
                     </p>
                   </div>

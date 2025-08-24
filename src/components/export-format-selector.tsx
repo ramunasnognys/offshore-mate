@@ -13,7 +13,7 @@ interface ExportFormatSelectorProps {
 export function ExportFormatSelector({ selectedFormat, onFormatChange, onDownload, isDownloading = false }: ExportFormatSelectorProps) {
   return (
     <div className="backdrop-blur-xl bg-white/30 rounded-2xl md:rounded-3xl shadow-lg border border-white/30 p-4 md:p-6 mb-4">
-      <span className="text-gray-500 text-xs md:text-sm font-medium mb-3 block">
+      <span className="text-gray-400 text-xs md:text-sm font-medium mb-3 block">
         Export Format
       </span>
       

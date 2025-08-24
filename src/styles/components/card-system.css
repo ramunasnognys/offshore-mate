@@ -59,6 +59,11 @@
     inset 0 1px 0 rgba(255,255,255,0.2); /* Inner highlight */
 }
 
+/* Override glass borders for rotation selection cards */
+.card-variant-rotation-selection.card-glass {
+  border: none !important;
+}
+
 /* ===== CARD VARIANTS ===== */
 
 /* Rotation Selection Cards */
@@ -69,6 +74,10 @@
   background: var(--card-bg, var(--glass-bg-primary));
   border-color: var(--card-border, var(--glass-border));
   color: var(--card-text, var(--foreground));
+  
+  /* Remove borders and outlines */
+  border: none !important;
+  outline: none !important;
 }
 
 .card-variant-rotation-selection:hover {
@@ -78,6 +87,10 @@
   box-shadow:
     var(--shadow-medium),
     0 8px 32px rgba(var(--card-primary-rgb, 0, 0, 0), 0.15);
+  
+  /* Ensure no borders on hover */
+  border: none !important;
+  outline: none !important;
 }
 
 /* Date Picker Cards */
@@ -612,6 +625,12 @@
   transition: all 0.4s var(--ease-out-quart);
 }
 
+/* Override borders for rotation selection cards */
+.card-variant-rotation-selection.card-border-enhanced {
+  border: none !important;
+  background: var(--card-bg, var(--glass-bg-primary)) !important;
+}
+
 .card-border-enhanced:hover {
   border-width: 2px;
   background: 
@@ -621,6 +640,44 @@
       rgba(var(--card-primary-rgb, 255, 255, 255), 0.2) 50%,
       rgba(var(--card-primary-rgb, 255, 255, 255), 0.5) 100%
     ) border-box;
+}
+
+/* Override hover borders for rotation selection cards */
+.card-variant-rotation-selection.card-border-enhanced:hover {
+  border: none !important;
+  background: var(--card-bg-hover, var(--glass-bg-secondary)) !important;
+}
+
+/* Remove border glow effects from rotation selection cards */
+.card-variant-rotation-selection.card-border-glow::before {
+  display: none !important;
+}
+
+/* Remove border pulse effects from rotation selection cards */
+.card-variant-rotation-selection.card-border-pulse {
+  animation: none !important;
+  border-color: transparent !important;
+}
+
+/* Complete border removal for rotation selection cards - all states */
+.card-variant-rotation-selection {
+  border: none !important;
+  outline: none !important;
+}
+
+.card-variant-rotation-selection:hover {
+  border: none !important;
+  outline: none !important;
+}
+
+.card-variant-rotation-selection:focus {
+  border: none !important;
+  outline: none !important;
+}
+
+.card-variant-rotation-selection:active {
+  border: none !important;
+  outline: none !important;
 }
 
 /* Animated border glow */
@@ -762,6 +819,39 @@
   );
   border-color: rgba(var(--card-primary-rgb, 255, 255, 255), 0.3);
   transform: translateY(-1px);
+}
+
+/* Enhanced tag-like elements */
+.card-tag-enhanced {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.375rem 0.75rem;
+  font-size: 0.875rem; /* text-sm to match descriptive text */
+  font-weight: 500;
+  letter-spacing: 0.025em;
+  border-radius: 0.5rem; /* Rounded like a tag, not pill */
+  background: rgba(148, 163, 184, 0.08);
+  border: 1px solid rgba(148, 163, 184, 0.15);
+  color: rgb(71, 85, 105);
+  backdrop-filter: blur(12px);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  flex-shrink: 0;
+  user-select: none;
+  position: relative;
+}
+
+.card-tag-enhanced::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.08) 0%,
+    rgba(255, 255, 255, 0.03) 100%
+  );
+  border-radius: inherit;
+  pointer-events: none;
 }
 
 /* Status indicators with animation */

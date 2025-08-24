@@ -146,7 +146,7 @@ export function SettingsBottomSheet({
                 </div>
                 
                 {/* Schedule details subtitle */}
-                <div className="text-sm text-gray-500 mt-2 px-3">
+                <div className="text-sm text-gray-400 mt-2 px-3">
                   {selectedRotation} • Starts {formatDate(selectedDate)}
                 </div>
               </div>

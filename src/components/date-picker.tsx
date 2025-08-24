@@ -34,7 +34,7 @@ export function DatePicker({ date, onSelect }: DatePickerProps) {
         onClick={() => setOpen(true)}
         className="flex items-center w-full hover:bg-white/10 transition-all duration-200 group rounded-2xl md:rounded-3xl"
       >
-        <div className="flex-grow text-left">
+        <div className="flex-grow text-left ml-8">
           <span className={`font-medium transition-colors ${
             date 
               ? 'text-gray-800 text-sm group-hover:text-orange-500' 

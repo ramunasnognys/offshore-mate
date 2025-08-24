@@ -174,6 +174,11 @@ export default {
   			'out-quart': 'cubic-bezier(0.25, 1, 0.5, 1)',
   			'in-out-back': 'cubic-bezier(0.68, -0.55, 0.265, 1.55)',
   		},
+  		// Background image gradients
+  		backgroundImage: {
+  			'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
+  			'gradient-conic': 'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))',
+  		},
   		// Container query responsive spacing
   		spacing: {
   			'card-xs': 'clamp(0.5rem, 2cqi, 0.75rem)',
