@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { Trash, Clock, Calendar, Info, ArrowRight, PencilLine, X, Check } from 'lucide-react';
+import { Trash, Clock, Calendar, BookmarkCheck, ArrowRight, PencilLine, X, Check, Users } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogBottomContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
+import { SmartCard } from '@/components/ui/smart-card';
 import { useUI } from '@/contexts/UIContext';
 import { ScheduleMetadata, getAllScheduleMetadataSorted, deleteSchedule } from '@/lib/utils/storage';
 import { useScheduleManagement } from '@/hooks/useScheduleManagement';
@@ -116,9 +117,9 @@ export function SavedSchedules({ onLoadSchedule, isOpen = false, onOpenChange }:
 
   const getStatusBadge = (status: string) => {
     const styles = {
-      active: 'bg-slate-900 text-white',
-      completed: 'bg-slate-200 text-slate-700',
-      upcoming: 'bg-slate-100 text-slate-600'
+      active: 'bg-slate-900 text-white border-slate-900',
+      completed: 'bg-gray-100 text-gray-600 border-gray-200',
+      upcoming: 'bg-orange-50 text-orange-800 border-orange-200'
     };
     
     const statusLabels = {
@@ -129,7 +130,7 @@ export function SavedSchedules({ onLoadSchedule, isOpen = false, onOpenChange }:
     
     return (
       <span 
-        className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${styles[status as keyof typeof styles]} ${
+        className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium border ${styles[status as keyof typeof styles]} ${
           isMobileView ? 'px-2 py-0.5 text-[11px]' : 'px-2.5 py-0.5 text-xs'
         }`}
         aria-label={statusLabels[status as keyof typeof statusLabels]}
@@ -138,6 +139,22 @@ export function SavedSchedules({ onLoadSchedule, isOpen = false, onOpenChange }:
         {status}
       </span>
     );
+  };
+
+  const getRotationColor = (rotationPattern: string) => {
+    // Color coding similar to rotation pattern colors
+    switch (rotationPattern) {
+      case '14/14':
+        return 'bg-orange-50 border-orange-200 text-orange-800';
+      case '14/21':
+        return 'bg-blue-50 border-blue-200 text-blue-800';
+      case '28/28':
+        return 'bg-green-50 border-green-200 text-green-800';
+      case 'Custom':
+        return 'bg-purple-50 border-purple-200 text-purple-800';
+      default:
+        return 'bg-gray-50 border-gray-200 text-gray-800';
+    }
   };
 
   const closeDialog = () => {
@@ -156,21 +173,27 @@ export function SavedSchedules({ onLoadSchedule, isOpen = false, onOpenChange }:
       <Dialog open={isOpen} onOpenChange={onOpenChange || (() => {})}>
         <DialogContentComponent 
           className={isMobileView 
-            ? "p-0 max-h-[85vh] w-full max-w-none" 
-            : "max-w-3xl max-h-[85vh] p-0 flex flex-col"
+            ? "p-0 max-h-[85vh] w-full max-w-none backdrop-blur-[8px] bg-white/95" 
+            : "max-w-3xl max-h-[85vh] p-0 backdrop-blur-xl bg-white/95 border border-white/30 flex flex-col"
           }
         >
           <div className="flex flex-col h-full max-h-[85vh]">
             {/* Header - Desktop only has bottom close button */}
-            <DialogHeader className={`${isMobileView ? 'p-4 pb-3' : 'p-6 pb-4'} border-b border-gray-100 flex-shrink-0`}>
+            <DialogHeader className={`${isMobileView ? 'p-4 pb-3' : 'p-6 pb-4'} border-b border-gray-100 ${isMobileView ? 'backdrop-blur-[8px] bg-white/85' : 'backdrop-blur-xl bg-white/20'} flex-shrink-0`}>
               <div className="flex items-center justify-center">
                 <div className="text-center">
-                  <DialogTitle className={`font-semibold text-gray-900 ${
-                    isMobileView ? 'text-lg' : 'text-xl'
+                  <DialogTitle className={`font-semibold text-gray-900 flex items-center gap-2 ${
+                    isMobileView ? 'text-lg justify-center' : 'text-xl justify-center'
                   }`}>
+                    <BookmarkCheck className="w-5 h-5 text-orange-500" />
                     Saved Schedules
+                    {savedSchedules.length > 0 && (
+                      <span className="bg-orange-100 text-orange-800 text-sm px-2 py-0.5 rounded-full font-medium">
+                        {savedSchedules.length}
+                      </span>
+                    )}
                   </DialogTitle>
-                  <DialogDescription className={`text-gray-500 mt-1 ${
+                  <DialogDescription className={`text-gray-400 mt-1 ${
                     isMobileView ? 'text-xs' : 'text-sm'
                   }`}>
                     View, edit, and load your previously saved rotation schedules
@@ -183,34 +206,53 @@ export function SavedSchedules({ onLoadSchedule, isOpen = false, onOpenChange }:
             <div className={`flex-1 min-h-0 overflow-y-auto ${isMobileView ? 'p-4' : 'p-6'}`}>
               {isLoading ? (
                 <div className={`flex items-center justify-center ${isMobileView ? 'p-6' : 'p-8'}`} role="status" aria-live="polite">
-                  <div className="animate-pulse text-gray-500">Loading saved schedules...</div>
+                  <div className="animate-pulse text-gray-500 flex items-center gap-2">
+                    <BookmarkCheck className="w-4 h-4" />
+                    Loading saved schedules...
+                  </div>
                 </div>
               ) : savedSchedules.length === 0 ? (
                 <div className={`flex flex-col items-center justify-center text-center ${isMobileView ? 'p-6' : 'p-8'}`}>
-                  <Info className={`mb-4 text-gray-300 ${isMobileView ? 'w-10 h-10' : 'w-12 h-12'}`} />
-                  <h3 className={`font-medium text-gray-700 mb-2 ${isMobileView ? 'text-base' : 'text-lg'}`}>
-                    No Saved Schedules
-                  </h3>
-                  <p className={`text-gray-500 ${isMobileView ? 'text-xs' : 'text-sm'}`}>
-                    Your schedules will appear here once you create and save them.
-                  </p>
+                  <div className={`${isMobileView ? 'backdrop-blur-[8px] bg-white/85' : 'backdrop-blur-xl bg-white/30'} rounded-2xl p-8 border border-white/30`}>
+                    <BookmarkCheck className={`mb-4 text-gray-300 mx-auto ${isMobileView ? 'w-12 h-12' : 'w-16 h-16'}`} />
+                    <h3 className={`font-medium text-gray-700 mb-2 ${isMobileView ? 'text-base' : 'text-lg'}`}>
+                      No Saved Schedules
+                    </h3>
+                    <p className={`text-gray-400 ${isMobileView ? 'text-xs' : 'text-sm'}`}>
+                      Your schedules will appear here once you create and save them.
+                    </p>
+                  </div>
                 </div>
               ) : (
                 <div className={`space-y-3 ${isMobileView ? 'space-y-3' : 'space-y-4'} ${!isMobileView ? 'pb-4' : ''}`}>
                   {savedSchedules.map((schedule) => {
                     const status = getScheduleStatus(schedule.startDate);
+                    const rotationColor = getRotationColor(schedule.rotationPattern);
+                    
                     return (
-                      <div
+                      <SmartCard
                         key={schedule.id}
+                        variant="action-card"
+                        context={isMobileView ? 'mobile' : 'desktop'}
+                        interactionMode={isMobileView ? 'touch' : 'mouse'}
+                        importance="secondary"
+                        adaptiveContrast={true}
+                        physicsEnabled={false}
+                        magneticHover={false}
+                        glassEffect={true}
+                        phase2Enhanced={false}
+                        microInteractions={true}
+                        enhancedShadows={true}
+                        gradientBackground={false}
+                        borderEffects={false}
+                        enhancedTypography={true}
+                        visualIndicators={true}
+                        ariaLabel={`Load schedule: ${schedule.name || schedule.rotationPattern + ' Schedule'}`}
+                        ariaDescription={`${schedule.rotationPattern} rotation starting ${formatDate(schedule.startDate)}, last modified ${getTimeAgo(schedule.updatedAt)}`}
                         onClick={() => {
                           onLoadSchedule(schedule.id);
                           closeDialog();
                         }}
-                        className={`bg-white rounded-2xl border border-gray-200 cursor-pointer transition-all duration-200 hover:shadow-md hover:border-gray-300 ${
-                          removingId === schedule.id ? 'opacity-0 scale-95' : 'opacity-100'
-                        } ${isMobileView ? 'p-4' : 'p-5'}`}
-                        role="button"
-                        tabIndex={0}
                         onKeyDown={(e) => {
                           if (e.key === 'Enter' || e.key === ' ') {
                             e.preventDefault();
@@ -218,7 +260,9 @@ export function SavedSchedules({ onLoadSchedule, isOpen = false, onOpenChange }:
                             closeDialog();
                           }
                         }}
-                        aria-label={`Load schedule: ${schedule.name || schedule.rotationPattern + ' Schedule'}`}
+                        className={`transition-all duration-200 card-container ${
+                          removingId === schedule.id ? 'opacity-0 scale-95' : 'opacity-100'
+                        }`}
                       >
                         <div className="flex items-start justify-between">
                           <div className="flex-1 min-w-0">
@@ -229,7 +273,7 @@ export function SavedSchedules({ onLoadSchedule, isOpen = false, onOpenChange }:
                                     value={localEditName}
                                     onChange={(ev) => setLocalEditName(ev.target.value)}
                                     onClick={(ev) => ev.stopPropagation()}
-                                    className={`flex-1 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+                                    className={`flex-1 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 bg-white/80 ${
                                       isMobileView ? 'px-2 py-1.5 text-sm' : 'px-3 py-2'
                                     }`}
                                     aria-label="Edit schedule name"
@@ -239,7 +283,7 @@ export function SavedSchedules({ onLoadSchedule, isOpen = false, onOpenChange }:
                                     disabled={!localEditName.trim()}
                                     onClick={(ev) => confirmEdit(ev, schedule.id)}
                                     aria-label="Confirm name change"
-                                    className="min-w-[44px] min-h-[44px]"
+                                    className="min-w-[44px] min-h-[44px] bg-green-600 hover:bg-green-700"
                                   >
                                     <Check className={isMobileView ? "w-3.5 h-3.5" : "w-4 h-4"} />
                                   </Button>
@@ -281,7 +325,7 @@ export function SavedSchedules({ onLoadSchedule, isOpen = false, onOpenChange }:
                               </div>
                             </div>
                             
-                            <div className={`inline-flex items-center rounded-full bg-gray-100 text-gray-700 font-medium ${
+                            <div className={`inline-flex items-center rounded-full border font-medium ${rotationColor} ${
                               isMobileView ? 'px-2.5 py-1 text-xs' : 'px-3 py-1 text-sm'
                             }`}>
                               {schedule.rotationPattern} Rotation
@@ -314,7 +358,7 @@ export function SavedSchedules({ onLoadSchedule, isOpen = false, onOpenChange }:
                             )}
                           </div>
                         </div>
-                      </div>
+                      </SmartCard>
                     );
                   })}
                 </div>
@@ -322,7 +366,7 @@ export function SavedSchedules({ onLoadSchedule, isOpen = false, onOpenChange }:
             </div>
 
             {/* Footer - Fixed at bottom */}
-            <div className={`border-t border-gray-100 ${isMobileView ? 'p-4' : 'p-6'} flex-shrink-0 bg-white`}>
+            <div className={`border-t border-gray-100 ${isMobileView ? 'p-4 backdrop-blur-[8px] bg-white/85' : 'p-6 backdrop-blur-xl bg-white/20'} flex-shrink-0`}>
               <Button 
                 onClick={closeDialog}
                 className={`w-full ${isMobileView ? 'min-h-[48px] text-base' : 'min-h-[44px]'}`}
@@ -337,29 +381,32 @@ export function SavedSchedules({ onLoadSchedule, isOpen = false, onOpenChange }:
 
       {/* Delete confirmation dialog */}
       <Dialog open={deleteId !== null} onOpenChange={(open) => !open && setDeleteId(null)}>
-        <DialogContent className={isMobileView ? "max-w-sm mx-4" : ""}>
+        <DialogContent className={isMobileView ? "max-w-sm mx-4 backdrop-blur-[8px] bg-white/95 border border-white/30" : "backdrop-blur-xl bg-white/95 border border-white/30"}>
           <DialogHeader>
-            <DialogTitle className={isMobileView ? "text-lg" : ""}>Delete schedule</DialogTitle>
-            <DialogDescription className={isMobileView ? "text-sm" : ""}>
+            <DialogTitle className={`flex items-center gap-2 ${isMobileView ? "text-lg" : ""}`}>
+              <Trash className="w-5 h-5 text-red-500" />
+              Delete schedule
+            </DialogTitle>
+            <DialogDescription className={isMobileView ? "text-sm text-gray-400" : "text-gray-400"}>
               This action cannot be undone. This will permanently delete the selected schedule.
             </DialogDescription>
           </DialogHeader>
-          <DialogFooter className={isMobileView ? "gap-2 sm:gap-2" : ""}>
+          <div className={`flex gap-3 mt-4 ${isMobileView ? "flex-col" : ""}`}>
             <Button 
               variant="outline" 
               onClick={cancelDelete}
-              className={isMobileView ? "min-h-[44px] w-full" : ""}
+              className={isMobileView ? "w-full min-h-[44px]" : "flex-1"}
             >
               Cancel
             </Button>
             <Button 
               variant="destructive" 
               onClick={confirmDelete}
-              className={isMobileView ? "min-h-[44px] w-full" : ""}
+              className={isMobileView ? "w-full min-h-[44px]" : "flex-1"}
             >
               Delete
             </Button>
-          </DialogFooter>
+          </div>
         </DialogContent>
       </Dialog>
     </>
