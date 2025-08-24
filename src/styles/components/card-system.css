@@ -1211,6 +1211,93 @@
   }
 }
 
+/* ===== MOBILE COMPATIBILITY FIXES ===== */
+
+/* Simplified glass effects for mobile devices */
+@media (max-width: 768px) {
+  .card-glass {
+    /* Simplified background without complex backdrop filtering */
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow: var(--shadow-soft);
+  }
+  
+  /* Enhanced fallback for cards without backdrop filter support */
+  @supports not (backdrop-filter: blur()) {
+    .card-glass {
+      background: rgba(255, 255, 255, 0.95);
+      border: 1px solid rgba(0, 0, 0, 0.1);
+    }
+  }
+  
+  /* Simplify card backgrounds for mobile */
+  .card-base {
+    background: rgba(255, 255, 255, 0.85);
+  }
+  
+  /* Reduce glass morphism complexity */
+  .card-variant-rotation-selection {
+    background: var(--card-bg, rgba(255, 255, 255, 0.9)) !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+  
+  .card-variant-rotation-selection:hover {
+    background: var(--card-bg-hover, rgba(255, 255, 255, 0.95)) !important;
+  }
+  
+  /* Disable complex gradients on mobile */
+  .card-gradient-enhanced {
+    background: var(--card-bg, rgba(255, 255, 255, 0.9)) !important;
+    animation: none !important;
+  }
+  
+  /* Simplify phase 2 enhanced cards */
+  .card-phase2-enhanced {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+}
+
+/* iOS Safari specific fixes */
+@supports (-webkit-touch-callout: none) {
+  .card-glass,
+  .card-base {
+    /* Force solid background on iOS to prevent blending issues */
+    background: rgba(255, 255, 255, 0.95) !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+  
+  /* Ensure tag components have solid backgrounds */
+  .card-tag-enhanced {
+    background: rgba(255, 255, 255, 0.9) !important;
+    backdrop-filter: none !important;
+  }
+}
+
+/* Mobile-specific card classes */
+.card-glass-simple {
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  box-shadow: var(--shadow-soft);
+  /* No backdrop filter to prevent rendering issues */
+}
+
+/* Mobile-optimized Phase 2 enhancements */
+.card-phase2-mobile {
+  /* Only essential enhancements for mobile */
+  box-shadow: var(--shadow-soft);
+  transition: all 0.2s ease;
+}
+
+.card-phase2-mobile:hover {
+  box-shadow: var(--shadow-medium);
+  transform: translateY(-1px);
+}
+
 /* ===== UTILITY CLASSES ===== */
 
 .card-interactive {

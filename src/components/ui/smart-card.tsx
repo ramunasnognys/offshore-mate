@@ -148,18 +148,18 @@ export const SmartCard = forwardRef<HTMLDivElement, SmartCardProps>(({
       // Day type styling
       dayType && `card-day-${dayType}`,
       
-      // Feature flags
-      glassEffect && 'card-glass',
-      physicsEnabled && 'card-physics-enabled',
-      magneticHover && 'card-magnetic',
+      // Feature flags - simplified for mobile
+      glassEffect && (context === 'mobile' ? 'card-glass-simple' : 'card-glass'),
+      physicsEnabled && context !== 'mobile' && 'card-physics-enabled',
+      magneticHover && context !== 'mobile' && 'card-magnetic',
       adaptiveContrast && 'card-adaptive-contrast',
       
-      // Phase 2 enhancements
-      phase2Enhanced && 'card-phase2-enhanced',
-      microInteractions && 'card-micro-suite',
+      // Phase 2 enhancements - reduced on mobile
+      phase2Enhanced && (context === 'mobile' ? 'card-phase2-mobile' : 'card-phase2-enhanced'),
+      microInteractions && context !== 'mobile' && 'card-micro-suite',
       enhancedShadows && 'card-shadow-enhanced',
-      gradientBackground && 'card-gradient-enhanced',
-      borderEffects && 'card-border-enhanced card-border-glow',
+      gradientBackground && context !== 'mobile' && 'card-gradient-enhanced',
+      borderEffects && context !== 'mobile' && 'card-border-enhanced card-border-glow',
       enhancedTypography && 'card-title-enhanced',
       visualIndicators && 'card-badge-enhanced',
       

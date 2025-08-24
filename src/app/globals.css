@@ -132,6 +132,40 @@
   }
 }
 
+/* ===== MOBILE OPTIMIZATION ===== */
+
+/* Mobile-specific glass morphism fixes */
+@media (max-width: 768px) {
+  :root {
+    /* Reduce glass blur intensity on mobile */
+    --glass-blur: 8px;
+    /* Increase opacity for better contrast */
+    --glass-bg-primary: rgba(255, 255, 255, 0.85);
+    --glass-bg-secondary: rgba(255, 255, 255, 0.75);
+    --glass-border: rgba(255, 255, 255, 0.4);
+  }
+}
+
+/* iOS Safari backdrop-filter fallback */
+@supports not (backdrop-filter: blur()) {
+  .card-glass,
+  .card-base {
+    background: rgba(255, 255, 255, 0.95) !important;
+    border: 1px solid rgba(0, 0, 0, 0.08) !important;
+  }
+}
+
+/* Force hardware acceleration but prevent blending issues */
+@media (max-width: 768px) {
+  .card-container {
+    /* Simplified rendering on mobile */
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+  }
+}
+
 /* Dark mode adaptations */
 @media (prefers-color-scheme: dark) {
   :root {
