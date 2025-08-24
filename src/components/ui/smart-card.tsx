@@ -163,8 +163,7 @@ export const SmartCard = forwardRef<HTMLDivElement, SmartCardProps>(({
       enhancedTypography && 'card-title-enhanced',
       visualIndicators && 'card-badge-enhanced',
       
-      // State classes
-      state.isSelected && 'card-selected',
+      // State classes - removed card-selected to eliminate outline behavior
       state.isDisabled && 'card-disabled',
       state.isLoading && 'card-loading',
       state.hasError && 'card-error',
@@ -245,11 +244,10 @@ export const SmartCard = forwardRef<HTMLDivElement, SmartCardProps>(({
   const handleClick = useCallback((event: React.MouseEvent) => {
     if (state.isDisabled) return;
     
-    transitionState({ 
-      isSelected: variant === 'rotation-selection' ? !state.isSelected : state.isSelected 
-    });
+    // Remove toggle functionality - cards should not toggle selection state
+    // Just call the onClick handler without changing selection state
     onClick?.(event);
-  }, [state.isDisabled, state.isSelected, variant, transitionState, onClick]);
+  }, [state.isDisabled, onClick]);
 
   const handleKeyDown = useCallback((event: React.KeyboardEvent) => {
     if (state.isDisabled) return;

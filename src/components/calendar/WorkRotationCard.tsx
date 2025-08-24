@@ -76,7 +76,7 @@ function RotationOptionButton({ option, isSelected, onClick }: RotationOptionBut
       microInteractions={true}
       enhancedShadows={true}
       gradientBackground={true}
-      borderEffects={true}
+      borderEffects={false}
       enhancedTypography={true}
       ariaLabel={`${option.label} rotation pattern`}
       ariaDescription={`${option.description}. ${isSelected ? 'Currently selected' : 'Click to select'}`}
@@ -93,7 +93,7 @@ function RotationOptionButton({ option, isSelected, onClick }: RotationOptionBut
           </div>
         </div>
         
-        <div className="ml-6 flex-shrink-0">
+        <div className="flex-shrink-0 ml-8">
           <div className={`w-6 h-6 rounded-full border-2 transition-all duration-200 relative ${
             isSelected 
               ? 'border-current bg-current shadow-sm' 
@@ -248,7 +248,7 @@ export function WorkRotationCard({
       microInteractions={true}
       enhancedShadows={true}
       gradientBackground={true}
-      borderEffects={true}
+      borderEffects={false}
       enhancedTypography={true}
       visualIndicators={true}
       ariaLabel="Work rotation pattern selection"
