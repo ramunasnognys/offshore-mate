@@ -166,7 +166,7 @@ function HomeContent() {
                   <div className="mt-10 text-center text-sm text-gray-400 tracking-wide">
                     <div className="inline-flex items-center gap-3 bg-white/40 backdrop-blur-sm rounded-full px-4 py-2 border border-white/20">
                       <div className="w-2 h-2 rounded-full bg-gradient-to-r from-blue-500 to-orange-500 animate-pulse"></div>
-                      <p className="tracking-wide font-medium">Version v.2</p>
+                      <p className="tracking-wide font-medium">Version v.3</p>
                     </div>
                   </div>
                 </div>
@@ -241,7 +241,7 @@ function HomeContent() {
                 <div className="mt-8 text-center text-sm text-gray-400 tracking-wide">
                   <div className="inline-flex items-center gap-2">
                     <div className="w-2 h-2 rounded-full bg-gradient-to-r from-blue-400 to-orange-400"></div>
-                    <p className="tracking-wide font-medium">Version v.2</p>
+                    <p className="tracking-wide font-medium">Version v.3</p>
                     <div className="w-2 h-2 rounded-full bg-gradient-to-r from-orange-400 to-blue-400"></div>
                   </div>
                 </div>
