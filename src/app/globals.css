@@ -530,7 +530,7 @@
   
   .card-variant-rotation-selection {
     display: grid;
-    grid-template-columns: auto 1fr auto;
+    /* grid-template-columns: auto 1fr auto; */
     gap: 1.5rem;
     align-items: center;
   }

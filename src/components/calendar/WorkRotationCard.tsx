@@ -93,7 +93,7 @@ function RotationOptionButton({ option, isSelected, onClick }: RotationOptionBut
           </div>
         </div>
         
-        <div className="flex-shrink-0 ml-8">
+        <div className="flex-shrink-0 ml-6">
           <div className={`w-6 h-6 rounded-full border-2 transition-all duration-200 relative ${
             isSelected 
               ? 'border-current bg-current shadow-sm' 
