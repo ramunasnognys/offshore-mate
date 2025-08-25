@@ -205,6 +205,7 @@ function HomeContent() {
                       <div className="w-6 h-px bg-gradient-to-r from-transparent via-orange-400 to-transparent"></div>
                     </div>
                   )}
+                  {/* Hide the subtitle on mobile devices as requested */}
                   {isCalendarGenerated && isMobileView === true && (
                     <p className="text-center text-gray-500 tracking-wide uppercase font-light text-[8px] opacity-70">
                       Schedule Navigator
