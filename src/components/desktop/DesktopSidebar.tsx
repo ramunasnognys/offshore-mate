@@ -28,17 +28,17 @@ export function DesktopSidebar({
   const { activeDesktopTab, setActiveDesktopTab } = useUI()
 
   return (
-    <aside className="hidden lg:block w-[320px]">
-      {/* Align sidebar with calendar cards - account for header + spacing */}
-      <div className="bg-white/50 backdrop-blur-lg rounded-2xl h-fit shadow-lg border border-white/30 sticky top-8">
+    <aside className="hidden lg:block w-full">
+      {/* Refined sidebar with consistent styling */}
+      <div className="bg-white/70 backdrop-blur-lg rounded-2xl h-fit shadow-lg border border-gray-100/50 sticky top-8">
         <Tabs value={activeDesktopTab} onValueChange={(value) => setActiveDesktopTab(value as 'export' | 'save' | 'settings')} className="h-full flex flex-col">
-          <TabsList className="grid w-full grid-cols-3 m-4 mb-0">
-            <TabsTrigger value="export">Export</TabsTrigger>
-            <TabsTrigger value="save">Save & Share</TabsTrigger>
-            <TabsTrigger value="settings">Settings</TabsTrigger>
+          <TabsList className="grid w-full grid-cols-3 mx-4 mb-0 mt-4 bg-gray-50/50 p-1 rounded-xl">
+            <TabsTrigger value="export" className="data-[state=active]:bg-white data-[state=active]:shadow-sm">Export</TabsTrigger>
+            <TabsTrigger value="save" className="data-[state=active]:bg-white data-[state=active]:shadow-sm">Save & Share</TabsTrigger>
+            <TabsTrigger value="settings" className="data-[state=active]:bg-white data-[state=active]:shadow-sm">Settings</TabsTrigger>
           </TabsList>
           
-          <TabsContent value="export" className="flex-1 p-4 mt-0">
+          <TabsContent value="export" className="flex-1 p-5 mt-0">
             <ExportTab 
               selectedFormat={exportFormat}
               onFormatChange={onFormatChange}
@@ -47,14 +47,14 @@ export function DesktopSidebar({
             />
           </TabsContent>
           
-          <TabsContent value="save" className="flex-1 p-4 mt-0">
+          <TabsContent value="save" className="flex-1 p-5 mt-0">
             <SaveTab 
               onSaveSchedule={onSaveSchedule}
               onLoadSchedule={onLoadSchedule}
             />
           </TabsContent>
           
-          <TabsContent value="settings" className="flex-1 p-4 mt-0">
+          <TabsContent value="settings" className="flex-1 p-5 mt-0">
             <SettingsTab />
           </TabsContent>
         </Tabs>

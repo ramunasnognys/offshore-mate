@@ -120,6 +120,14 @@
   --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
   --ease-in-out-back: cubic-bezier(0.68, -0.55, 0.265, 1.55);
   --ease-spring: cubic-bezier(0.4, 0, 0.2, 1);
+  
+  /* Desktop UI enhancements */
+  --desktop-sidebar-width: 320px;
+  --desktop-calendar-width: 540px;
+  --desktop-content-max-width: 1400px;
+  --desktop-card-bg: rgba(255, 255, 255, 0.85);
+  --desktop-card-border: rgba(0, 0, 0, 0.05);
+  --desktop-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
 }
 
 /* High contrast adaptations */

@@ -105,8 +105,8 @@ function HomeContent() {
       {/* Enhanced Background Pattern */}
       <div className="absolute inset-0 opacity-30">
         <div className="absolute top-0 left-1/4 w-96 h-96 bg-blue-200 rounded-full mix-blend-multiply filter blur-xl animate-blob"></div>
-        <div className="absolute top-0 right-1/4 w-96 h-96 bg-orange-200 rounded-full mix-blend-multiply filter blur-xl animate-blob animation-delay-2000"></div>
-        <div className="absolute bottom-0 left-1/3 w-96 h-96 bg-purple-200 rounded-full mix-blend-multiply filter blur-xl animate-blob animation-delay-4000"></div>
+        <div className="absolute top-0 right-1/4 w-96 h-96 bg-orange-200 rounded-full mix-blend-multiply filter blur-xl animation-delay-2000"></div>
+        <div className="absolute bottom-0 left-1/3 w-96 h-96 bg-purple-200 rounded-full mix-blend-multiply filter blur-xl animation-delay-4000"></div>
       </div>
       
       {/* Subtle Grid Pattern */}
@@ -151,11 +151,11 @@ function HomeContent() {
                 </div>
               </div>
               
-              {/* Centered Two-Column Layout */}
-              <div className="flex gap-8 justify-center max-w-7xl">
-                {/* Calendar Column */}
+              {/* Centered Two-Column Layout with improved spacing */}
+              <div className="flex gap-12 justify-center max-w-[1400px] w-full px-8">
+                {/* Calendar Column with refined styling */}
                 <div className="w-[540px] min-w-[540px] flex-shrink-0">
-                  <div className="bg-white/70 backdrop-blur-sm rounded-3xl border border-white/30 shadow-2xl p-8 hover:shadow-3xl transition-shadow duration-300">
+                  <div className="bg-white/85 backdrop-blur-md rounded-3xl border border-gray-100 shadow-xl p-8 transition-all duration-300 hover:shadow-2xl">
                     <CalendarDisplay
                       onBack={resetCalendar}
                       isStorageAvailable={isClient && isStorageSupported}
@@ -164,16 +164,16 @@ function HomeContent() {
                   
                   {/* Footer */}
                   <div className="mt-10 text-center text-sm text-gray-400 tracking-wide">
-                    <div className="inline-flex items-center gap-3 bg-white/40 backdrop-blur-sm rounded-full px-4 py-2 border border-white/20">
+                    <div className="inline-flex items-center gap-3 bg-white/60 backdrop-blur-sm rounded-full px-4 py-2 border border-white/30 shadow-sm">
                       <div className="w-2 h-2 rounded-full bg-gradient-to-r from-blue-500 to-orange-500 animate-pulse"></div>
                       <p className="tracking-wide font-medium">Version v.3</p>
                     </div>
                   </div>
                 </div>
                 
-                {/* Desktop Sidebar */}
+                {/* Desktop Sidebar with cleaner design */}
                 <div className="min-w-[320px] max-w-[360px] h-fit sticky top-8">
-                  <div className="bg-white/60 backdrop-blur-sm rounded-3xl border border-white/20 shadow-xl overflow-hidden">
+                  <div className="bg-white/80 backdrop-blur-md rounded-3xl border border-gray-100 shadow-lg overflow-hidden">
                     <DesktopSidebar 
                       exportFormat={exportFormat}
                       onFormatChange={setExportFormat}
@@ -198,79 +198,64 @@ function HomeContent() {
                   </h1>
                   {(!isCalendarGenerated || isMobileView !== true) && (
                     <div className="flex items-center justify-center gap-2">
-                      <div className="w-6 h-px bg-gradient-to-r from-transparent via-orange-400 to-transparent"></div>
-                      <p className="text-center text-gray-500 tracking-wider uppercase font-medium text-[10px] md:text-sm">
-                        Navigate your offshore schedule with precision
+                      <div className="w-8 h-px bg-gradient-to-r from-transparent via-orange-400 to-transparent"></div>
+                      <p className="text-center text-orange-500 tracking-wider uppercase font-semibold text-xs md:text-sm">
+                        Plan your offshore rotations
                       </p>
-                      <div className="w-6 h-px bg-gradient-to-r from-transparent via-orange-400 to-transparent"></div>
+                      <div className="w-8 h-px bg-gradient-to-r from-transparent via-orange-400 to-transparent"></div>
                     </div>
-                  )}
-                  {/* Hide the subtitle on mobile devices as requested */}
-                  {isCalendarGenerated && isMobileView === true && (
-                    <p className="text-center text-gray-500 tracking-wide uppercase font-light text-[8px] opacity-70">
-                      Schedule Navigator
-                    </p>
                   )}
                 </div>
               </div>
 
+              {/* Calendar Generation Form or Calendar Display */}
               {!isCalendarGenerated ? (
+                <CalendarGenerator 
+                  onShowSavedSchedules={() => setShowSavedSchedules(true)}
+                  hasStorageSupport={isClient && isStorageSupported}
+                />
+              ) : isMobileView === true ? (
                 <>
-                  <CalendarGenerator
-                    onShowSavedSchedules={() => setShowSavedSchedules(true)}
-                    hasStorageSupport={isClient && isStorageSupported}
-                  />
-
-                  {/* Saved Schedules Dialog */}
-                  <SavedSchedules 
-                    onLoadSchedule={loadSchedule}
-                    isOpen={showSavedSchedules}
-                    onOpenChange={setShowSavedSchedules}
-                  />
-                </>
-              ) : (
-                <div className={`${isMobileView === true ? 'bg-white/50 backdrop-blur-sm rounded-xl border border-white/20 shadow-lg p-4' : ''}`}>
-                  <CalendarDisplay
+                  <CalendarDisplay 
                     onBack={resetCalendar}
                     isStorageAvailable={isClient && isStorageSupported}
                   />
-                </div>
-              )}
-
-              {/* Footer */}
-              {(!isCalendarGenerated || isMobileView !== true) && (
-                <div className="mt-8 text-center text-sm text-gray-400 tracking-wide">
-                  <div className="inline-flex items-center gap-2">
-                    <div className="w-2 h-2 rounded-full bg-gradient-to-r from-blue-400 to-orange-400"></div>
-                    <p className="tracking-wide font-medium">Version v.3</p>
-                    <div className="w-2 h-2 rounded-full bg-gradient-to-r from-orange-400 to-blue-400"></div>
-                  </div>
-                </div>
-              )}
+                  <BottomToolbar 
+                    onExport={handleExport}
+                    onFormatChange={setExportFormat}
+                    onSaveSchedule={handleSaveSchedule}
+                    onSettings={() => {}}
+                    selectedFormat={exportFormat}
+                    isDownloading={isDownloading}
+                    onExpandedChange={setIsExportPanelExpanded}
+                    expandedPanel={expandedPanel}
+                    onExpandedPanelChange={setExpandedPanel}
+                  />
+                </>
+              ) : null}
             </div>
           )}
         </main>
 
-        {/* Bottom Toolbar - Mobile only */}
-        {isCalendarGenerated && isMobileView === true && (
-          <>
-            <BottomToolbar 
-              selectedFormat={exportFormat}
-              onFormatChange={setExportFormat}
-              onExport={handleExport}
-              onSaveSchedule={handleSaveSchedule}
-              onSettings={() => {}}
-              isDownloading={isDownloading}
-              onExpandedChange={setIsExportPanelExpanded}
-              expandedPanel={expandedPanel}
-              onExpandedPanelChange={setExpandedPanel}
-            />
-            <SavedSchedulesSettings
-              onLoadSchedule={loadSchedule}
-              isOpen={expandedPanel === 'settings'}
-              onOpenChange={(open) => setExpandedPanel(open ? 'settings' : null)}
-            />
-          </>
+        {/* Saved Schedules Modal */}
+        {showSavedSchedules && (
+          <SavedSchedules 
+            onLoadSchedule={(scheduleId) => {
+              loadSchedule(scheduleId)
+              setShowSavedSchedules(false)
+            }}
+            isOpen={showSavedSchedules}
+            onOpenChange={setShowSavedSchedules}
+          />
+        )}
+
+        {/* Saved Schedules Settings Modal */}
+        {isCalendarGenerated && currentScheduleId && (
+          <SavedSchedulesSettings 
+            onLoadSchedule={loadSchedule}
+            isOpen={!!currentScheduleId}
+            onOpenChange={(open) => !open && setCurrentScheduleId(null)}
+          />
         )}
       </div>
     </div>
