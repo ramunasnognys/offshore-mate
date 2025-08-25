@@ -181,26 +181,28 @@ export function SavedSchedulesSettings({
         <DialogContentComponent 
           className={isMobileView 
             ? "p-0 max-h-[85vh] w-full max-w-none backdrop-blur-xl bg-white/95" 
-            : "max-w-3xl max-h-[85vh] p-0 backdrop-blur-xl bg-white/95 border border-white/30 flex flex-col"
+            : "max-w-3xl max-h-[85vh] p-0 backdrop-blur-xl bg-white/95 border border-white/30 flex flex-col rounded-2xl shadow-[0_16px_64px_rgba(0,0,0,0.16)]"
           }
         >
           <div className="flex flex-col h-full max-h-[85vh]">
             {/* Header - Desktop only has bottom close button */}
-            <DialogHeader className={`${isMobileView ? 'p-4 pb-3' : 'p-6 pb-4'} border-b border-gray-100 backdrop-blur-xl bg-white/20 flex-shrink-0`}>
+            <DialogHeader className={`${isMobileView ? 'p-4 pb-3' : 'p-6 pb-4'} border-b border-gray-100 backdrop-blur-xl bg-white/20 flex-shrink-0 rounded-t-2xl`}>
               <div className="flex items-center justify-center">
                 <div className="text-center">
-                  <DialogTitle className={`font-semibold text-gray-900 flex items-center gap-2 ${
-                    isMobileView ? 'text-lg justify-center' : 'text-xl justify-center'
+                  <DialogTitle className={`font-semibold text-gray-900 flex items-center gap-2 justify-center ${
+                    isMobileView ? 'text-lg' : 'text-xl'
                   }`}>
-                    <BookmarkCheck className="w-5 h-5 text-orange-500" />
-                    Saved Schedules
+                    <div className="bg-orange-50 p-2 rounded-xl border border-orange-100">
+                      <BookmarkCheck className="w-5 h-5 text-orange-500" />
+                    </div>
+                    <span>Saved Schedules</span>
                     {scheduleCount > 0 && (
-                      <span className="bg-orange-100 text-orange-800 text-sm px-2 py-0.5 rounded-full font-medium">
+                      <span className="bg-orange-100 text-orange-800 text-sm px-2.5 py-0.5 rounded-full font-medium">
                         {scheduleCount}
                       </span>
                     )}
                   </DialogTitle>
-                  <DialogDescription className={`text-gray-400 mt-1 ${
+                  <DialogDescription className={`text-gray-500 mt-2 ${
                     isMobileView ? 'text-xs' : 'text-sm'
                   }`}>
                     View, edit, and load your previously saved rotation schedules
@@ -220,12 +222,14 @@ export function SavedSchedulesSettings({
                 </div>
               ) : savedSchedules.length === 0 ? (
                 <div className={`flex flex-col items-center justify-center text-center ${isMobileView ? 'p-6' : 'p-8'}`}>
-                  <div className="backdrop-blur-xl bg-white/30 rounded-2xl p-8 border border-white/30">
-                    <BookmarkCheck className={`mb-4 text-gray-300 mx-auto ${isMobileView ? 'w-12 h-12' : 'w-16 h-16'}`} />
-                    <h3 className={`font-medium text-gray-700 mb-2 ${isMobileView ? 'text-base' : 'text-lg'}`}>
+                  <div className="backdrop-blur-xl bg-white/30 rounded-2xl p-8 border border-white/30 shadow-[0_8px_32px_rgba(0,0,0,0.12)]">
+                    <div className="bg-orange-50 p-3 rounded-xl border border-orange-100 inline-block mb-4">
+                      <BookmarkCheck className={`text-orange-500 ${isMobileView ? 'w-12 h-12' : 'w-16 h-16'}`} />
+                    </div>
+                    <h3 className={`font-semibold text-gray-900 mb-2 ${isMobileView ? 'text-base' : 'text-lg'}`}>
                       No Saved Schedules
                     </h3>
-                    <p className={`text-gray-400 ${isMobileView ? 'text-xs' : 'text-sm'}`}>
+                    <p className={`text-gray-500 ${isMobileView ? 'text-xs' : 'text-sm'}`}>
                       Your schedules will appear here once you create and save them.
                     </p>
                   </div>
@@ -247,6 +251,13 @@ export function SavedSchedulesSettings({
                         physicsEnabled={false}
                         magneticHover={false}
                         glassEffect={true}
+                        phase2Enhanced={true}
+                        microInteractions={true}
+                        enhancedShadows={true}
+                        gradientBackground={true}
+                        borderEffects={false}
+                        enhancedTypography={true}
+                        visualIndicators={true}
                         ariaLabel={`Load schedule: ${schedule.name || schedule.rotationPattern + ' Schedule'}`}
                         ariaDescription={`${schedule.rotationPattern} rotation starting ${formatDate(schedule.startDate)}, last modified ${getTimeAgo(schedule.updatedAt)}`}
                         onClick={() => {
@@ -366,10 +377,10 @@ export function SavedSchedulesSettings({
             </div>
 
             {/* Footer - Fixed at bottom */}
-            <div className={`border-t border-gray-100 backdrop-blur-xl bg-white/20 ${isMobileView ? 'p-4' : 'p-6'} flex-shrink-0`}>
+            <div className={`border-t border-gray-100 backdrop-blur-xl bg-white/20 ${isMobileView ? 'p-4' : 'p-6'} flex-shrink-0 rounded-b-2xl`}>
               <Button 
                 onClick={closeDialog}
-                className={`w-full ${isMobileView ? 'min-h-[48px] text-base' : 'min-h-[44px]'}`}
+                className={`w-full ${isMobileView ? 'min-h-[48px] text-base' : 'min-h-[44px]'} bg-orange-500 hover:bg-orange-600 text-white border-none`}
                 variant="outline"
               >
                 Close
@@ -381,10 +392,12 @@ export function SavedSchedulesSettings({
 
       {/* Delete confirmation dialog */}
       <Dialog open={deleteId !== null} onOpenChange={(open) => !open && setDeleteId(null)}>
-        <DialogContent className={isMobileView ? "max-w-sm mx-4 backdrop-blur-xl bg-white/95" : "backdrop-blur-xl bg-white/95"}>
+        <DialogContent className={`max-w-sm mx-4 backdrop-blur-xl bg-white/95 ${!isMobileView ? 'rounded-xl shadow-[0_16px_64px_rgba(0,0,0,0.16)]' : ''}`}>
           <DialogHeader>
             <DialogTitle className={`flex items-center gap-2 ${isMobileView ? "text-lg" : ""}`}>
-              <Trash className="w-5 h-5 text-red-500" />
+              <div className="bg-red-50 p-2 rounded-xl border border-red-100">
+                <Trash className="w-5 h-5 text-red-500" />
+              </div>
               Delete schedule
             </DialogTitle>
             <DialogDescription className={isMobileView ? "text-sm" : ""}>
