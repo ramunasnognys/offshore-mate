@@ -20,6 +20,7 @@ function HomeContent() {
   const [isClient, setIsClient] = React.useState(false)
   const [isExportPanelExpanded, setIsExportPanelExpanded] = React.useState(false)
   const [expandedPanel, setExpandedPanel] = React.useState<'export' | 'settings' | null>(null)
+  const [showSettingsDialog, setShowSettingsDialog] = React.useState(false)
   
   // Get calendar context
   const { 
@@ -58,6 +59,7 @@ function HomeContent() {
       setCurrentScheduleId(schedule.metadata.id)
       setIsSaved(true)
       setIsCalendarGenerated(true)
+      setShowSettingsDialog(false) // Prevent settings dialog from showing
     }
   })
 
@@ -224,7 +226,7 @@ function HomeContent() {
                     onExport={handleExport}
                     onFormatChange={setExportFormat}
                     onSaveSchedule={handleSaveSchedule}
-                    onSettings={() => {}}
+                    onSettings={() => setShowSettingsDialog(true)}
                     selectedFormat={exportFormat}
                     isDownloading={isDownloading}
                     onExpandedChange={setIsExportPanelExpanded}
@@ -250,11 +252,16 @@ function HomeContent() {
         )}
 
         {/* Saved Schedules Settings Modal */}
-        {isCalendarGenerated && currentScheduleId && (
+        {showSettingsDialog && isCalendarGenerated && currentScheduleId && (
           <SavedSchedulesSettings 
             onLoadSchedule={loadSchedule}
-            isOpen={!!currentScheduleId}
-            onOpenChange={(open) => !open && setCurrentScheduleId(null)}
+            isOpen={showSettingsDialog}
+            onOpenChange={(open) => {
+              setShowSettingsDialog(open)
+              if (!open) {
+                setCurrentScheduleId(null)
+              }
+            }}
           />
         )}
       </div>
