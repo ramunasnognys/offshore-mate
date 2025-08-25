@@ -174,16 +174,16 @@ export function SavedSchedules({ onLoadSchedule, isOpen = false, onOpenChange }:
         <DialogContentComponent 
           className={isMobileView 
             ? "p-0 max-h-[85vh] w-full max-w-none backdrop-blur-[8px] bg-white/95" 
-            : "max-w-3xl max-h-[85vh] p-0 backdrop-blur-xl bg-white/95 border border-white/30 flex flex-col"
+            : "max-w-xl max-h-[85vh] p-0 backdrop-blur-xl bg-white/95 border border-white/30 flex flex-col"
           }
         >
           <div className="flex flex-col h-full max-h-[85vh]">
             {/* Header - Desktop only has bottom close button */}
-            <DialogHeader className={`${isMobileView ? 'p-4 pb-3' : 'p-6 pb-4'} border-b border-gray-100 ${isMobileView ? 'backdrop-blur-[8px] bg-white/85' : 'backdrop-blur-xl bg-white/20'} flex-shrink-0`}>
+            <DialogHeader className={`${isMobileView ? 'p-4 pb-3' : 'p-4 pb-3'} border-b border-gray-100 ${isMobileView ? 'backdrop-blur-[8px] bg-white/85' : 'backdrop-blur-xl bg-white/20'} flex-shrink-0`}>
               <div className="flex items-center justify-center">
                 <div className="text-center">
                   <DialogTitle className={`font-semibold text-gray-900 flex items-center gap-2 ${
-                    isMobileView ? 'text-lg justify-center' : 'text-xl justify-center'
+                    isMobileView ? 'text-lg justify-center' : 'text-lg justify-center'
                   }`}>
                     <BookmarkCheck className="w-5 h-5 text-orange-500" />
                     Saved Schedules
@@ -203,7 +203,7 @@ export function SavedSchedules({ onLoadSchedule, isOpen = false, onOpenChange }:
             </DialogHeader>
 
             {/* Scrollable Content Area */}
-            <div className={`flex-1 min-h-0 overflow-y-auto ${isMobileView ? 'p-4' : 'p-6'}`}>
+            <div className={`flex-1 min-h-0 overflow-y-auto ${isMobileView ? 'p-4' : 'p-3'}`}>
               {isLoading ? (
                 <div className={`flex items-center justify-center ${isMobileView ? 'p-6' : 'p-8'}`} role="status" aria-live="polite">
                   <div className="animate-pulse text-gray-500 flex items-center gap-2">
@@ -212,7 +212,7 @@ export function SavedSchedules({ onLoadSchedule, isOpen = false, onOpenChange }:
                   </div>
                 </div>
               ) : savedSchedules.length === 0 ? (
-                <div className={`flex flex-col items-center justify-center text-center ${isMobileView ? 'p-6' : 'p-8'}`}>
+                <div className="flex flex-col items-center justify-center text-center ${isMobileView ? 'p-6' : 'p-6'}">
                   <div className={`${isMobileView ? 'backdrop-blur-[8px] bg-white/85' : 'backdrop-blur-xl bg-white/30'} rounded-2xl p-8 border border-white/30`}>
                     <BookmarkCheck className={`mb-4 text-gray-300 mx-auto ${isMobileView ? 'w-12 h-12' : 'w-16 h-16'}`} />
                     <h3 className={`font-medium text-gray-700 mb-2 ${isMobileView ? 'text-base' : 'text-lg'}`}>
@@ -224,7 +224,7 @@ export function SavedSchedules({ onLoadSchedule, isOpen = false, onOpenChange }:
                   </div>
                 </div>
               ) : (
-                <div className={`space-y-3 ${isMobileView ? 'space-y-3' : 'space-y-4'} ${!isMobileView ? 'pb-4' : ''}`}>
+                <div className={`space-y-2 ${isMobileView ? 'space-y-3' : 'space-y-2'} ${!isMobileView ? 'pb-2' : ''}`}>
                   {savedSchedules.map((schedule) => {
                     const status = getScheduleStatus(schedule.startDate);
                     const rotationColor = getRotationColor(schedule.rotationPattern);
@@ -260,13 +260,13 @@ export function SavedSchedules({ onLoadSchedule, isOpen = false, onOpenChange }:
                             closeDialog();
                           }
                         }}
-                        className={`transition-all duration-200 card-container ${
+                        className={`transition-all duration-200 card-container !py-3 ${
                           removingId === schedule.id ? 'opacity-0 scale-95' : 'opacity-100'
                         }`}
                       >
                         <div className="flex items-start justify-between">
                           <div className="flex-1 min-w-0">
-                            <div className={`flex items-center gap-2 ${isMobileView ? 'mb-2' : 'mb-3'}`}>
+                            <div className={`flex items-center gap-2 ${isMobileView ? 'mb-2' : 'mb-2'}`}>
                               {editingScheduleId === schedule.id ? (
                                 <div className="flex items-center gap-2 flex-1">
                                   <input
@@ -300,7 +300,7 @@ export function SavedSchedules({ onLoadSchedule, isOpen = false, onOpenChange }:
                               ) : (
                                 <>
                                   <h3 className={`font-semibold text-gray-900 truncate ${
-                                    isMobileView ? 'text-base' : 'text-lg'
+                                    isMobileView ? 'text-base' : 'text-base'
                                   }`}>
                                     {schedule.name || `${schedule.rotationPattern} Schedule`}
                                   </h3>
@@ -309,52 +309,52 @@ export function SavedSchedules({ onLoadSchedule, isOpen = false, onOpenChange }:
                               )}
                             </div>
                             
-                            <div className={`space-y-1.5 ${isMobileView ? 'mb-3' : 'mb-4'}`}>
+                            <div className={`space-y-1 ${isMobileView ? 'mb-3' : 'mb-2'}`}>
                               <div className={`flex items-center text-gray-600 ${
                                 isMobileView ? 'text-xs' : 'text-sm'
                               }`}>
-                                <Calendar className={`mr-1.5 ${isMobileView ? 'w-3.5 h-3.5' : 'w-4 h-4'}`} />
+                                <Calendar className={`mr-1.5 ${isMobileView ? 'w-3.5 h-3.5' : 'w-3.5 h-3.5'}`} />
                                 <span>Starts: {formatDate(schedule.startDate)}</span>
                               </div>
                               
                               <div className={`flex items-center text-gray-600 ${
                                 isMobileView ? 'text-xs' : 'text-sm'
                               }`}>
-                                <Clock className={`mr-1.5 ${isMobileView ? 'w-3.5 h-3.5' : 'w-4 h-4'}`} />
+                                <Clock className={`mr-1.5 ${isMobileView ? 'w-3.5 h-3.5' : 'w-3.5 h-3.5'}`} />
                                 <span>Modified: {getTimeAgo(schedule.updatedAt)}</span>
                               </div>
                             </div>
                             
                             <div className={`inline-flex items-center rounded-full border font-medium ${rotationColor} ${
-                              isMobileView ? 'px-2.5 py-1 text-xs' : 'px-3 py-1 text-sm'
+                              isMobileView ? 'px-2.5 py-1 text-xs' : 'px-2 py-0.5 text-xs'
                             }`}>
                               {schedule.rotationPattern} Rotation
                             </div>
                           </div>
                           
-                          <div className={`flex items-center ml-3 ${isMobileView ? 'gap-2' : 'gap-2'}`}>
+                          <div className={`flex items-center ml-1 ${isMobileView ? 'gap-2' : 'gap-1'}`}>
                             {editingScheduleId !== schedule.id && (
                               <button
                                 onClick={(e) => startEdit(e, schedule)}
-                                className={`text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors min-w-[44px] min-h-[44px] flex items-center justify-center ${
+                                className={`text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors min-w-[36px] min-h-[36px] flex items-center justify-center ${
                                   isMobileView ? 'p-3' : 'p-2'
                                 }`}
                                 aria-label={`Edit ${schedule.name || schedule.rotationPattern + ' schedule'}`}
                               >
-                                <PencilLine className={isMobileView ? "w-4 h-4" : "w-5 h-5"} />
+                                <PencilLine className={isMobileView ? "w-4 h-4" : "w-4 h-4"} />
                               </button>
                             )}
                             <button
                               onClick={(e) => openDeleteDialog(e, schedule.id)}
-                              className={`text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors min-w-[44px] min-h-[44px] flex items-center justify-center ${
+                              className={`text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors min-w-[36px] min-h-[36px] flex items-center justify-center ${
                                 isMobileView ? 'p-3' : 'p-2'
                               }`}
                               aria-label={`Delete ${schedule.name || schedule.rotationPattern + ' schedule'}`}
                             >
-                              <Trash className={isMobileView ? "w-4 h-4" : "w-5 h-5"} />
+                              <Trash className={isMobileView ? "w-4 h-4" : "w-4 h-4"} />
                             </button>
                             {!isMobileView && (
-                              <ArrowRight className="w-5 h-5 text-gray-400" />
+                              <ArrowRight className="w-4 h-4 text-gray-400" />
                             )}
                           </div>
                         </div>
@@ -366,7 +366,7 @@ export function SavedSchedules({ onLoadSchedule, isOpen = false, onOpenChange }:
             </div>
 
             {/* Footer - Fixed at bottom */}
-            <div className={`border-t border-gray-100 ${isMobileView ? 'p-4 backdrop-blur-[8px] bg-white/85' : 'p-6 backdrop-blur-xl bg-white/20'} flex-shrink-0`}>
+            <div className={`border-t border-gray-100 ${isMobileView ? 'p-4 backdrop-blur-[8px] bg-white/85' : 'p-3 backdrop-blur-xl bg-white/20'} flex-shrink-0`}>
               <Button 
                 onClick={closeDialog}
                 className={`w-full ${isMobileView ? 'min-h-[48px] text-base' : 'min-h-[44px]'}`}
@@ -381,9 +381,9 @@ export function SavedSchedules({ onLoadSchedule, isOpen = false, onOpenChange }:
 
       {/* Delete confirmation dialog */}
       <Dialog open={deleteId !== null} onOpenChange={(open) => !open && setDeleteId(null)}>
-        <DialogContent className={isMobileView ? "max-w-sm mx-4 backdrop-blur-[8px] bg-white/95 border border-white/30" : "backdrop-blur-xl bg-white/95 border border-white/30"}>
+        <DialogContent className={isMobileView ? "max-w-sm mx-4 backdrop-blur-[8px] bg-white/95 border border-white/30" : "max-w-md backdrop-blur-xl bg-white/95 border border-white/30"}>
           <DialogHeader>
-            <DialogTitle className={`flex items-center gap-2 ${isMobileView ? "text-lg" : ""}`}>
+            <DialogTitle className={`flex items-center gap-2 ${isMobileView ? "text-lg" : "text-base"}`}>
               <Trash className="w-5 h-5 text-red-500" />
               Delete schedule
             </DialogTitle>
