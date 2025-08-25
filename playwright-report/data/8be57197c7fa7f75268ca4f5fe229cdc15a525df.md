@@ -1,0 +1,79 @@
+# Page snapshot
+
+```yaml
+- main:
+  - heading "Offshore Mate" [level=1]
+  - paragraph: Navigate your offshore schedule with precision
+  - button "Start date selection":
+    - img
+    - heading "Start Date" [level=2]
+    - paragraph: When does your rotation begin?
+    - button "Date picker input":
+      - button "Pick a start date"
+  - button "Work rotation pattern selection":
+    - img
+    - heading "Work Rotation Pattern" [level=2]
+    - paragraph: Select your offshore work schedule
+    - option "14/14 rotation pattern": 14/14
+    - option "14/21 rotation pattern" [selected]: 14/21 Selected
+    - option "28/28 rotation pattern": 28/28
+    - option "Custom rotation pattern": Custom
+  - button "Saved schedules management":
+    - img
+    - heading "Saved Schedules" [level=2]
+    - paragraph: Manage your saved rotation patterns
+    - text: 0 saved
+    - img
+  - button "Generate Schedule"
+  - text: Generate your offshore work schedule based on selected start date and rotation pattern
+  - paragraph: Version v.3
+- status:
+  - img
+  - text: Static route
+  - button "Hide static indicator":
+    - img
+- alert
+- dialog "Date picker calendar":
+  - button "Close calendar":
+    - img
+  - button "Previous month":
+    - img
+  - heading "August" [level=2]
+  - paragraph: "2025"
+  - button "Next month":
+    - img
+  - text: Mon Tue Wed Thu Fri Sat Sun
+  - button "Friday, August 1, 2025": "1"
+  - button "Saturday, August 2, 2025": "2"
+  - button "Sunday, August 3, 2025": "3"
+  - button "Monday, August 4, 2025": "4"
+  - button "Tuesday, August 5, 2025": "5"
+  - button "Wednesday, August 6, 2025": "6"
+  - button "Thursday, August 7, 2025": "7"
+  - button "Friday, August 8, 2025": "8"
+  - button "Saturday, August 9, 2025": "9"
+  - button "Sunday, August 10, 2025": "10"
+  - button "Monday, August 11, 2025": "11"
+  - button "Tuesday, August 12, 2025": "12"
+  - button "Wednesday, August 13, 2025": "13"
+  - button "Thursday, August 14, 2025": "14"
+  - button "Friday, August 15, 2025": "15"
+  - button "Saturday, August 16, 2025": "16"
+  - button "Sunday, August 17, 2025": "17"
+  - button "Monday, August 18, 2025": "18"
+  - button "Tuesday, August 19, 2025": "19"
+  - button "Wednesday, August 20, 2025": "20"
+  - button "Thursday, August 21, 2025": "21"
+  - button "Friday, August 22, 2025": "22"
+  - button "Saturday, August 23, 2025": "23"
+  - button "Sunday, August 24, 2025": "24"
+  - button "Monday, August 25, 2025, today": "25"
+  - button "Tuesday, August 26, 2025": "26"
+  - button "Wednesday, August 27, 2025": "27"
+  - button "Thursday, August 28, 2025": "28"
+  - button "Friday, August 29, 2025": "29"
+  - button "Saturday, August 30, 2025": "30"
+  - button "Sunday, August 31, 2025": "31"
+  - button "Cancel"
+  - button "Today"
+```

@@ -30,7 +30,7 @@ export function DesktopSidebar({
   return (
     <aside className="hidden lg:block w-[320px]">
       {/* Align sidebar with calendar cards - account for header + spacing */}
-      <div className="mt-[120px] bg-white/50 backdrop-blur-lg rounded-2xl h-fit shadow-lg border border-white/30 sticky top-[152px]">
+      <div className="bg-white/50 backdrop-blur-lg rounded-2xl h-fit shadow-lg border border-white/30 sticky top-8">
         <Tabs value={activeDesktopTab} onValueChange={(value) => setActiveDesktopTab(value as 'export' | 'save' | 'settings')} className="h-full flex flex-col">
           <TabsList className="grid w-full grid-cols-3 m-4 mb-0">
             <TabsTrigger value="export">Export</TabsTrigger>

@@ -172,7 +172,7 @@ function HomeContent() {
                 </div>
                 
                 {/* Desktop Sidebar */}
-                <div className="min-w-[320px] max-w-[360px]">
+                <div className="min-w-[320px] max-w-[360px] h-fit sticky top-8">
                   <div className="bg-white/60 backdrop-blur-sm rounded-3xl border border-white/20 shadow-xl overflow-hidden">
                     <DesktopSidebar 
                       exportFormat={exportFormat}
