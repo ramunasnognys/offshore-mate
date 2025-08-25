@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react'
 import { BookmarkCheck, Share2, Trash, Calendar, Clock, PencilLine, X, Check, ArrowRight } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import { GenerateButton } from '@/components/ui/generate-button'
 import { useCalendar } from '@/contexts/CalendarContext'
 import { useUI } from '@/contexts/UIContext'
 import { useShareCalendar } from '@/hooks/useShareCalendar'
@@ -142,8 +143,8 @@ export function SaveTab({ onSaveSchedule, onLoadSchedule }: SaveTabProps) {
   return (
     <div className="space-y-6">
       <div>
-        <h3 className="font-semibold mb-4 text-gray-800">Save & Share</h3>
-        <p className="text-sm text-gray-600 mb-4">
+        <h3 className="font-semibold mb-2 text-gray-800 text-lg">Save & Share</h3>
+        <p className="text-sm text-gray-600">
           Save your calendar for quick access or share it with colleagues.
         </p>
       </div>
@@ -158,40 +159,38 @@ export function SaveTab({ onSaveSchedule, onLoadSchedule }: SaveTabProps) {
       {/* Save & Share Actions */}
       <div className="space-y-3">
         {/* Save Button */}
-        <button
+        <GenerateButton
+          variant="primary"
+          size="md"
+          icon={<BookmarkCheck className="h-4 w-4" />}
           onClick={handleSave}
           disabled={!isCalendarGenerated}
-          className="w-full bg-black text-white rounded-xl py-3 font-medium flex items-center justify-center gap-2 
-            hover:bg-gray-900 hover:shadow-lg hover:shadow-black/20 hover:scale-[1.02] 
-            active:scale-[0.98] transition-all duration-200 ease-out disabled:opacity-50 disabled:hover:scale-100
-            focus:outline-none focus:ring-2 focus:ring-orange-500/50 focus:ring-offset-2"
+          className="w-full"
         >
-          <BookmarkCheck className="w-4 h-4" />
           {isSaved ? 'Update Schedule' : 'Save Schedule'}
-        </button>
+        </GenerateButton>
 
         {/* Share Button */}
-        <button
+        <GenerateButton
+          variant="gradient"
+          size="md"
+          icon={<Share2 className="h-4 w-4" />}
           onClick={handleShare}
           disabled={!isCalendarGenerated}
-          className="w-full bg-orange-500 text-white rounded-xl py-3 font-medium flex items-center justify-center gap-2 
-            hover:bg-orange-600 hover:shadow-lg hover:shadow-orange-500/20 hover:scale-[1.02] 
-            active:scale-[0.98] transition-all duration-200 ease-out disabled:opacity-50 disabled:hover:scale-100
-            focus:outline-none focus:ring-2 focus:ring-orange-500/50 focus:ring-offset-2"
+          className="w-full"
         >
-          <Share2 className="w-4 h-4" />
           Share Calendar
-        </button>
+        </GenerateButton>
       </div>
 
       {/* Current Schedule Info */}
       {isCalendarGenerated && scheduleName && (
-        <div className="p-3 rounded-lg bg-blue-50 border border-blue-200">
-          <p className="text-sm text-blue-800 font-medium">
+        <div className="p-4 rounded-xl bg-gray-50/50 border border-gray-200">
+          <p className="text-sm text-gray-800 font-medium">
             Current: {scheduleName}
           </p>
           {currentScheduleId && (
-            <p className="text-xs text-blue-600 mt-1">
+            <p className="text-xs text-gray-600 mt-1">
               {isSaved ? 'Saved' : 'Not saved'}
             </p>
           )}
@@ -206,7 +205,7 @@ export function SaveTab({ onSaveSchedule, onLoadSchedule }: SaveTabProps) {
         </h4>
         
         {savedSchedules.length === 0 ? (
-          <div className="p-4 rounded-lg bg-gray-50 border border-gray-200">
+          <div className="p-4 rounded-xl bg-gray-50/50 border border-gray-200">
             <p className="text-sm text-gray-500 text-center">
               No saved schedules yet.
             </p>
@@ -220,7 +219,7 @@ export function SaveTab({ onSaveSchedule, onLoadSchedule }: SaveTabProps) {
               return (
                 <div
                   key={schedule.id}
-                  className={`p-3 rounded-lg border transition-all ${
+                  className={`p-4 rounded-xl border transition-all ${
                     isRemoving 
                       ? 'bg-red-50 border-red-200 opacity-50' 
                       : 'bg-white border-gray-200 hover:border-orange-300 hover:shadow-sm'
@@ -252,10 +251,6 @@ export function SaveTab({ onSaveSchedule, onLoadSchedule }: SaveTabProps) {
                         <div className="flex items-center gap-1">
                           <Calendar className="w-3 h-3" />
                           <span>Starts: {formatDate(schedule.startDate)}</span>
-                        </div>
-                        <div className="flex items-center gap-1">
-                          <Clock className="w-3 h-3" />
-                          <span>{getTimeAgo(schedule.updatedAt)}</span>
                         </div>
                       </div>
                       

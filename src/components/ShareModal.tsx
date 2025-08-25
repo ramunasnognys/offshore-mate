@@ -160,15 +160,6 @@ export function ShareModal({ isOpen, onClose, scheduleId }: ShareModalProps) {
                     Share Your Calendar
                   </DialogTitle>
                 </div>
-                {!isMobileView && (
-                  <button
-                    onClick={onClose}
-                    className="p-2 hover:bg-gray-100 rounded-full transition-colors min-w-[44px] min-h-[44px] flex items-center justify-center"
-                    aria-label="Close dialog"
-                  >
-                    <X className="w-5 h-5 text-gray-400" />
-                  </button>
-                )}
               </div>
             </DialogHeader>
             
@@ -259,15 +250,6 @@ export function ShareModal({ isOpen, onClose, scheduleId }: ShareModalProps) {
                   Share Your Calendar
                 </DialogTitle>
               </div>
-              {!isMobileView && (
-                <button
-                  onClick={onClose}
-                  className="p-2 hover:bg-gray-100 rounded-full transition-colors min-w-[44px] min-h-[44px] flex items-center justify-center"
-                  aria-label="Close dialog"
-                >
-                  <X className="w-5 h-5 text-gray-400" />
-                </button>
-              )}
             </div>
           </DialogHeader>
 
